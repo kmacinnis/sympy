@@ -1992,16 +1992,25 @@ class Expr(Basic, EvalfMixin):
     def _eval_expand_func(self, deep=True, **hints):
         return self
 
+    def _eval_expand_distribute_constant(self, deep=True, **hints):
+        return self
+
     @cacheit
-    def expand(self, deep=True, modulus=None, power_base=True, power_exp=True, \
-            mul=True, log=True, multinomial=True, basic=True, **hints):
+    def expand(self, deep=True, modulus=None, **hints):
         """
         Expand an expression using hints.
 
         See the docstring in function.expand for more information.
         """
-        hints.update(power_base=power_base, power_exp=power_exp, mul=mul, \
-           log=log, multinomial=multinomial, basic=basic)
+
+        if not any([hints[key] for key in hints]):
+            # All hints are set to False, so switch off from defaults
+            default_hints = dict(power_base=True, power_exp=True,
+                mul=True, log=True, multinomial=True,
+                basic=True, distribute_constant=False)
+            switch_off = hints
+            hints = default_hints
+            hints.update(switch_off)
 
         expr = self
         for hint, use_hint in hints.iteritems():

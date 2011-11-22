@@ -210,7 +210,8 @@ def test_expand():
     # issue 2383
     assert sqrt(-2*x*n) == sqrt(2)*sqrt(-n)*sqrt(x)
     # issue 2506 (2)
-    assert (cos(x+y)**2).expand(trig=True) == \
+    assert (cos(x+y)**2).expand(trig=True) == (-sin(x)*sin(y) + cos(x)*cos(y))**2
+    assert ((cos(x+y)**2).expand(trig=True)).expand() ==\
       sin(x)**2*sin(y)**2 - 2*sin(x)*sin(y)*cos(x)*cos(y) + cos(x)**2*cos(y)**2
 
     # Check that this isn't too slow

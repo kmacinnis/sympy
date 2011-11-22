@@ -1491,13 +1491,6 @@ def expand(e, deep=True, modulus=None, **hints):
     >>> ((x + y + z)**2).expand(multinomial=True)
     x**2 + 2*x*y + 2*x*z + y**2 + 2*y*z + z**2
 
-    distribute_constant - Distribute multiplication over addition only
-    when the first argument is a number and the second is an Add.  This
-    is designed to replicate the former automatic behavior.  It is not 
-    necessary to use this hint when using mul=True.
-    Kate -- Add doctests
-    
-    
     You can shut off methods that you don't want:
 
     >>> (exp(x + y)*(x + y)).expand()
@@ -1560,11 +1553,10 @@ def expand(e, deep=True, modulus=None, **hints):
     x*y**2 + 2*x*y*z + x*z**2
 
     """
-    if not any([hints[key] for key in hints]):
+    if not any([hints[key] and (key !="force") for key in hints]):
         # No hints; or all hints are set to False, so switch off from defaults
         default_hints = dict(power_base=True, power_exp=True,
-            mul=True, log=True, multinomial=True,
-            basic=True, distribute_constant=False)
+            mul=True, log=True, multinomial=True, basic=True)
         switch_off = hints
         hints = default_hints
         hints.update(switch_off)

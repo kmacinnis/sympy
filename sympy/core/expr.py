@@ -2010,11 +2010,9 @@ class Expr(Basic, EvalfMixin):
             switch_off = hints
             hints = default_hints
             hints.update(switch_off)
-        try:
-            if hints['commutator'] and 'mul' not in hints:
-                hints['mul']=True
-        except KeyError:
-            pass
+            
+        if hints.get('commutator') and 'mul' not in hints:
+            hints['mul']=True
 
         expr = self
         for hint, use_hint in hints.iteritems():

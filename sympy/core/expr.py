@@ -2010,7 +2010,7 @@ class Expr(Basic, EvalfMixin):
             switch_off = hints
             hints = default_hints
             hints.update(switch_off)
-            
+
         if hints.get('commutator') and 'mul' not in hints:
             hints['mul']=True
 

@@ -201,7 +201,7 @@ def test_polygamma_expand_func():
     assert polygamma(0, 2*x).expand(func=True) == \
            polygamma(0, x)/2 + polygamma(0, Rational(1, 2) + x)/2 + log(2)
     assert polygamma(1, 2*x).expand(func=True) == \
-           polygamma(1, x)/4 + polygamma(1, Rational(1, 2) + x)/4
+           (polygamma(1, x) + polygamma(1, x + Rational(1, 2)))/4
     assert polygamma(2, x).expand(func=True) == \
            polygamma(2, x)
     assert polygamma(0, -1 + x).expand(func=True) == \

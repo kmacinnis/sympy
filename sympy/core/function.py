@@ -532,6 +532,19 @@ class Function(Application, Expr):
             terms.append(newterm)
         return self.func(*terms)
 
+    def _eval_expand_distribute_constant(self, deep=True, **hints):
+        if not deep:
+            return self
+        sargs, terms = self.args, []
+        for term in sargs:
+            if hasattr(term, '_eval_expand_distribute_constant'):
+                newterm = term._eval_expand_distribute_constant(deep=deep, **hints)
+            else:
+                newterm = term
+            terms.append(newterm)
+        return self.func(*terms)
+
+
     def _eval_expand_multinomial(self, deep=True, **hints):
         if not deep:
             return self
@@ -1487,16 +1500,17 @@ def diff(f, *symbols, **kwargs):
     kwargs.setdefault('evaluate', True)
     return Derivative(f, *symbols, **kwargs)
 
-def expand(e, deep=True, modulus=None, power_base=True, power_exp=True, \
-        mul=True, log=True, multinomial=True, basic=True, **hints):
+def expand(e, deep=True, modulus=None, **hints):
     """
     Expand an expression using methods given as hints.
 
     Hints are applied with arbitrary order so your code shouldn't
     depend on the way hints are passed to this method.
 
-    Hints evaluated unless explicitly set to False are:
+    If no hints are set, then the defaults are used:
       basic, log, multinomial, mul, power_base, and power_exp
+    If all hints set are set to False, then the defaults are used,
+    with the exception of those set to False.
     The following hints are supported but not applied unless set to True:
       complex, func, trig, frac, numer, and denom.
 
@@ -1652,13 +1666,14 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True, \
     >>> expand((x + y)*y/x/(x + 1), denom=True)
     y*(x + y)/(x**2 + x)
     """
-    # don't modify this; modify the Expr.expand method
-    hints['power_base'] = power_base
-    hints['power_exp'] = power_exp
-    hints['mul'] = mul
-    hints['log'] = log
-    hints['multinomial'] = multinomial
-    hints['basic'] = basic
+
+    if not any([hints[key] and (key !="force") for key in hints]):
+        # No hints; or all hints are set to False, so switch off from defaults
+        default_hints = dict(power_base=True, power_exp=True,
+            mul=True, log=True, multinomial=True, basic=True)
+        switch_off = hints
+        hints = default_hints
+        hints.update(switch_off)
     return sympify(e).expand(deep=deep, modulus=modulus, **hints)
 
 # These are simple wrappers around single hints.  Feel free to add ones for

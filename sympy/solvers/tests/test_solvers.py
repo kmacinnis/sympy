@@ -138,7 +138,7 @@ def test_solve_polynomial1():
 
     assert set(solve(x**3 - 15*x - 4, x)) == set([-2 + 3**Rational(1,2),
                                            S(4),
-                                           -2 - 3**Rational(1,2) ])
+                                           -(2 + 3**Rational(1,2)) ])
 
     assert sorted(solve((x**2 - 1)**2 - a, x)) == \
            sorted([sqrt(1 + sqrt(a)), -sqrt(1 + sqrt(a)),
@@ -245,7 +245,7 @@ def test_tsolve():
     eq = 2*exp(3*x+4)-3
     ans = solve(eq, x)
     assert len(ans) == 3 and all(eq.subs(x, a).n(chop=True) == 0 for a in ans)
-    assert solve(2*log(3*x+4)-3, x) == [(exp(Rational(3,2))-4)/3]
+    assert solve(2*log(3*x+4)-3, x) == [(exp(Rational(3, 2)) - 4)/3]
     assert solve(exp(x)+1, x) == [pi*I]
     assert solve(x**2 - 2**x, x) == [2]
     assert solve(x**3 - 3**x, x) == [-3*LambertW(-log(3)/3)/log(3)]
@@ -471,9 +471,9 @@ def test_issue_1572_1364_1368():
     assert solve(3-(sinh(a*x) + cosh(a*x)**2), x) == \
              [
              2*atanh(-1 + sqrt(2))/a,
-             2*atanh(S(1)/2 + sqrt(5)/2)/a,
-             2*atanh(-sqrt(2) - 1)/a,
-             2*atanh(-sqrt(5)/2 + S(1)/2)/a
+             -2*atanh((-1 + sqrt(5))/2)/a,
+             -2*atanh(1 + sqrt(2))/a,
+             2*atanh((1 + sqrt(5))/2)/a
              ]
     assert solve(atan(x) - 1) == [tan(1)]
 
@@ -545,11 +545,11 @@ def test_issue_2236_float():
     assert len(solve(eqs, sym, rational=False, check=False, simplify=False)) == 2
 
 def test_issue_2668():
-    assert solve([x**2 + y + 4], [x]) == [(-sqrt(-y - 4),), (sqrt(-y - 4),)]
+    assert solve([x**2 + y + 4], [x]) == [(-sqrt(-(y + 4)),), (sqrt(-(y + 4)),)]
 
 def test_polysys():
     assert solve([x**2 + 2/y - 2 , x + y - 3], [x, y]) == \
-        [(1, 2), (1 + sqrt(5), 2 - sqrt(5)), (1 - sqrt(5), 2 + sqrt(5))]
+        [(1, 2), (-(-1 + sqrt(5)), 2 + sqrt(5)), (-(-sqrt(5) - 1), -(-2 + sqrt(5)))]
     assert solve([x**2 + y - 2, x**2 + y]) is None
     # the ordering should be whatever the user requested
     assert solve([x**2 + y - 3, x - y - 4], (x, y)) != solve([x**2 + y - 3, x - y - 4], (y, x))
@@ -563,7 +563,8 @@ def test_unrad():
         rv, ans = list(rv), list(ans)
         rv[0] = rv[0].expand()
         ans[0] = ans[0].expand()
-        return rv[0] in [ans[0], -ans[0]] and rv[1:] == ans[1:]
+        return rv[0] in [ans[0], (-ans[0]).expand(distribute_constant=True)] \
+                                and rv[1:] == ans[1:]
     def s_check(rv, ans):
         # get the dummy
         rv = list(rv)

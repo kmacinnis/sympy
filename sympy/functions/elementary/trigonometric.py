@@ -1,4 +1,5 @@
 from sympy.core.add import Add
+from sympy.core.mul import Mul
 from sympy.core.numbers import Rational, Float
 from sympy.core.basic import C, sympify, cacheit
 from sympy.core.singleton import S
@@ -168,7 +169,7 @@ class sin(TrigonometricFunction):
                 return
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg).expand(distribute_constant=True))
 
         i_coeff = arg.as_coefficient(S.ImaginaryUnit)
         if i_coeff is not None:
@@ -389,7 +390,7 @@ class cos(TrigonometricFunction):
                 return
 
         if arg.could_extract_minus_sign():
-            return cls(-arg)
+            return cls((-arg).expand(distribute_constant=True))
 
         i_coeff = arg.as_coefficient(S.ImaginaryUnit)
         if i_coeff is not None:
@@ -603,7 +604,7 @@ class tan(TrigonometricFunction):
                 return S.Zero
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg).expand(distribute_constant=True))
 
         i_coeff = arg.as_coefficient(S.ImaginaryUnit)
         if i_coeff is not None:
@@ -782,7 +783,7 @@ class cot(TrigonometricFunction):
                 return S.ComplexInfinity
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg).expand(distribute_constant=True))
 
         i_coeff = arg.as_coefficient(S.ImaginaryUnit)
         if i_coeff is not None:
@@ -979,9 +980,11 @@ class asin(Function):
                 return -S.Pi / 2
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg).expand(distribute_constant=True))
 
         if arg.is_number:
+            if arg.is_Add:
+                arg = Mul(*(arg.as_content_primitive()))
             cst_table = {
                 sqrt(3)/2  : 3,
                 -sqrt(3)/2 : -3,
@@ -1213,7 +1216,7 @@ class atan(Function):
             elif arg is S.NegativeOne:
                 return -S.Pi / 4
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg).expand(distribute_constant=True))
 
         if arg.is_number:
             cst_table = {
@@ -1308,7 +1311,7 @@ class acot(Function):
                 return -S.Pi / 4
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg).expand(distribute_constant=True))
 
         if arg.is_number:
             cst_table = {

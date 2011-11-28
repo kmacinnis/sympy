@@ -145,7 +145,7 @@ class Sum(Expr):
         if hints.get('deep', True):
             return f.doit(**hints)
         else:
-            return f
+            return f.expand(distribute_constant=True)
 
     def _eval_summation(self, f, x):
         return

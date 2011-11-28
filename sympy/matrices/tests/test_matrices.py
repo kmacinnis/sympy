@@ -614,11 +614,11 @@ def test_eigen():
     assert max(i.q for i in M._eigenvects[0][2][0]) == 1
     M = Matrix([[S(1)/4, 1], [1, 1]])
     assert M.eigenvects(simplify=True) == [
-      (-sqrt(73)/8 + Rational(5, 8), 1, [Matrix([[-8/(-3 + sqrt(73))], [1]])]),
-      (Rational(5, 8) + sqrt(73)/8, 1, [Matrix([[-8/(-sqrt(73) - 3)], [1]])])]
+        ((5 - sqrt(73))/8, 1, [Matrix([[-8/(-3 + sqrt(73))], [1]])]),
+        ((5 + sqrt(73))/8, 1, [Matrix([[-8/(-sqrt(73) - 3)], [1]])])]
     assert M.eigenvects(simplify=False) == [
-    (-sqrt(73)/8 + Rational(5, 8), 1, [Matrix([[-1/(Rational(-3, 8) + sqrt(73)/8)], [1]])]),
-    (Rational(5, 8) + sqrt(73)/8, 1, [Matrix([[-1/(-sqrt(73)/8 + Rational(-3, 8))], [1]])])]
+        ((-sqrt(73) + 5)/8, 1, [Matrix([[-8/(-3 + sqrt(73))], [1]])]),
+        ((5 + sqrt(73))/8, 1, [Matrix([[-8/(-sqrt(73) - 3)], [1]])])]
 
 @XFAIL
 def test_sparse_matrix():
@@ -1806,7 +1806,7 @@ def test_matrix_norm():
 
     # Check non-square
     A = Matrix([[1,2,-3],[4,5,Rational(13,2)]])
-    assert A.norm(2) == sqrt(S(389)/8 + sqrt(78665)/8)
+    assert A.norm(2) == sqrt(2)*sqrt(sqrt(78665) + 389)/4
     assert A.norm(-2) == S(0)
     assert A.norm('frobenius') == sqrt(389)/2
 

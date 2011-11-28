@@ -73,8 +73,8 @@ def roots_quadratic(f):
             E = _simplify(-b/A)
             F = D/A
 
-            r0 = E + F
-            r1 = E - F
+            r0 = (E + F).expand(distribute_constant=True)
+            r1 = (E - F).expand(distribute_constant=True)
 
     return sorted([r0, r1], key=default_sort_key)
 
@@ -109,9 +109,9 @@ def roots_cubic(f):
     u3 = u1*(-S.Half - coeff)
 
     soln = [
-        -u1 + pon3/u1 - aon3,
-        -u2 + pon3/u2 - aon3,
-        -u3 + pon3/u3 - aon3
+        (-u1 + pon3/u1 - aon3).expand(distribute_constant=True),
+        (-u2 + pon3/u2 - aon3).expand(distribute_constant=True),
+        (-u3 + pon3/u3 - aon3).expand(distribute_constant=True)
     ]
 
     return soln

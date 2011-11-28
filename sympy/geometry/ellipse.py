@@ -900,7 +900,9 @@ class Ellipse(GeometryEntity):
         y = Dummy('y')
         seq = self.equation(x, y)
         oeq = o.equation(x, y)
-        result = solve([seq, oeq], [x, y])
+        result = [ ( r[0].expand(distribute_constant=True),
+                     r[1].expand(distribute_constant=True) )
+                     for r in solve([seq, oeq], [x, y])]
         return [Point(*r) for r in result if im(r[0]).is_zero is not False and im(r[1]).is_zero is not False]
 
     def intersection(self, o):

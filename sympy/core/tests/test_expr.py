@@ -835,7 +835,7 @@ def test_extractions():
     assert (-x+1).extract_additively(2*x) == 1-3*x
 
     assert (Integer(-3)).could_extract_minus_sign() == True
-    assert (-n*x+x).could_extract_minus_sign() != (n*x-x).could_extract_minus_sign()
+    assert (-(n*x-x)).could_extract_minus_sign() != (n*x-x).could_extract_minus_sign()
     assert (x-y).could_extract_minus_sign() != (-x+y).could_extract_minus_sign()
     assert (1-x-y).could_extract_minus_sign() == True
     assert (1-x+y).could_extract_minus_sign() == False

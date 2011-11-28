@@ -110,13 +110,15 @@ class erf(Function):
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.Zero
+            # elif arg.is_negative:
+            #     return -cls(-arg) Kate - does this want back in?
 
         t = arg.extract_multiplicatively(S.ImaginaryUnit)
         if t == S.Infinity or t == S.NegativeInfinity:
             return arg
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg).expand(distribute_constant=True))
 
     @staticmethod
     @cacheit

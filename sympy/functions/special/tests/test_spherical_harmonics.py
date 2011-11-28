@@ -21,13 +21,13 @@ def test_Plm():
     assert Plm(1, 1, x) == -(1-x**2)**(sympify(1)/2)
     assert Plm(2, -2, x) == Plm(2, 2, x)/24
     assert Plm(2, -1, x) == -Plm(2, 1, x)/6
-    assert Plm(2, 0, x) == (3*x**2-1)/2
+    assert Plm(2, 0, x) == 3*x**2/2-S.One/2
     assert Plm(2, 1, x) == -3*x*(1-x**2)**(sympify(1)/2)
     assert Plm(2, 2, x) == 3*(1-x**2)
     assert Plm(3, -3, x) == -Plm(3, 3, x)/720
     assert Plm(3, -2, x) == Plm(3, 2, x)/120
     assert Plm(3, -1, x) == -Plm(3, 1, x)/12
-    assert Plm(3, 0, x) == (5*x**3-3*x)/2
+    assert Plm(3, 0, x) == 5*x**3/2-3*x/2
     assert Plm(3, 1, x).expand() == (( 3*(1-5*x**2)/2 ).expand() \
             *(1-x**2)**(sympify(1)/2)).expand()
     assert Plm(3, 2, x) == 15*x*(1-x**2)
@@ -40,10 +40,10 @@ def test_Plmcos():
     assert Plmcos(1, -1, th) == sin(th)/2
     assert Plmcos(1, 0, th) == cos(th)
     assert Plmcos(1, 1, th) == -sin(th)
-    assert Plmcos(2, 0, th) == (3*cos(th)**2-1)/2
+    assert Plmcos(2, 0, th) == 3*cos(th)**2/2-S.One/2
     assert Plmcos(2, 1, th) == -3*cos(th)*sin(th)
     assert Plmcos(2, 2, th) in [3*sin(th)**2, 3*(1-cos(th)**2)]
-    assert Plmcos(3, 0, th) == (5*cos(th)**3-3*cos(th))/2
+    assert Plmcos(3, 0, th) == 5*cos(th)**3/2-3*cos(th)/2
     assert Plmcos(3, 1, th) == -sin(th)*(15*cos(th)**2/2-S(3)/2)
     assert Plmcos(3, 2, th) == 15*cos(th)*sin(th)**2
     assert Plmcos(3, 3, th) == -15*sin(th)**3
@@ -63,9 +63,8 @@ def test_Ylm():
             sqrt(3)*sqrt(5/(2*pi)) * (sin(th)*cos(th)) * exp(I*ph)).expand()
 
     # These last 2 return the correct answer, but the answer can be simplified
-    assert Ylm(2, -2, th, ph).expand() == -sqrt(30)*exp(-2*I*ph)*cos(th)**S(2)/(8*sqrt(pi)) + \
-            S(sqrt(30)*exp(-2*I*ph))/(8*sqrt(pi))
-    assert Ylm(2, 2, th, ph).expand() == S(-sqrt(30)*exp(2*I*ph)*cos(th)**2)/(8*sqrt(pi)) + S(sqrt(30)*exp(2*I*ph))/(8*sqrt(pi))
+    assert Ylm(2, -2, th, ph).expand() == sqrt(30)*exp(-2*I*ph)*sin(th)**2/(8*sqrt(pi))
+    assert Ylm(2, 2, th, ph).expand() == sqrt(30)*exp(2*I*ph)*sin(th)**2/(8*sqrt(pi))
 
 def test_Zlm():
     #http://en.wikipedia.org/wiki/Solid_harmonics#List_of_lowest_functions

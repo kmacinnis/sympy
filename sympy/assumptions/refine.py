@@ -145,7 +145,8 @@ def refine_exp(expr, assumptions):
     if arg.is_Mul:
         coeff = arg.as_coefficient(S.Pi*S.ImaginaryUnit)
         if coeff:
-            if ask(Q.integer(2*coeff), assumptions):
+            if ask(Q.integer((2*coeff).expand(distribute_constant=True)), assumptions):
+                coeff = coeff.expand(distribute_constant=True)
                 if ask(Q.even(coeff), assumptions):
                     return S.One
                 elif ask(Q.odd(coeff), assumptions):

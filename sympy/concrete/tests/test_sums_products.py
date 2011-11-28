@@ -54,7 +54,7 @@ def test_geometric_sums():
     assert summation(2**(-n), (n, 1, oo)) == 1
     assert summation(3**(-n), (n, 4, oo)) == Rational(1,54)
     assert summation(2**(-4*n+3), (n, 1, oo)) == Rational(8,15)
-    assert summation(2**(n+1), (n, 1, b)).expand() == 4*(2**b-1)
+    assert summation(2**(n+1), (n, 1, b)).expand() == 4*2**b - 4
 
 def test_harmonic_sums():
     assert summation(1/k, (k, 0, n)) == Sum(1/k, (k, 0, n))
@@ -278,7 +278,7 @@ def test_hypersum():
     assert summation((-1)**n * x**(2*n) / fac(2*n), (n, 0, oo)) == cos(x)
     assert simplify(summation((-1)**n*x**(2*n+1)/factorial(2*n+1),
                               (n, 3, oo))) \
-           == -x + sin(x) + x**3/6 - x**5/120
+           == (-x**5 + 20*x**3 - 120*x + 120*sin(x))/120
 
     assert summation(1/(n+2)**3, (n, 1, oo)) == \
            -S(9)/8 + zeta(3)

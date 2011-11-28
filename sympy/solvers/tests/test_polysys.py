@@ -26,10 +26,10 @@ def test_solve_poly_system():
     f_2 = x + y**2 + z - 1
     f_3 = x + y + z**2 - 1
 
-    a, b = -sqrt(2) - 1, sqrt(2) - 1
+    a, b, c = -sqrt(2) - 1, sqrt(2) - 1, -(1 + sqrt(2))
 
     assert solve_poly_system([f_1, f_2, f_3], x, y, z) == \
-        [(a, a, a), (0, 0, 1), (0, 1, 0), (b, b, b), (1, 0, 0)]
+        [(a, a, c), (0, 0, 1), (0, 1, 0), (b, b, b), (1, 0, 0)]
 
     solution = [(1, -1), (1, 1)]
 
@@ -49,8 +49,8 @@ def test_solve_biquadratic():
     f_2 = (x - 2)**2 + (y - 2)**2 - r**2
 
     assert solve_poly_system([f_1, f_2], x, y) == \
-        [(S(3)/2 + sqrt(-1 + 2*r**2)/2, S(3)/2 - sqrt(-1 + 2*r**2)/2),
-         (S(3)/2 - sqrt(-1 + 2*r**2)/2, S(3)/2 + sqrt(-1 + 2*r**2)/2)]
+        [(-(-S(3)/2 + sqrt(-1 + 2*r**2)/2), S(3)/2 + sqrt(-1 + 2*r**2)/2),
+         (-(-S(3)/2 - sqrt(-1 + 2*r**2)/2), S(3)/2 - sqrt(-1 + 2*r**2)/2)]
 
     f_1 = (x - 1)**2 + (y - 2)**2 - r**2
     f_2 = (x - 1)**2 + (y - 1)**2 - r**2
@@ -82,7 +82,7 @@ def test_solve_triangualted():
     f_2 = x + y**2 + z - 1
     f_3 = x + y + z**2 - 1
 
-    a, b = -sqrt(2) - 1, sqrt(2) - 1
+    a, b = -(1 + sqrt(2)), -(1 - sqrt(2))
 
     assert solve_triangulated([f_1, f_2, f_3], x, y, z) == \
         [(0, 0, 1), (0, 1, 0), (1, 0, 0)]

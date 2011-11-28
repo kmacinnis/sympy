@@ -233,7 +233,7 @@ def test_line():
     assert l1.projection(r2) == p1
     assert r3 != r1
     t = Symbol('t', real=True)
-    assert Ray((1, 1), angle=pi/4).arbitrary_point() == Point(1/(1 - t), 1/(1 - t))
+    assert Ray((1, 1), angle=pi/4).arbitrary_point() == Point(-1/(t - 1), -1/(t - 1))
 
     s1 = Segment(p1, p2)
     s2 = Segment(p1, p1_1)
@@ -519,11 +519,11 @@ def test_ellipse():
     e1 = Ellipse(Point(0, 0), 5, 10)
     e2 = Ellipse(Point(2, 1), 4, 8)
     a = S(53)/17
-    c = 2*sqrt(3991)/17
-    ans = [Point(a - c/8, a/2 + c), Point(a + c/8, a/2 - c)]
+    c = 2*sqrt(3991)
+    ans = [Point(a + c/136, a/2 - c/17), Point(a - c/136, a/2 + c/17)]
     assert e1.intersection(e2) == ans
     e2 = Ellipse(Point(x, y), 4, 8)
-    ans = list(reversed(ans))
+    ans = [Point((c+424)/136,(-2*c+53)/34), Point((-c+424)/136,(53+2*c)/34)]
     assert [p.subs({x: 2, y:1}) for p in e1.intersection(e2)] == ans
 
     # Combinations of above
@@ -712,11 +712,11 @@ def test_polygon():
     # Bisectors
     bisectors = t1.bisectors()
     assert bisectors[p1] == Segment(p1, Point(Rational(5,2), Rational(5,2)))
-    ic = (250 - 125*sqrt(2)) / 50
+    ic = (10 - 5*sqrt(2)) / 2
     assert t1.incenter == Point(ic, ic)
 
     # Inradius
-    assert t1.inradius == t1.incircle.radius == 5 - 5*sqrt(2)/2
+    assert t1.inradius == t1.incircle.radius == (10 - 5*sqrt(2))/2
     assert t2.inradius == t2.incircle.radius == 5*sqrt(3)/6
     assert t3.inradius == t3.incircle.radius == x1**2/((2 + sqrt(2))*Abs(x1))
 

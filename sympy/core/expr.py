@@ -1585,7 +1585,7 @@ class Expr(Basic, EvalfMixin):
            True
 
         """
-        negative_self = -self
+        negative_self = (-self).expand(distribute_constant=True)
         self_has_minus = (self.extract_multiplicatively(-1) != None)
         negative_self_has_minus = ((negative_self).extract_multiplicatively(-1) != None)
         if self_has_minus != negative_self_has_minus:
@@ -2277,18 +2277,29 @@ class Expr(Basic, EvalfMixin):
     def _eval_expand_func(self, deep=True, **hints):
         return self
 
+    def _eval_expand_distribute_constant(self, deep=True, **hints):
+        return self
+
     @cacheit
-    def expand(self, deep=True, modulus=None, power_base=True, power_exp=True, \
-            mul=True, log=True, multinomial=True, basic=True, **hints):
+    def expand(self, deep=True, modulus=None, **hints):
         """
         Expand an expression using hints.
 
         See the docstring in function.expand for more information.
         """
-        from sympy.simplify.simplify import fraction
 
-        hints.update(power_base=power_base, power_exp=power_exp, mul=mul, \
-           log=log, multinomial=multinomial, basic=basic)
+        if not any([hints[key] and (key !='force') for key in hints]):
+            # All hints are set to False, so switch off from defaults
+            default_hints = dict(power_base=True, power_exp=True,
+                mul=True, log=True, multinomial=True, basic=True)
+            switch_off = hints
+            hints = default_hints
+            hints.update(switch_off)
+
+        if hints.get('commutator') and 'mul' not in hints:
+            hints['mul']=True
+        if hints.get('complex') and 'distribute_constant' not in hints:
+            hints['distribute_constant']=True
 
         expr = self
         if hints.pop('frac', False):

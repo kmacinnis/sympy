@@ -740,7 +740,8 @@ def ratsimp(expr):
 
     f, g = cancel(expr).as_numer_denom()
     try:
-        Q, r = reduced(f, [g], field=True, expand=False)
+        Q, r = reduced(f.expand(distribute_constant=True),
+            [g.expand(distribute_constant=True)], field=True, expand=False)
     except ComputationFailed:
         return f/g
 
@@ -1771,6 +1772,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     x*y*sqrt(x*sqrt(y))
 
     """
+    expr = expr.expand(distribute_constant=True)
     if combine not in ['all', 'exp', 'base']:
         raise ValueError("combine must be one of ('all', 'exp', 'base').")
     y = Dummy('y')
@@ -2719,6 +2721,7 @@ def simplify(expr, ratio=1.7, measure=count_ops):
     # See also https://github.com/sympy/sympy/pull/185.
 
     original_expr = expr
+    expr = expr.expand(distribute_constant=True)
 
     def shorter(*choices):
         '''Return the choice that has the fewest ops. In case of a tie,

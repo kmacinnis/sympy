@@ -121,6 +121,7 @@ class RootOf(Expr):
         roots = cls._roots_trivial(poly, radicals)
 
         if roots is not None:
+            roots = [rt.expand(distribute_constant=True) for rt in roots]
             return roots[index]
 
         coeff, poly = preprocess_roots(poly)

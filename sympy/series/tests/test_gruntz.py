@@ -228,7 +228,7 @@ def test_rewrite1():
     e = exp(x**2)
     assert mrewrite(mrv(e, x), x, m) == (1/m, -x**2)
     e = exp(x+1/x)
-    assert mrewrite(mrv(e, x), x, m) == (1/m, -x-1/x)
+    assert mrewrite(mrv(e, x), x, m) == (1/m, -(x+1/x))
     e = 1/exp(-x+exp(-x))-exp(x)
     assert mrewrite(mrv(e, x), x, m) == (1/(m*exp(m))-1/m, -x)
 

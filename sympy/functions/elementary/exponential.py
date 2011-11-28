@@ -179,7 +179,8 @@ class exp(ExpBase):
 
             coeff = arg.coeff(S.Pi*S.ImaginaryUnit)
             if coeff is not None:
-                if (2*coeff).is_integer:
+                if (2*coeff).expand(distribute_constant=True).is_integer:
+                    coeff = coeff.expand(distribute_constant=True)
                     if coeff.is_even:
                         return S.One
                     elif coeff.is_odd:

@@ -1892,7 +1892,7 @@ def test_sqf():
     assert sqf(f/d, (x,)) == (g*h**2)/d
 
     assert sqf(x - 1) == x - 1
-    assert sqf(-x - 1) == -x - 1
+    assert sqf(-x - 1) == -(x + 1)
 
     assert sqf(x - 1) == x - 1
     assert sqf(6*x - 10) == Mul(2, 3*x - 5, evaluate=False)
@@ -2005,7 +2005,7 @@ def test_factor():
         2*((x + sqrt(2)*y)*(x - sqrt(2)*y))
 
     assert factor(x - 1) == x - 1
-    assert factor(-x - 1) == -x - 1
+    assert factor(-x - 1) == -(x + 1)
 
     assert factor(x**11 + x + 1, modulus=65537, symmetric=True) == \
         (x**2 + x + 1)*(x**9 - x**8 + x**6 - x**5 + x**3 - x** 2 + 1)

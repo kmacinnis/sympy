@@ -62,8 +62,8 @@ def apart(f, x=None, full=False, **options):
             terms += term
         else:
             terms += factor(term)
-
-    return common*(poly.as_expr() + terms)
+    result = (common*(poly.as_expr() + terms)).expand(distribute_constant=True)
+    return result
 
 def apart_undetermined_coeffs(P, Q):
     """Partial fractions via method of undetermined coefficients. """

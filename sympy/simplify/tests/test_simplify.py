@@ -137,8 +137,9 @@ def test_simplify():
     e = (f(x)+y*f(x))/f(x)
     assert simplify(e) == 1 + y
 
+    n = Symbol('n', integer=True)
     e = (2 * (1/n - cos(n * pi)/n))/pi
-    assert simplify(e) == 2*((1 - 1*cos(pi*n))/(pi*n))
+    assert simplify(e) == 2*((-1)**(n+1) + 1)/(pi*n)
 
     e = integrate(1/(x**3+1), x).diff(x)
     assert simplify(e) == 1/(x**3+1)
@@ -303,7 +304,7 @@ def test_powsimp():
     assert powsimp((z**x*z**y)**x, deep=True) == (z**(x + y))**x
     assert powsimp(x*(z**x*z**y)**x, deep=True) == x*(z**(x + y))**x
     p = symbols('p', positive=True)
-    assert powsimp((1/x)**log(2)/x) == (1/x)**(1 + log(2))
+    assert powsimp((1/x)**log(2)/x) == x**(-1 - log(2))
     assert powsimp((1/p)**log(2)/p) == p**(-1 - log(2))
 
     # coefficient of exponent can only be simplified for positive bases
@@ -520,7 +521,7 @@ def test_separatevars():
     assert separatevars(x*exp(x+y)+x*exp(x)) == x*(1 + exp(y))*exp(x)
     assert separatevars((x*(y+1))**z).is_Pow # != x**z*(1 + y)**z
     assert separatevars(1+x+y+x*y) == (x+1)*(y+1)
-    assert separatevars(y / pi * exp(-(z - x) / cos(n))) == y * exp((x - z) / cos(n)) / pi
+    assert separatevars(y / pi * exp(-(z - x) / cos(n))) == y * exp(-(-x + z) / cos(n)) / pi
     # 1759
     p=Symbol('p',positive=True)
     assert separatevars(sqrt(p**2 + x*p**2)) == p*sqrt(1 + x)
@@ -578,11 +579,11 @@ def test_nsimplify():
     assert nsimplify(1) == 1
     assert nsimplify(1+x) == 1+x
     assert nsimplify(2.7) == Rational(27, 10)
-    assert nsimplify(1-GoldenRatio) == (1-sqrt(5))/2
+    assert nsimplify(1-GoldenRatio) == -(sqrt(5)-1)/2
     assert nsimplify((1+sqrt(5))/4, [GoldenRatio]) == GoldenRatio/2
     assert nsimplify(2/GoldenRatio, [GoldenRatio]) == 2*GoldenRatio - 2
     assert nsimplify(exp(5*pi*I/3, evaluate=False)) == sympify('1/2 - sqrt(3)*I/2')
-    assert nsimplify(sin(3*pi/5, evaluate=False)) == sympify('sqrt(sqrt(5)/8 + 5/8)')
+    assert nsimplify(sin(3*pi/5, evaluate=False)) == sympify('sqrt(2)*sqrt(4*sqrt(5) + 20)/8')
     assert nsimplify(sqrt(atan('1', evaluate=False))*(2+I), [pi]) == sqrt(pi) + sqrt(pi)/2*I
     assert nsimplify(2 + exp(2*atan('1/4')*I)) == sympify('49/17 + 8*I/17')
     assert nsimplify(pi, tolerance=0.01) == Rational(22, 7)

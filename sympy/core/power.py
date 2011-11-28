@@ -375,6 +375,16 @@ class Pow(Expr):
             terms.append(newterm)
         return self.func(*terms)
 
+    def _eval_expand_distribute_constant(self, deep=True, **hints):
+        sargs, terms = self.args, []
+        for term in sargs:
+            if hasattr(term, '_eval_expand_distribute_constant'):
+                newterm = term._eval_expand_distribute_constant(deep=deep, **hints)
+            else:
+                newterm = term
+            terms.append(newterm)
+        return self.func(*terms)
+
     def _eval_expand_multinomial(self, deep=True, **hints):
         """(a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is nonzero integer"""
         if deep:
@@ -926,6 +936,7 @@ class Pow(Expr):
         b, e = self.as_base_exp()
         b = _keep_coeff(*b.as_content_primitive(radical=radical))
         ce, pe = e.as_content_primitive(radical=radical)
+        pe = pe.expand(distribute_constant=True)
         if b.is_Rational:
             #e
             #= ce*pe

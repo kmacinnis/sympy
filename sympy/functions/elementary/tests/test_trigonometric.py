@@ -216,9 +216,9 @@ def test_cos_series():
 
 def test_cos_rewrite():
     x = Symbol('x')
-    assert cos(x).rewrite(exp) == exp(I*x)/2 + exp(-I*x)/2
+    assert cos(x).rewrite(exp) == (exp(I*x) + exp(-I*x))/2
     assert cos(x).rewrite(tan) == (1 - tan(x/2)**2)/(1 + tan(x/2)**2)
-    assert cos(x).rewrite(cot) == -(1 - cot(x/2)**2)/(1 + cot(x/2)**2)
+    assert cos(x).rewrite(cot) == (cot(x/2)**2 - 1)/(cot(x/2)**2 + 1)
 
 def test_cos_expansion():
     x,y = symbols('x,y')
@@ -538,7 +538,7 @@ def _check_even_rewrite(func, arg):
     """Checks that the expr has been rewritten using f(-x) -> f(x)
     arg : -x
     """
-    return func(arg).args[0] == -arg
+    return func(arg).args[0] == (-arg).expand(distribute_constant=True)
 
 def _check_odd_rewrite(func, arg):
     """Checks that the expr has been rewritten using f(-x) -> -f(x)
@@ -556,7 +556,7 @@ def test_evenodd_rewrite():
     b = sin(1) #positive
     even = [cos]
     odd = [sin, tan, cot, asin, atan, acot]
-    with_minus = [-1, -2**1024 * E, -pi/105, -x*y, -x-y]
+    with_minus = [S(-1), -2**1024 * E, -pi/105, -x*y, -x-y]
     for func in even:
         for expr in with_minus:
             assert _check_even_rewrite(func, expr)
@@ -572,7 +572,7 @@ def test_issue1448():
     x = Symbol('x')
     assert cot(x).inverse() == acot
     assert sin(x).rewrite(cot) == 2*cot(x/2)/(1 + cot(x/2)**2)
-    assert cos(x).rewrite(cot) == -(1 - cot(x/2)**2)/(1 + cot(x/2)**2)
+    assert cos(x).rewrite(cot) == (cot(x/2)**2 - 1)/(cot(x/2)**2 + 1)
     assert tan(x).rewrite(cot) == 1/cot(x)
     assert cot(x).fdiff() == -1 - cot(x)**2
 

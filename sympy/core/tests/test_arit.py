@@ -68,10 +68,6 @@ def test_arit0():
     assert e == a**(-1)
     e=2**a**2
     assert e == 2**(a**2)
-    e = -(1+a)
-    assert e == -1 -a
-    e = Rational(1,2)*(1+a)
-    assert e == Rational(1,2) + a/2
 
 def test_div():
     e=a/b
@@ -219,7 +215,8 @@ def test_expand():
     # issue 2383
     assert sqrt(-2*x*n) == sqrt(2)*sqrt(-n)*sqrt(x)
     # issue 2506 (2)
-    assert (cos(x+y)**2).expand(trig=True) == \
+    assert (cos(x+y)**2).expand(trig=True) == (-sin(x)*sin(y) + cos(x)*cos(y))**2
+    assert ((cos(x+y)**2).expand(trig=True)).expand() ==\
       sin(x)**2*sin(y)**2 - 2*sin(x)*sin(y)*cos(x)*cos(y) + cos(x)**2*cos(y)**2
 
     # Check that this isn't too slow
@@ -1183,10 +1180,10 @@ def test_Add_as_content_primitive():
 
     # the coefficient may sort to a position other than 0
     p = 3 + x + y
-    assert (2*p).expand().as_content_primitive() == (2, p)
-    assert (2.0*p).expand().as_content_primitive() == (1, 2.*p)
+    assert (2*p).as_content_primitive() == (2, p)
+    assert (2.0*p).as_content_primitive() == (1, (2.*p))
     p *= -1
-    assert (2*p).expand().as_content_primitive() == (2, p)
+    assert (2*p).as_content_primitive() == (2, p)
 
 def test_Mul_as_content_primitive():
     assert (2*x).as_content_primitive() == (2, x)
@@ -1196,7 +1193,7 @@ def test_Mul_as_content_primitive():
 
 def test_Pow_as_content_primitive():
     assert (x**y).as_content_primitive() == (1, x**y)
-    assert ((2*x + 2)**y).as_content_primitive() == (1, (Mul(2,(x + 1), evaluate=False))**y)
+    assert ((2*x + 2)**y).as_content_primitive() == (1, (2*(x + 1))**y)
     assert ((2*x + 2)**3).as_content_primitive() == (8, (x + 1)**3)
 
 def test_issue2361():

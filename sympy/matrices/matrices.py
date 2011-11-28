@@ -2879,7 +2879,7 @@ class Matrix(object):
             return S.One
         poly = self.berkowitz()[-1]
         sign = (-1)**(len(poly)-1)
-        return sign * poly[-1]
+        return (sign * poly[-1]).expand(distribute_constant=True)
 
     def berkowitz_minors(self):
         """Computes principal minors using Berkowitz method.

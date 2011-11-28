@@ -19,7 +19,7 @@ def test_roots_quadratic():
     assert roots_quadratic(Poly(2*x**2, x)) == [0, 0]
     assert roots_quadratic(Poly(2*x**2 + 3*x, x)) == [-Rational(3, 2), 0]
     assert roots_quadratic(Poly(2*x**2 + 3, x)) == [-I*sqrt(6)/2, I*sqrt(6)/2]
-    assert roots_quadratic(Poly(2*x**2 + 4*x+3, x)) == [-1 - I*sqrt(2)/2, -1 + I*sqrt(2)/2]
+    assert roots_quadratic(Poly(2*x**2 + 4*x+3, x)) == [(-4 - 2*sqrt(2)*I)/4, (-4 + 2*sqrt(2)*I)/4]  # Kate
 
     f = x**2 + (2*a*e + 2*c*e)/(a - c)*x + (d - b + a*e**2 - c*e**2)/(a - c)
 
@@ -103,13 +103,13 @@ def test_roots_cyclotomic():
     assert roots_cyclotomic(cyclotomic_poly(2, x, polys=True), factor=True) == [-1]
 
     assert roots_cyclotomic(cyclotomic_poly(3, x, polys=True), factor=True) == \
-        [-(-1)**(S(1)/3), -1 + (-1)**(S(1)/3)]
+        [-(-1)**(S(1)/3), -(1 - (-1)**(S(1)/3))]
     assert roots_cyclotomic(cyclotomic_poly(4, x, polys=True), factor=True) == \
         [-I, I]
     assert roots_cyclotomic(cyclotomic_poly(5, x, polys=True), factor=True) == \
-        [-(-1)**(S(1)/5), (-1)**(S(2)/5), -(-1)**(S(3)/5), -1 + (-1)**(S(1)/5) - (-1)**(S(2)/5) + (-1)**(S(3)/5)]
+        [-(-1)**(S(1)/5), (-1)**(S(2)/5), -(-1)**(S(3)/5), -(1 - (-1)**(S(3)/5) - (-1)**(S(1)/5) + (-1)**(S(2)/5))]
     assert roots_cyclotomic(cyclotomic_poly(6, x, polys=True), factor=True) == \
-        [(-1)**(S(1)/3), 1 - (-1)**(S(1)/3)]
+        [(-1)**(S(1)/3), -(-1 + (-1)**Rational(1, 3))]
 
 def test_roots_binomial():
     assert roots_binomial(Poly(5*x, x)) == [0]
@@ -222,7 +222,7 @@ def test_roots():
     assert roots(x**4-2*x**2+1, x) == {S.One: 2, -S.One: 2}
 
     assert roots(x**6-4*x**4+4*x**3-x**2, x) == \
-        {S.One: 2, -1 - sqrt(2): 1, S.Zero: 2, -1 + sqrt(2): 1}
+        {S.One: 2, -(1 + sqrt(2)): 1, S.Zero: 2, -1 + sqrt(2): 1}
 
     assert roots(x**8-1, x) == {
          sqrt(2)/2 + I*sqrt(2)/2: 1,
@@ -263,34 +263,30 @@ def test_roots():
 
     f = (x**2+2*x+3).subs(x, 2*x**2 + 3*x).subs(x, 5*x-4)
 
-    r13_20, r1_20 = [ Rational(*r) \
-        for r in ((13,20), (1,20)) ]
-
-    s2 = sqrt(2)
-    assert roots(f, x) == {
-        r13_20 + r1_20*sqrt(1 - 8*I*s2): 1,
-        r13_20 - r1_20*sqrt(1 - 8*I*s2): 1,
-        r13_20 + r1_20*sqrt(1 + 8*I*s2): 1,
-        r13_20 - r1_20*sqrt(1 + 8*I*s2): 1,
-    }
+    assert roots(f, x) ==  {
+            -(-13 + sqrt(1 - 8*sqrt(2)*I))/20: 1,
+            -(-13 + sqrt(1 + 8*sqrt(2)*I))/20: 1,
+             (13 + sqrt(1 - 8*sqrt(2)*I))/20: 1,
+             (13 + sqrt(1 + 8*sqrt(2)*I))/20: 1
+        }
 
     f = x**4 + x**3 + x**2 + x + 1
 
     r1_4, r1_8, r5_8 = [ Rational(*r) for r in ((1,4), (1,8), (5,8)) ]
 
     assert roots(f, x) == {
-        -r1_4 + r1_4*5**r1_2 + I*(r5_8 + r1_8*5**r1_2)**r1_2: 1,
-        -r1_4 + r1_4*5**r1_2 - I*(r5_8 + r1_8*5**r1_2)**r1_2: 1,
-        -r1_4 - r1_4*5**r1_2 + I*(r5_8 - r1_8*5**r1_2)**r1_2: 1,
-        -r1_4 - r1_4*5**r1_2 - I*(r5_8 - r1_8*5**r1_2)**r1_2: 1,
+        -r1_4 + sqrt(5)/4 - sqrt(2)*I*sqrt(sqrt(5) + 5)/4: 1,
+        -r1_4 + sqrt(5)/4 + sqrt(2)*I*sqrt(sqrt(5) + 5)/4: 1,
+        -r1_4 - sqrt(5)/4 - sqrt(2)*I*sqrt(-sqrt(5) + 5)/4: 1,
+        -r1_4 - sqrt(5)/4 + sqrt(2)*I*sqrt(-sqrt(5) + 5)/4: 1
     }
 
     f = z**3 + (-2 - y)*z**2 + (1 + 2*y - 2*x**2)*z - y + 2*x**2
 
     assert roots(f, z) == {
         S.One: 1,
-        S.Half + S.Half*y + S.Half*sqrt(1 - 2*y + y**2 + 8*x**2): 1,
-        S.Half + S.Half*y - S.Half*sqrt(1 - 2*y + y**2 + 8*x**2): 1,
+        (y - sqrt(8*x**2 + y**2 - 2*y + 1) + 1)/2: 1,
+        (y + sqrt(8*x**2 + y**2 - 2*y + 1) + 1)/2: 1
     }
 
     assert roots(a*b*c*x**3 + 2*x**2 + 4*x + 8, x, cubics=False) == {}

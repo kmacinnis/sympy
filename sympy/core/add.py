@@ -628,6 +628,16 @@ class Add(AssocOp):
             terms.append(newterm)
         return self.func(*terms)
 
+    def _eval_expand_distribute_constant(self, deep=True, **hints):
+        sargs, terms = self.args, []
+        for term in sargs:
+            if hasattr(term, '_eval_expand_distribute_constant'):
+                newterm = term._eval_expand_distribute_constant(deep=deep, **hints)
+            else:
+                newterm = term
+            terms.append(newterm)
+        return self.func(*terms)
+
     def _eval_expand_multinomial(self, deep=True, **hints):
         sargs, terms = self.args, []
         for term in sargs:
@@ -678,8 +688,8 @@ class Add(AssocOp):
             terms.append(newterm)
         return self.func(*terms)
 
-    def __neg__(self):
-        return Add(*[-t for t in self.args])
+    # def __neg__(self):
+    #     return Add(*[-t for t in self.args])
 
     def _sage_(self):
         s = 0

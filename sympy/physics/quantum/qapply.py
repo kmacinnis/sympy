@@ -62,7 +62,7 @@ def qapply(e, **options):
     # TensorProducts. The only problem with this is that if we can't apply
     # all the Operators, we have just expanded everything.
     # TODO: don't expand the scalars in front of each Mul.
-    e = e.expand(commutator=True, tensorproduct=True)
+    e = e.expand().expand(commutator=True, tensorproduct=True)
 
     # If we just have a raw ket, return it.
     if isinstance(e, KetBase):

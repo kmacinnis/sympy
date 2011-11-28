@@ -51,7 +51,7 @@ def test_piecewise():
     assert x*p + p == p + x*p
     assert p + f == f + p
     assert p + dp == dp + p
-    assert p - dp == -(dp - p)
+    assert p - dp == (-(dp - p)).expand(distribute_constant=True)
 
     # Test _eval_interval
     f1 = x*y + 2

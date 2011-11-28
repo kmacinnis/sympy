@@ -36,9 +36,9 @@ def test_trigintegrate_even():
     assert trigintegrate(sin(x)**2, x)  == x/2 - cos(x)*sin(x)/2
     assert trigintegrate(cos(x)**2, x)  == x/2 + cos(x)*sin(x)/2
 
-    assert trigintegrate(sin(3*x)**2, x)== x/2 - cos(3*x)*sin(3*x)/6
-    assert trigintegrate(cos(3*x)**2, x)== x/2 + cos(3*x)*sin(3*x)/6
-    assert trigintegrate(sin(x)**2 * cos(x)**2, x) == x/8 - cos(2*x)*sin(2*x)/16
+    assert trigintegrate(sin(3*x)**2, x)== (3*x/2 - cos(3*x)*sin(3*x)/2)/3
+    assert trigintegrate(cos(3*x)**2, x)== (3*x/2 + sin(3*x)*cos(3*x)/2)/3
+    assert trigintegrate(sin(x)**2 * cos(x)**2, x) == (x - sin(2*x)*cos(2*x)/2)/8
 
     assert trigintegrate(sin(x)**4 * cos(x)**2, x) == x/16- sin(x)   *cos(x)/16 \
                                                           - sin(x)**3*cos(x)/24 \

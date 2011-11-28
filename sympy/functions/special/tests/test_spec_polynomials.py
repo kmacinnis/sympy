@@ -24,10 +24,10 @@ def test_legendre():
     assert legendre(11, 0) == 0
 
     assert roots(legendre(4,x), x) == {
-         sqrt(Rational(3, 7) - Rational(2, 35)*sqrt(30)): 1,
-        -sqrt(Rational(3, 7) - Rational(2, 35)*sqrt(30)): 1,
-         sqrt(Rational(3, 7) + Rational(2, 35)*sqrt(30)): 1,
-        -sqrt(Rational(3, 7) + Rational(2, 35)*sqrt(30)): 1,
+        -sqrt(35)*sqrt(-2*sqrt(30) + 15)/35: 1,
+        sqrt(35) *sqrt(-2*sqrt(30) + 15)/35: 1,
+        -sqrt(35)* sqrt(2*sqrt(30) + 15)/35: 1,
+        sqrt(35) * sqrt(2*sqrt(30) + 15)/35: 1
     }
 
 def test_assoc_legendre():
@@ -37,10 +37,10 @@ def test_assoc_legendre():
     assert Plm(0, 0, x) ==  1
     assert Plm(1, 0, x) ==  x
     assert Plm(1, 1, x) == -Q
-    assert Plm(2, 0, x) ==  (3*x**2-1)/2
+    assert Plm(2, 0, x) ==  Rational(3,2)*x**2-Rational(1,2)
     assert Plm(2, 1, x) == -3*x*Q
     assert Plm(2, 2, x) ==  3*Q**2
-    assert Plm(3, 0, x) ==  (5*x**3-3*x)/2
+    assert Plm(3, 0, x) ==  Rational(5,2)*x**3-Rational(3,2)*x
     assert Plm(3, 1, x).expand() ==  (( 3*(1-5*x**2)/2 ).expand() * Q).expand()
     assert Plm(3, 2, x) ==  15*x * Q**2
     assert Plm(3, 3, x) == -15 * Q**3

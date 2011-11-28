@@ -131,7 +131,7 @@ def test_dsolve_options():
         dsolve(f(x).diff(x) - 1/f(x)**2, hint='best')
     assert dsolve(f(x) + f(x).diff(x) + sin(x).diff(x) + 1, f(x),
                   hint="1st_linear_Integral") == \
-        Eq(f(x), (C1 + Integral((-sin(x).diff(x) - \
+        Eq(f(x), (C1 + Integral(-(sin(x).diff(x) + \
         1)*exp(Integral(1, x)), x))*exp(-Integral(1, x)))
 
 def test_classify_ode():
@@ -342,7 +342,7 @@ def test_separable1():
     sol1 = Eq(f(x), C1*exp(x))
     sol2 = Eq(f(x), C1*x)
     sol3 = Eq(f(x), C1 + cos(x))
-    sol4 = Eq(atan(f(x)), C1 + atan(x))
+    sol4 = Eq(-atan(f(x)), C1 - atan(x))
     sol5 = Eq(f(x), -2 + C1*sqrt(1 + tan(x)**2))
     #sol5 = Eq(f(x), C1*(C2 + sqrt(1 + tan(x)**2)))
     #sol5 = Eq(-log(2 + f(x)), C1 - log(1 + tan(x)**2)/2)
@@ -420,6 +420,7 @@ def test_separable5():
                         ((1 - x)*(-x*exp(x) + exp(x))))
     sol19e = Eq(f(x), (C1*(1 - x) - x*(-x*exp(x) + exp(x)) -
                             x*exp(x) + exp(x))/((1 - x)*(-exp(x) + x*exp(x))))
+    sol19f = Eq(f(x), (C1*exp(-x) - x + 1)/(x - 1))
     sol20 = Eq(log(-1 + 3*f(x)**2)/6, C1 + x**2/2)
     sol21 = Eq(f(x), log(-1/(C1 + exp(x))))
     assert dsolve(eq15, hint='separable') == sol15
@@ -427,7 +428,7 @@ def test_separable5():
     assert dsolve(eq17, hint='separable') == sol17
     assert dsolve(eq18, hint='separable', simplify=False) == sol18
     assert dsolve(eq19, hint='separable') in [sol19a, sol19b, sol19c,
-                                                    sol19d, sol19e]
+                                              sol19d, sol19e, sol19f]
     assert dsolve(eq20, hint='separable', simplify=False) == sol20
     assert dsolve(eq21, hint='separable') == sol21
     assert checkodesol(eq15, sol15, order=1, solve_for_func=False)[0]
@@ -963,7 +964,7 @@ def test_nth_linear_constant_coeff_undetermined_coefficients():
     sol6 = Eq(f(x), -3*cos(x)/10 + sin(x)/10 + C1*exp(-x) + C2*exp(-2*x))
     sol7 = Eq(f(x), cos(x)/10 + 3*sin(x)/10 + C1*exp(-x) + C2*exp(-2*x))
     sol8 = Eq(f(x), 4 - 3*cos(x)/5 + sin(x)/5 + exp(x) + C1*exp(-x) + C2*exp(-2*x))
-    sol9 = Eq(f(x), -2*x + x**2 + (C1*sin(x*sqrt(3)/2) + C2*cos(x*sqrt(3)/2))*exp(-x/2))
+    sol9 = Eq(f(x), x**2 - 2*x + (C1*sin(x*sqrt(3)/2) + C2*cos(x*sqrt(3)/2))*exp(-x/2))
     sol10 = Eq(f(x), -x*exp(x) - 2*exp(-x) + C1*exp(-2*x) + C2*exp(4*x))
     sol11 = Eq(f(x), C1 + (-3*sin(x)/5 - cos(x)/5)*exp(2*x) + C2*exp(3*x))
     sol12 = Eq(f(x), x - sin(x)/4 + (C1 + C2*x)*exp(-x) + (C3 + C4*x)*exp(x))
@@ -1164,7 +1165,7 @@ def test_Liouville_ODE():
     sol1 = Eq(f(x), log(x/(C1 + C2*x)))
     sol1a = Eq(C1 + C2/x - exp(-f(x)), 0)
     sol2 = sol1
-    sol3 = set([Eq(f(x), -sqrt(C1 + C2*log(x))), Eq(f(x), sqrt(C1 + C2*log(x)))])
+    sol3 = set([Eq(f(x), -sqrt(2)*sqrt(C1 + C2*log(x))), Eq(f(x), sqrt(2)*sqrt(C1 + C2*log(x)))])
     sol4 = set([Eq(f(x), -sqrt(2)*sqrt(C1 + C2*exp(-x))), Eq(f(x), sqrt(2)*sqrt(C1 + C2*exp(-x)))])
     sol5 = Eq(f(x), log(C1 + C2/x))
     sol1s = constant_renumber(sol1, 'C', 1, 2)

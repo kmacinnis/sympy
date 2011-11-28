@@ -483,10 +483,10 @@ class Mul(AssocOp):
 
 
         # we are done
-        if len(c_part)==2 and c_part[0].is_Number and c_part[1].is_Add:
-            # 2*(1+a) -> 2 + 2 * a
-            coeff = c_part[0]
-            c_part = [Add(*[coeff*f for f in c_part[1].args])]
+        # if len(c_part)==2 and c_part[0].is_Number and c_part[1].is_Add:
+        #     # 2*(1+a) -> 2 + 2 * a
+        #     coeff = c_part[0]
+        #     c_part = [Add(*[coeff*f for f in c_part[1].args])]
 
         return c_part, nc_part, order_symbols
 
@@ -734,6 +734,23 @@ class Mul(AssocOp):
                 return Add(*args)
             else:
                 return plain
+
+    def _eval_expand_distribute_constant(self, deep=True, **hints):
+        """
+        Distributes a constant over an Add.
+        Designed to replicate previous default behavior.
+        """
+        n, d = self.as_numer_denom()
+        if False: # not d.is_Number:
+            return n._eval_expand_distribute_constant(deep=deep)/d._eval_expand_distribute_constant(deep=deep)
+        else:
+            factors = self.args
+            if factors[0].is_Number and factors[1].is_Add and factors[1].is_commutative:
+                fac1 = factors[1]._eval_expand_distribute_constant(deep=deep)
+                return Add(*[factors[0]*f for f in fac1.args])* \
+                    Mul(*[f._eval_expand_distribute_constant(deep=deep) for f in factors[2:]])
+            else:
+                return Mul(*[f._eval_expand_distribute_constant(deep=deep) for f in factors])
 
     def _eval_expand_multinomial(self, deep=True, **hints):
         sargs, terms = self.args, []

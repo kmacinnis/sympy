@@ -10,7 +10,7 @@ def test_gosper_normal():
         (Poly(S(1)/4, n), Poly(n + S(3)/2), Poly(n + S(1)/4))
 
 def test_gosper_term():
-    assert gosper_term((4*k + 1)*factorial(k)/factorial(2*k + 1), k) == (-k - S(1)/2)/(k + S(1)/4)
+    assert gosper_term((4*k + 1)*factorial(k)/factorial(2*k + 1), k) == -(k + S(1)/2)/(k + S(1)/4)
 
 def test_gosper_sum():
     assert gosper_sum(1, (k, 0, n)) == 1 + n

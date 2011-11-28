@@ -19,7 +19,7 @@ def test_roots_quadratic():
     assert roots_quadratic(Poly(2*x**2, x)) == [0, 0]
     assert roots_quadratic(Poly(2*x**2 + 3*x, x)) == [-Rational(3, 2), 0]
     assert roots_quadratic(Poly(2*x**2 + 3, x)) == [-I*sqrt(6)/2, I*sqrt(6)/2]
-    assert roots_quadratic(Poly(2*x**2 + 4*x+3, x)) == [(-4 - 2*sqrt(2)*I)/4, (-4 + 2*sqrt(2)*I)/4]  # Kate
+    assert roots_quadratic(Poly(2*x**2 + 4*x+3, x)) == [(-4 - 2*sqrt(2)*I)/4, (-4 + 2*sqrt(2)*I)/4]
 
     f = x**2 + (2*a*e + 2*c*e)/(a - c)*x + (d - b + a*e**2 - c*e**2)/(a - c)
 

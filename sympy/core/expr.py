@@ -174,21 +174,21 @@ class Expr(Basic, EvalfMixin):
 
     @_sympifyit('other', False) # sympy >  other
     def __le__(self, other):
-        dif = self - other
+        dif = (self - other).expand(distribute_constant=True)
         if dif.is_nonpositive != dif.is_positive:
             return dif.is_nonpositive
         return C.LessThan(self, other)
 
     @_sympifyit('other', False)  # sympy >  other
     def __gt__(self, other):
-        dif = self - other
+        dif = (self - other).expand(distribute_constant=True)
         if dif.is_positive !=  dif.is_nonpositive:
             return dif.is_positive
         return C.StrictGreaterThan(self, other)
 
     @_sympifyit('other', False) # sympy >  other
     def __lt__(self, other):
-        dif = self - other
+        dif = (self - other).expand(distribute_constant=True)
         if dif.is_negative != dif.is_nonnegative:
             return dif.is_negative
         return C.StrictLessThan(self, other)

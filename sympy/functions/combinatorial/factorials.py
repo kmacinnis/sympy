@@ -464,7 +464,7 @@ class binomial(CombinatorialFunction):
         elif k.is_negative:
             return S.Zero
         else:
-            d = n - k
+            d = (n - k).expand(distribute_constant=True)
 
             if d.is_Integer:
                 return cls.eval(n, d)

@@ -115,14 +115,6 @@ class Add(AssocOp):
             elif o.is_Mul:
                 c, s = o.as_coeff_Mul()
 
-                # 3*...
-                # unevaluated 2-arg Mul, but we always unfold it so
-                # it can combine with other terms (just like is done
-                # with the Pow below)
-                if c.is_Number and s.is_Add:
-                    seq.extend([c*a for a in s.args])
-                    continue
-
             # check for unevaluated Pow, e.g. 2**3 or 2**(-1/2)
             elif o.is_Pow:
                 b, e = o.as_base_exp()

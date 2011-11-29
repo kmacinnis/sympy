@@ -278,7 +278,7 @@ def test_ncmul():
 
     assert A/(1+A) == A/(1+A)
 
-    assert (A+B + 2*(A+B)) == 3*A + 3*B
+    assert (A+B + 2*(A+B)) != 3*A + 3*B
 
 def test_ncpow():
     x = Symbol('x', commutative=False)
@@ -1196,6 +1196,7 @@ def test_Pow_as_content_primitive():
     assert ((2*x + 2)**y).as_content_primitive() == (1, (2*(x + 1))**y)
     assert ((2*x + 2)**3).as_content_primitive() == (8, (x + 1)**3)
 
+@XFAIL #Kate should this be removed?
 def test_issue2361():
     u = Mul(2, (1 + x), evaluate=False)
     assert 2 + u == 4 + 2*x

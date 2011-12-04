@@ -1389,7 +1389,7 @@ def prod(a, start=1):
 
 def _keep_coeff(coeff, factors):
     """Return ``coeff*factors`` unevaluated if necessary."""
-
+    return coeff*factors
     if not coeff.is_Number:
         if factors.is_Number:
             factors, coeff = coeff, factors

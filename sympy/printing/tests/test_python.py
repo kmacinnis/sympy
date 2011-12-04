@@ -55,9 +55,10 @@ def test_python_basic():
     # Check for proper placement of negative sign
     assert python(-5*x/(x+10)) == "x = Symbol('x')\ne = -5*x/(x + 10)"
     assert python(1 - Rational(3,2)*(x+1)) in [
-            "x = Symbol('x')\ne = Rational(-3, 2)*x + Rational(-1, 2)",
-            "x = Symbol('x')\ne = -3*x/2 + Rational(-1, 2)",
-            "x = Symbol('x')\ne = -3*x/2 + Rational(-1, 2)"
+            "x = Symbol('x')\ne = 1 - Rational(-3, 2)**(x + 1)",
+            "x = Symbol('x')\ne = 1 - Rational(-3, 2)**(1 + x)",
+            "x = Symbol('x')\ne = -3*(x + 1)/2 + 1",
+            "x = Symbol('x')\ne = 1 - 3*(1 + x)/2"
             ]
 
 def test_python_relational():

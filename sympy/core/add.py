@@ -723,7 +723,7 @@ class Add(AssocOp):
 
         terms = []
         inf = False
-        for a in self.args:
+        for a in self.expand(distribute_constant=True).args:
             c, m = a.as_coeff_Mul()
             if not c.is_Rational:
                 c = S.One

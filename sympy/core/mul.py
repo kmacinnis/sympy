@@ -107,36 +107,6 @@ class Mul(AssocOp):
               sensitive.
 
         """
-        rv = None
-        if len(seq) == 2:
-            a, b = seq
-            if b.is_Rational:
-                a, b = b, a
-            assert not a is S.One
-            if a and a.is_Rational:
-                r, b = b.as_coeff_Mul()
-                a *= r
-                if b.is_Mul:
-                    bargs, nc = b.args_cnc()
-                    rv = bargs, nc, None
-                    if a is not S.One:
-                        bargs.insert(0, a)
-
-                elif b.is_Add and b.is_commutative:
-                    if a is S.One:
-                        rv = [b], [], None
-                    else:
-                        r, b = b.as_coeff_Add()
-                        bargs = [_keep_coeff(a, bi) for bi in Add.make_args(b)]
-                        bargs.sort(key=hash)
-                        ar = a*r
-                        if ar:
-                            bargs.insert(0, ar)
-                        bargs = [Add._from_args(bargs)]
-                        rv = bargs, [], None
-            if rv:
-                return rv
-
         # apply associativity, separate commutative part of seq
         c_part = []         # out: commutative factors
         nc_part = []        # out: non-commutative factors
@@ -735,17 +705,14 @@ class Mul(AssocOp):
         Distributes a constant over an Add.
         Designed to replicate previous default behavior.
         """
-        n, d = self.as_numer_denom()
-        if False: # not d.is_Number:
-            return n._eval_expand_distribute_constant(deep=deep)/d._eval_expand_distribute_constant(deep=deep)
+
+        factors = self.args
+        if factors[0].is_Number and factors[1].is_Add and factors[1].is_commutative:
+            fac1 = factors[1]._eval_expand_distribute_constant(deep=deep)
+            return Add(*[factors[0]*f for f in fac1.args])* \
+                Mul(*[f._eval_expand_distribute_constant(deep=deep) for f in factors[2:]])
         else:
-            factors = self.args
-            if factors[0].is_Number and factors[1].is_Add and factors[1].is_commutative:
-                fac1 = factors[1]._eval_expand_distribute_constant(deep=deep)
-                return Add(*[factors[0]*f for f in fac1.args])* \
-                    Mul(*[f._eval_expand_distribute_constant(deep=deep) for f in factors[2:]])
-            else:
-                return Mul(*[f._eval_expand_distribute_constant(deep=deep) for f in factors])
+            return Mul(*[f._eval_expand_distribute_constant(deep=deep) for f in factors])
 
     def _eval_expand_multinomial(self, deep=True, **hints):
         sargs, terms = self.args, []

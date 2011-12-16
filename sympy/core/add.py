@@ -32,40 +32,6 @@ class Add(AssocOp):
         sympy.core.mul.Mul.flatten
 
         """
-        rv = None
-        if len(seq) == 2:
-            a, b = seq
-            if b.is_Rational:
-                a, b = b, a
-            assert a
-            if a.is_Rational:
-                if b.is_Mul:
-                    # if it's an unevaluated 2-arg, expand it
-                    c, t = b.as_coeff_Mul()
-                    if t.is_Add:
-                        h, t = t.as_coeff_Add()
-                        bargs = [c*ti for ti in Add.make_args(t)]
-                        bargs.sort(key=hash)
-                        ch = c*h
-                        if ch:
-                            bargs.insert(0, ch)
-                        b = Add._from_args(bargs)
-                if b.is_Add:
-                    bargs = list(b.args)
-                    if bargs[0].is_Number:
-                        bargs[0] += a
-                        if not bargs[0]:
-                            bargs.pop(0)
-                    else:
-                        bargs.insert(0, a)
-                    rv = bargs, [], None
-                elif b.is_Mul:
-                    rv = [a, b], [], None
-            if rv:
-                if all(s.is_commutative for s in rv[0]):
-                    return rv
-                return [], rv[0], None
-
         terms = {}      # term -> coeff
                         # e.g. x**2 -> 5   for ... + 5*x**2 + ...
 

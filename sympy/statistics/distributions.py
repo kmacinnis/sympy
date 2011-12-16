@@ -67,7 +67,7 @@ class ContinuousProbability(object):
             -erf(sqrt(2)/2)/2 + 1/2
 
         """
-        return s.cdf(b) - s.cdf(a)
+        return (s.cdf(b) - s.cdf(a)).expand(distribute_constant=True)
 
     def random(s, n=None):
         """

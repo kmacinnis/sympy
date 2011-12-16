@@ -1200,6 +1200,8 @@ def radsimp(expr, symbolic=True, max_terms=4):
         if expr.is_Atom or not symbolic and expr.free_symbols:
             return expr
         n, d = fraction(expr)
+        n = n.expand(distribute_constant=True)
+        d = d.expand(distribute_constant=True)
         if d is S.One:
             nexpr = expr.func(*[handle(ai) for ai in expr.args])
             return nexpr
@@ -2149,7 +2151,7 @@ def hypersimp(f, k):
 
     g = f.subs(k, k+1) / f
 
-    g = g.rewrite(gamma)
+    g = g.rewrite(gamma).expand(distribute_constant=True)
     g = expand_func(g)
     g = powsimp(g, deep=True, combine='exp')
 

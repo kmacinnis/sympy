@@ -5475,6 +5475,7 @@ def cancel(f, *gens, **args):
     f = sympify(f)
 
     if not isinstance(f, (tuple, Tuple)):
+        f = f.expand(distribute_constant=True)
         if f.is_Number:
             return f
         else:

@@ -363,7 +363,8 @@ class Integral(Expr):
         inverse_mapping = inverse_mapping[0]
         if inverse:
             mapping, inverse_mapping = inverse_mapping, mapping
-        function = function.subs(x, mapping) * mapping.diff(x)
+        function = (function.subs(x, mapping)*mapping.diff(x)
+                                        ).expand(distribute_constant=True)
 
         def _calc_limit(a, b):
             """

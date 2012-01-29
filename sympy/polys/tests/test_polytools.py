@@ -2068,7 +2068,6 @@ def test_factor_large():
     assert factor_list(g, gaussian=True) == \
         (1, [(x + 1, 1), (x - I*y, 200000), (x + I*y, 200000), (x**6 - x**5 + x**4 - x**3 + x**2 - x + 1, 1)])
 
-@XFAIL
 def test_factor_noeval():
     assert factor(6*x - 10) == 2*(3*x - 5)
     assert factor((6*x - 10)/(3*x - 6)) == S(2)/3*((3*x - 5)/(x - 2))

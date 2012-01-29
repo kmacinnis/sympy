@@ -327,7 +327,7 @@ class Add(AssocOp):
     def as_numer_denom(self):
 
         # clear rational denominator
-        content, expr = self.primitive()
+        content, expr = self.expand(distribute_constant=True).primitive()
         ncon, dcon = content.as_numer_denom()
 
         # collect numerators and denominators of the terms
@@ -752,7 +752,9 @@ class Add(AssocOp):
 
         See docstring of Expr.as_content_primitive for more examples.
         """
-        con, prim = Add(*[_keep_coeff(*a.as_content_primitive(radical=radical)) for a in self.args]).primitive()
+
+        s = self.expand(distribute_constant=True)
+        con, prim = Add(*[_keep_coeff(*a.as_content_primitive(radical=radical)) for a in s.args]).primitive()
         if radical and prim.is_Add:
             # look for common radicals that can be removed
             args = prim.args

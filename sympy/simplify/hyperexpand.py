@@ -1299,7 +1299,7 @@ class ReduceOrder(Operator):
         """ For convenience if reduction is not possible, return None. """
         ai = sympify(ai)
         bj = sympify(bj)
-        n = ai - bj
+        n = (ai - bj).expand(distribute_constant=True)
         if n < 0 or not n.is_Integer:
             return None
         if bj.is_integer and bj <= 0 and bj + n - 1 >= 0:
@@ -1324,7 +1324,7 @@ class ReduceOrder(Operator):
         from sympy import Add
         b = sympify(b)
         a = sympify(a)
-        n = b - a
+        n = (b - a).expand(distribute_constant=True)
         if n < 0 or not n.is_Integer:
             return None
 
@@ -2240,7 +2240,7 @@ def _meijergexpand(iq, z0, allow_hyper=False, rewrite='default'):
             if len(pbm[m]) == 1:
                 bh = pbm[m][0]
                 fac = 1
-                bo = list(bm)
+                bo = [b.expand(distribute_constant=True) for b in list(bm)]
                 bo.remove(bh)
                 for bj in bo:
                     fac *= gamma(bj - bh)

@@ -385,7 +385,7 @@ class Expr(Basic, EvalfMixin):
             if B is S.NaN:
                 B = limit(self, x, b)
 
-        return B - A
+        return (B - A).expand(distribute_constant=True)
 
     def _eval_power(self, other):
         return None
@@ -1937,8 +1937,8 @@ class Expr(Basic, EvalfMixin):
         # and undo the process with rep2
         if x0 or dir == '-':
             if dir == '-':
-                rep = -x + x0
-                rep2 = -x
+                rep = (-x + x0).expand(distribute_constant=True)
+                rep2 = (-x).expand(distribute_constant=True)
                 rep2b = x0
             else:
                 rep = x + x0
@@ -1952,7 +1952,7 @@ class Expr(Basic, EvalfMixin):
             s = s.removeO()
             if o and x0:
                 rep2b = 0 # when O() can handle x0 != 0 this can be removed
-            return s.subs(x, rep2 + rep2b) + o
+            return s.subs(x, rep2 + rep2b).expand(distribute_constant=True) + o
 
         # from here on it's x0=0 and dir='+' handling
 
@@ -1975,7 +1975,8 @@ class Expr(Basic, EvalfMixin):
                         s1 = self._eval_nseries(x, n=n + more, logx=None)
                         newn = s1.getn()
                         if newn != ngot:
-                            ndo = n + (n - ngot)*more/(newn - ngot)
+                            ndo = (n + (n - ngot)*more/(newn - ngot)).expand(
+                                                       distribute_constant=True)
                             s1 = self._eval_nseries(x, n=ndo, logx=None)
                             # if this assertion fails then our ndo calculation
                             # needs modification
@@ -2069,7 +2070,7 @@ class Expr(Basic, EvalfMixin):
                 series = self._eval_nseries(x, n=n, logx=None).removeO()
                 if e != series:
                     break
-            yield series - e
+            yield (series - e).expand(distribute_constant=True)
             e = series
 
     def nseries(self, x=None, x0=0, n=6, dir='+',logx=None):
@@ -2300,6 +2301,8 @@ class Expr(Basic, EvalfMixin):
             hints['mul']=True
         if hints.get('complex') and 'distribute_constant' not in hints:
             hints['distribute_constant']=True
+
+        from sympy.simplify.simplify import fraction
 
         expr = self
         if hints.pop('frac', False):

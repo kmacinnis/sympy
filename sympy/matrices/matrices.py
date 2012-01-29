@@ -2739,15 +2739,11 @@ class Matrix(object):
                 if j == pivot:
                     continue
                 scale = r[j,i]
-                r.row(j, lambda x, k: x - scale*r[pivot,k])
+                r.row(j, lambda x, k:
+                       (x - scale*r[pivot,k]).expand(distribute_constant=True))
             pivotlist.append(i)
-<<<<<<< HEAD
             pivot += 1
         return r, pivotlist
-=======
-            pivots += 1
-        return r.expand(distribute_constant=True), pivotlist
->>>>>>> fixed more tests
 
     def nullspace(self, simplified=False):
         """

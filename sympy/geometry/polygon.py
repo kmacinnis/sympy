@@ -1912,8 +1912,8 @@ class Triangle(Polygon):
         v = self.vertices
         A,B,C = v[0],v[1],v[2]
         a,b,c = s[1].length,s[2].length,s[0].length
-        x = simplify((a*A[0] + b*B[0] + c*C[0]) / (a+b+c))
-        y = simplify((a*A[1] + b*B[1] + c*C[1]) / (a+b+c))
+        x = simplify((a*A[0] + b*B[0] + c*C[0]) / (a+b+c)).expand(distribute_constant=True)
+        y = simplify((a*A[1] + b*B[1] + c*C[1]) / (a+b+c)).expand(distribute_constant=True)
         return Point(x, y)
 
     @property

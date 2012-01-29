@@ -275,10 +275,10 @@ def test_roots():
     r1_4, r1_8, r5_8 = [ Rational(*r) for r in ((1,4), (1,8), (5,8)) ]
 
     assert roots(f, x) == {
-        -r1_4 + sqrt(5)/4 - sqrt(2)*I*sqrt(sqrt(5) + 5)/4: 1,
-        -r1_4 + sqrt(5)/4 + sqrt(2)*I*sqrt(sqrt(5) + 5)/4: 1,
-        -r1_4 - sqrt(5)/4 - sqrt(2)*I*sqrt(-sqrt(5) + 5)/4: 1,
-        -r1_4 - sqrt(5)/4 + sqrt(2)*I*sqrt(-sqrt(5) + 5)/4: 1
+        (sqrt(5) - 1)/4 - sqrt(2)*I*sqrt(sqrt(5) + 5)/4: 1,
+        (sqrt(5) - 1)/4 + sqrt(2)*I*sqrt(sqrt(5) + 5)/4: 1,
+        -(sqrt(5) + 1)/4 - sqrt(2)*I*sqrt(-sqrt(5) + 5)/4: 1,
+        -(sqrt(5) + 1)/4 + sqrt(2)*I*sqrt(-sqrt(5) + 5)/4: 1
     }
 
     f = z**3 + (-2 - y)*z**2 + (1 + 2*y - 2*x**2)*z - y + 2*x**2

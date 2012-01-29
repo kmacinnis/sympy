@@ -108,7 +108,7 @@ class Product(Expr):
         f = g = self.function
         for index, limit in enumerate(self.limits):
             i, a, b = limit
-            dif = b - a
+            dif = (b - a).expand(distribute_constant=True)
             if dif.is_Integer and dif < 0:
                 a, b = b, a
 

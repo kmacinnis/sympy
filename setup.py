@@ -173,8 +173,7 @@ class test_sympy(Command):
                 # flag to false and continue running the doctests
                 tests_successful = False
 
-            if not sympy.doctest():
-                tests_successful = False
+
 
             if not (sys.platform == "win32" or sys.version_info[0] == 3):
                 # run Sage tests; Sage currently doesn't support Windows or Python 3
@@ -184,6 +183,8 @@ class test_sympy(Command):
                         tests_successful = False
 
             if tests_successful:
+                if not sympy.doctest():
+                    tests_successful = False
                 return
             else:
                 # Return nonzero exit code

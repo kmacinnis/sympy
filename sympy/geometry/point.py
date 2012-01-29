@@ -298,7 +298,8 @@ class Point(GeometryEntity):
         sqrt(x**2 + y**2)
 
         """
-        return sqrt(sum([(a - b)**2 for a, b in zip(self, p)]))
+        return sqrt(sum([((a - b).expand(distribute_constant=True))**2
+                                            for a, b in zip(self, p)]))
 
     def midpoint(self, p):
         """The midpoint between self and point p.

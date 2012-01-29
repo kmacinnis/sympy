@@ -520,7 +520,7 @@ def test_ellipse():
     e2 = Ellipse(Point(2, 1), 4, 8)
     a = S(53)/17
     c = 2*sqrt(3991)
-    ans = [Point(a + c/136, a/2 - c/17), Point(a - c/136, a/2 + c/17)]
+    ans = [Point(a - c/136, a/2 + c/17), Point(a + c/136, a/2 - c/17)]
     assert e1.intersection(e2) == ans
     e2 = Ellipse(Point(x, y), 4, 8)
     ans = [Point((c+424)/136,(-2*c+53)/34), Point((-c+424)/136,(53+2*c)/34)]
@@ -712,7 +712,7 @@ def test_polygon():
     # Bisectors
     bisectors = t1.bisectors()
     assert bisectors[p1] == Segment(p1, Point(Rational(5,2), Rational(5,2)))
-    ic = (10 - 5*sqrt(2)) / 2
+    ic = 5 - 5*sqrt(2)/ 2
     assert t1.incenter == Point(ic, ic)
 
     # Inradius

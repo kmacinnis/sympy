@@ -1,6 +1,7 @@
 from sympy import symbols, Symbol, nan, oo, zoo, I, sinh, sin, acot, pi, atan, \
         acos, Rational, sqrt, asin, acot, cot, coth, E, S, tan, tanh, cos, \
         cosh, atan2, exp, log, asinh, acoth, atanh, O, cancel, Matrix, re, im
+from sympy.utilities.pytest import XFAIL, raises
 
 from sympy.utilities.pytest import XFAIL
 
@@ -95,7 +96,7 @@ def test_sin_expansion():
     x,y = symbols('x,y')
     assert sin(x+y).expand(trig=True) == sin(x)*cos(y) + cos(x)*sin(y)
     assert sin(2*x).expand(trig=True) == 2*sin(x)*cos(x)
-    assert sin(3*x).expand(trig=True) == 4*sin(x)*cos(x)**2-sin(x)
+    assert sin(3*x).expand(trig=True).expand(mul=True) == 4*sin(x)*cos(x)**2-sin(x)
 
 def test_trig_symmetry():
     x = Symbol('x')

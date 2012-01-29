@@ -282,5 +282,5 @@ def test_RootSum_independent():
     r0 = RootSum(x**3 - a, h, x)
     r1 = RootSum(x**4 - b, h, x)
 
-    assert RootSum(f, g, x).as_ordered_terms() == [10*r0, 15*r1, 126]
+    assert RootSum(f, g, x).as_ordered_terms() == [5*(2*r0 + 3*r1), 126]
 

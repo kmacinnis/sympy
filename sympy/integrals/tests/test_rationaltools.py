@@ -80,8 +80,8 @@ def test_ratint():
         I*3**half*log(half + x + half*I*3**half)/3
 
     assert ratint(1/(x**3+1), x, real=False) == log(x + 1)/3 + \
-            (-3 - 3*sqrt(3)*I)*log(x - half - sqrt(3)*I/2)/18 + \
-            (-3 + 3*sqrt(3)*I)*log(x - half + sqrt(3)*I/2)/18
+            (-3 - 3*sqrt(3)*I)*log(x + (-3 - 3*sqrt(3)*I)/6)/18 + \
+            (-3 + 3*sqrt(3)*I)*log(x + (-3 + 3*sqrt(3)*I)/6)/18
 
     # Issue 1892
     assert ratint(1/(x*(a+b*x)**3), x) == \

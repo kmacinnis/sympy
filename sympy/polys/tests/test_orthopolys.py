@@ -92,8 +92,8 @@ def test_laguerre_poly():
 
     assert laguerre_poly(0, x, a) == 1
     assert laguerre_poly(1, x, a) == -x + a + 1
-    assert laguerre_poly(2, x, a) == x**2/2 + (-a - 2)*x + a**2/2 + 3*a/2 + 1
-    assert laguerre_poly(3, x, a) == -x**3/6 + x**2*(a + 3)/2 + x*(-a**2 - 5*a - 6)/2 + a**3/6 + a**2 + 11*a/6 + 1
+    assert laguerre_poly(2, x, a) == x**2/2 + (-a - 2)*x + (a**2 + 3*a + 2)/2
+    assert laguerre_poly(3, x, a) == -x**3/6 + x**2*(a + 3)/2 + x*(-a**2 - 5*a - 6)/2 + (a**3 + 6*a**2 + 11*a + 6)/6
 
     assert laguerre_poly(1).dummy_eq(-x + 1)
     assert laguerre_poly(1, polys=True) == Poly(-x + 1)

@@ -2693,7 +2693,6 @@ def test_pretty_no_wrap_line():
 def test_settings():
     raises(TypeError, 'pretty(S(4), method="garbage")')
 
-@XFAIL
 def test_pretty_sum():
     from sympy.abc import x, a, b, k, m, n
 

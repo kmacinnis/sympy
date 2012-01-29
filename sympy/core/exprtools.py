@@ -371,7 +371,7 @@ def _gcd_terms(terms, isprimitive=False):
     numer = Add(*numers)
     denom = denom.as_expr()
     if not isprimitive and numer.is_Add:
-        _cont, numer = numer.primitive()
+        _cont, numer = numer.expand(distribute_constant=True).primitive()
         cont *= _cont
 
     return cont, numer, denom
@@ -396,7 +396,7 @@ def gcd_terms(terms, isprimitive=False):
     if not isexpr or terms.is_Add:
         cont, numer, denom = _gcd_terms(terms, isprimitive)
         coeff, factors = cont.as_coeff_Mul()
-        return coeff*(factors*numer/denom).expand(distribute_constant=True)
+        return coeff*(factors*numer/denom)
 
     if terms.is_Atom:
         return terms
@@ -463,4 +463,5 @@ def factor_terms(expr, radical=False):
         # cancel terms that may not have cancelled
     p = Add._from_args(list_args) # gcd_terms will fix up ordering
     p = gcd_terms(p, isprimitive=True).xreplace(ncreps)
-    return _keep_coeff(cont, p)
+    return cont*p
+

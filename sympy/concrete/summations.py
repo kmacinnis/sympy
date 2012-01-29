@@ -134,7 +134,7 @@ class Sum(Expr):
         f = self.function
         for limit in self.limits:
             i, a, b = limit
-            dif = b - a
+            dif = (b - a).expand(distribute_constant=True)
             if dif.is_Integer and dif < 0:
                 a, b = b, a
 
@@ -143,7 +143,7 @@ class Sum(Expr):
                 return self
 
         if hints.get('deep', True):
-            return f.doit(**hints)
+            return f.doit(**hints).expand(distribute_constant=True)
         else:
             return f.expand(distribute_constant=True)
 
@@ -384,7 +384,7 @@ def eval_sum(f, limits):
     if f is S.Zero:
         return S.Zero
     if i not in f.free_symbols:
-        return f*(b - a + 1)
+        return (f*(b - a + 1)).expand(distribute_constant=True)
     if a == b:
         return f.subs(i, a)
 

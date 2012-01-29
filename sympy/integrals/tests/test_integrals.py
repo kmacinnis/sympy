@@ -63,7 +63,7 @@ def test_basics():
     assert integrate(e, (t,a,x)).diff(x) == \
            Integral(e, (t, a, x)).diff(x).doit().expand()
     assert Integral(e, (t, a, x)).diff(x).doit() == ((1+x)**2)
-    assert integrate(e, (t,x,a)).diff(x).doit() == -((1+x)**2).expand()
+    assert integrate(e, (t,x,a)).diff(x).doit() == (-(1+x)**2).expand()
 
     assert integrate(t**2, (t,x,2*x)).diff(x) == 7*x**2
 
@@ -342,10 +342,11 @@ def test_integrate_DiracDelta():
     assert integrate(DiracDelta(-(x-1)) * f(x),(x,-oo,oo)) == f(1)
     assert integrate(DiracDelta(x) * f(x),(x,0,oo)) == f(0)/2
     assert integrate(DiracDelta(x**2+x-2),x) - \
-           (Heaviside(-1 + x)/3 + Heaviside(2 + x)/3) == 0
-    assert integrate(cos(x)*(DiracDelta(x)+DiracDelta(x**2-1))*sin(x)*(x-pi),x) - \
+           Heaviside(-1 + x)/3 - Heaviside(2 + x)/3 == 0
+    assert (integrate(cos(x)*(DiracDelta(x)+DiracDelta(x**2-1))*sin(x)*(x-pi),x) - \
            (-pi*(cos(1)*Heaviside(-1 + x)*sin(1)/2 - cos(1)*Heaviside(1 + x)*sin(1)/2) + \
-           cos(1)*Heaviside(1 + x)*sin(1)/2 + cos(1)*Heaviside(-1 + x)*sin(1)/2) == 0
+           cos(1)*Heaviside(1 + x)*sin(1)/2 + cos(1)*Heaviside(-1 + x)*sin(1)/2)
+           ).expand(distribute_constant=True) == 0
     assert integrate(x_2*DiracDelta(x - x_2)*DiracDelta(x_2 - x_1), (x_2, -oo, oo)) == \
            x*DiracDelta(x - x_1)
     assert integrate(x*y**2*z*DiracDelta(y - x)*DiracDelta(y - z)*DiracDelta(x - z), (y, -oo, oo)) \

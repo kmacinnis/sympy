@@ -181,7 +181,7 @@ def test_simple_products():
     assert product(n, (n, 1, b)) == factorial(b)
     assert product(n**3, (n, 1, b)) == factorial(b)**3
     assert product(3**(2+n), (n, a, b)) \
-           == 3**(2*(1-a+b)+b/2+(b**2)/2+a/2-(a**2)/2)
+           == 3**(-a**2/2 - 3*a/2 + b**2/2 + 5*b/2 + 2)
     assert product(cos(n), (n, 3, 5)) == cos(3)*cos(4)*cos(5)
     assert product(cos(n), (n, x, x + 2)) == cos(x)*cos(x + 1)*cos(x + 2)
     assert isinstance(product(cos(n), (n, x, x + S.Half)), Product)

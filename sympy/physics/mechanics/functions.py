@@ -362,7 +362,7 @@ def kinematic_equations(speeds, coords, rot_type, rot_order=''):
         E = Matrix([[e0, -e3, e2, e1], [e3, e0, -e1, e2], [-e2, e1, e0, e3],
             [-e1, -e2, -e3, e0]])
         edots = Matrix([diff(i, dynamicsymbols._t) for i in [e1, e2, e3, e0]])
-        return list(edots.T - 0.5 * w.T * E.T)
+        return list((edots.T - 0.5 * w.T * E.T).expand(distribute_constant=True))
     else:
         raise ValueError('Not an approved rotation type for this function')
 

@@ -2377,7 +2377,7 @@ class MV(object):
             if not isint(self.mv[i]):
                 zero_flg = True
                 for x in self.mv[i]:
-                    if x != 0:
+                    if x.expand(distribute_constant=True) != 0:
                         zero_flg = False
                         break
                 if zero_flg:

@@ -251,7 +251,7 @@ class Uniform(ContinuousProbability):
     median = property(lambda s: (s.a+s.b)/2)
     mode = property(lambda s: (s.a+s.b)/2)  # arbitrary
     variance = property(lambda s: (s.b-s.a)**2 / 12)
-    stddev = property(lambda s: sqrt(s.variance))
+    stddev = property(lambda s: sqrt(s.variance).expand(distribute_constant=True))
 
     def pdf(s, x):
         """

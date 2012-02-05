@@ -396,7 +396,7 @@ def gcd_terms(terms, isprimitive=False):
     if not isexpr or terms.is_Add:
         cont, numer, denom = _gcd_terms(terms, isprimitive)
         coeff, factors = cont.as_coeff_Mul()
-        return coeff*(factors*numer/denom).expand(distribute_constant=True)
+        return coeff*(factors*numer/denom)
 
     if terms.is_Atom:
         return terms

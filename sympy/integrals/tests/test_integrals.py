@@ -63,7 +63,7 @@ def test_basics():
     assert integrate(e, (t,a,x)).diff(x) == \
            Integral(e, (t, a, x)).diff(x).doit().expand()
     assert Integral(e, (t, a, x)).diff(x).doit() == ((1+x)**2)
-    assert integrate(e, (t,x,a)).diff(x).doit() == -((1+x)**2).expand()
+    assert integrate(e, (t,x,a)).diff(x).doit() == (-(1+x)**2).expand()
 
     assert integrate(t**2, (t,x,2*x)).diff(x) == 7*x**2
 

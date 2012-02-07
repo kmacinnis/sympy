@@ -167,7 +167,7 @@ class Expr(Basic, EvalfMixin):
 
     @_sympifyit('other', False)  # sympy >  other
     def __ge__(self, other):
-        dif = self - other
+        dif = (self - other).expand(distribute_constant=True)
         if dif.is_nonnegative != dif.is_negative:
             return dif.is_nonnegative
         return C.GreaterThan(self, other)

@@ -121,9 +121,9 @@ class Mod(Function):
 
         # put 1.0 from G on inside
         if G.is_Float and G == 1:
-            p *= G
+            p = (G*p)._dist_const()
             return cls(p, q, evaluate=False)
         elif G.is_Mul and G.args[0].is_Float and G.args[0] == 1:
-            p = G.args[0]*p
+            p = (G.args[0]*p)._dist_const()
             G = Mul._from_args(G.args[1:])
         return G*cls(p, q, evaluate=(p, q) != (pwas, qwas))

@@ -170,31 +170,33 @@ class Mul(Expr, AssocOp):
         """
 
         rv = None
-        if len(seq) == 2:
-            a, b = seq
-            if b.is_Rational:
-                a, b = b, a
-            assert not a is S.One
-            if a and a.is_Rational:
-                r, b = b.as_coeff_Mul()
-                if b.is_Add:
-                    if r is not S.One:  # 2-arg hack
-                        # leave the Mul as a Mul
-                        rv = [Mul(a*r, b, evaluate=False)], [], None
-                    elif b.is_commutative:
-                        if a is S.One:
-                            rv = [b], [], None
-                        else:
-                            r, b = b.as_coeff_Add()
-                            bargs = [_keep_coeff(a, bi) for bi in Add.make_args(b)]
-                            _addsort(bargs)
-                            ar = a*r
-                            if ar:
-                                bargs.insert(0, ar)
-                            bargs = [Add._from_args(bargs)]
-                            rv = bargs, [], None
-            if rv:
-                return rv
+        # if len(seq) == 2:
+        #     a, b = seq
+        #     if b.is_Rational:
+        #         a, b = b, a
+        #     assert not a is S.One
+        #     if a and a.is_Rational:
+        #         r, b = b.as_coeff_Mul()
+        #         if b.is_Add:
+        #             if r is not S.One:  # 2-arg hack
+        #                 # leave the Mul as a Mul
+        #                 rv = [Mul(a*r, b, evaluate=False)], [], None
+        #             elif b.is_commutative:
+        #                 if a is S.One:
+        #                     rv = [b], [], None
+        #                 else:
+        #                     r, b = b.as_coeff_Add()
+        #                     bargs = [_keep_coeff(a, bi) for bi in Add.make_args(b)]
+        #                     _addsort(bargs)
+        #                     ar = a*r
+        #                     if ar:
+        #                         bargs.insert(0, ar)
+        #                     bargs = [Add._from_args(bargs)]
+        #                     rv = bargs, [], None
+        #     if rv:
+        #         return rv
+
+
 
         # apply associativity, separate commutative part of seq
         c_part = []         # out: commutative factors
@@ -558,11 +560,11 @@ class Mul(Expr, AssocOp):
             c_part.insert(0, coeff)
 
         # we are done
-        if (not nc_part and len(c_part) == 2 and c_part[0].is_Number and
-                c_part[1].is_Add):
-            # 2*(1+a) -> 2 + 2 * a
-            coeff = c_part[0]
-            c_part = [Add(*[coeff*f for f in c_part[1].args])]
+        # if (not nc_part and len(c_part) == 2 and c_part[0].is_Number and
+        #         c_part[1].is_Add):
+        #     # 2*(1+a) -> 2 + 2 * a
+        #     coeff = c_part[0]
+        #     c_part = [Add(*[coeff*f for f in c_part[1].args])]
 
         return c_part, nc_part, order_symbols
 
@@ -756,6 +758,18 @@ class Mul(Expr, AssocOp):
             factors.append(Mul(*(terms[:i] + [t] + terms[i + 1:])))
         return Add(*factors)
 
+    def _dist_const(self):
+        """Distributes a constant over an Add.
+        Designed to replicate previous default behavior."""
+
+        factors = self.args
+        if factors[0].is_Number and factors[1].is_Add and factors[1].is_commutative:
+            fac1 = factors[1]._dist_const()
+            return Add(*[factors[0]*f for f in fac1.args])* \
+                Mul(*[f._dist_const() for f in factors[2:]])
+        else:
+            return Mul(*[f._dist_const() for f in factors])
+    
     def _matches_simple(self, expr, repl_dict):
         # handle (w*3).matches('x*5') -> {w: x*5/3}
         coeff, terms = self.as_coeff_Mul()

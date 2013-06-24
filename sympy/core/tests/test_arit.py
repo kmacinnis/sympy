@@ -76,9 +76,9 @@ def test_arit0():
     e = 2**a**2
     assert e == 2**(a**2)
     e = -(1 + a)
-    assert e == -1 - a
+    assert e != -1 - a
     e = Rational(1, 2)*(1 + a)
-    assert e == Rational(1, 2) + a/2
+    assert e != Rational(1, 2) + a/2
 
 
 def test_div():
@@ -1256,7 +1256,7 @@ def test_Add_as_content_primitive():
     # the coefficient may sort to a position other than 0
     p = 3 + x + y
     assert (2*p).expand().as_content_primitive() == (2, p)
-    assert (2.0*p).expand().as_content_primitive() == (1, 2.*p)
+    assert (2.0*p).expand().as_content_primitive() == (1, (2.*p)._dist_const())
     p *= -1
     assert (2*p).expand().as_content_primitive() == (2, p)
 

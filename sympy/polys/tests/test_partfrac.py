@@ -34,12 +34,14 @@ def test_apart():
     assert apart(f, full=False) == g
     assert apart(f, full=True) == g
 
-    assert apart((E*x + 2)/(x - pi)*(x - 1), x) == \
-        2 - E + E*pi + E*x + (E*pi + 2)*(pi - 1)/(x - pi)
+    # assert apart((E*x + 2)/(x - pi)*(x - 1), x) == \
+    #     2 - E + E*pi + E*x + (E*pi + 2)*(pi - 1)/(x - pi)
 
     assert apart(Eq((x**2 + 1)/(x + 1), x), x) == Eq(x - 1 + 2/(x + 1), x)
 
     raises(NotImplementedError, lambda: apart(1/(x + 1)/(y + 2)))
+    
+    assert False # hangs on commented out portion
 
 
 def test_apart_matrix():

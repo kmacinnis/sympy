@@ -28,59 +28,60 @@ def _sskip():
 
 
 def test_gruntz_evaluation():
-    # Gruntz' thesis pp. 122 to 123
-    # 8.1
-    assert gruntz(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x, oo) == -1
-    # 8.2
-    assert gruntz(exp(x)*(exp(1/x + exp(-x) + exp(-x**2))
-                  - exp(1/x - exp(-exp(x)))), x, oo) == 1
-    # 8.3
-    assert gruntz(exp(exp(x - exp(-x))/(1 - 1/x)) - exp(exp(x)), x, oo) == oo
-    # 8.5
-    assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(exp(x))), x, oo) == oo
-    # 8.6
-    assert gruntz(exp(exp(exp(x))) / exp(exp(exp(x - exp(-exp(x))))),
-                  x, oo) == oo
-    # 8.7
-    assert gruntz(exp(exp(exp(x))) / exp(exp(exp(x - exp(-exp(exp(x)))))),
-                  x, oo) == 1
-    # 8.8
-    assert gruntz(exp(exp(x)) / exp(exp(x - exp(-exp(exp(x))))), x, oo) == 1
-    # 8.9
-    assert gruntz(log(x)**2 * exp(sqrt(log(x))*(log(log(x)))**2
-                  * exp(sqrt(log(log(x))) * (log(log(log(x))))**3)) / sqrt(x),
-                  x, oo) == 0
-    # 8.10
-    assert gruntz((x*log(x)*(log(x*exp(x) - x**2))**2)
-                  / (log(log(x**2 + 2*exp(exp(3*x**3*log(x)))))), x, oo) == S(1)/3
-    # 8.11
-    assert gruntz((exp(x*exp(-x)/(exp(-x) + exp(-2*x**2/(x + 1)))) - exp(x))/x,
-                  x, oo) == -exp(2)
-    # 8.12
-    assert gruntz((3**x + 5**x)**(1/x), x, oo) == 5
-    # 8.13
-    assert gruntz(x/log(x**(log(x**(log(2)/log(x))))), x, oo) == oo
-    # 8.14
-    assert gruntz(exp(exp(2*log(x**5 + x)*log(log(x))))
-                  / exp(exp(10*log(x)*log(log(x)))), x, oo) == oo
-    # 8.15
-    assert gruntz(exp(exp(S(5)/2*x**(-S(5)/7) + S(21)/8*x**(S(6)/11)
-                          + 2*x**(-8) + S(54)/17*x**(S(49)/45) ))**8
-                  / log(log(-log(S(4)/3*x**(-S(5)/14))))**(S(7)/6), x, oo) == oo
-    # 8.16
-    assert gruntz((exp(4*x*exp(-x)/(1/exp(x) + 1/exp(2*x**2/(x + 1)))) - exp(x))
-                  / exp(x)**4, x, oo) == 1
-    # 8.17
-    assert gruntz(exp(x*exp(-x)/(exp(-x) + exp(-2*x**2/(x + 1))))/exp(x), x, oo) \
-        == 1
-    # 8.19
-    assert gruntz(log(x)*(log(log(x) + log(log(x))) - log(log(x)))
-                  / (log(log(x) + log(log(log(x))))), x, oo) == 1
-    # 8.20
-    assert gruntz(exp((log(log(x + exp(log(x)*log(log(x))))))
-                  / (log(log(log(exp(x) + x + log(x)))))), x, oo) == E
-    # Another
-    assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x, oo) == oo
+    # # Gruntz' thesis pp. 122 to 123
+    # # 8.1
+    # assert gruntz(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x, oo) == -1
+    # # 8.2
+    # assert gruntz(exp(x)*(exp(1/x + exp(-x) + exp(-x**2))
+    #               - exp(1/x - exp(-exp(x)))), x, oo) == 1
+    # # 8.3
+    # assert gruntz(exp(exp(x - exp(-x))/(1 - 1/x)) - exp(exp(x)), x, oo) == oo
+    # # 8.5
+    # assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(exp(x))), x, oo) == oo
+    # # 8.6
+    # assert gruntz(exp(exp(exp(x))) / exp(exp(exp(x - exp(-exp(x))))),
+    #               x, oo) == oo
+    # # 8.7
+    # assert gruntz(exp(exp(exp(x))) / exp(exp(exp(x - exp(-exp(exp(x)))))),
+    #               x, oo) == 1
+    # # 8.8
+    # assert gruntz(exp(exp(x)) / exp(exp(x - exp(-exp(exp(x))))), x, oo) == 1
+    # # 8.9
+    # assert gruntz(log(x)**2 * exp(sqrt(log(x))*(log(log(x)))**2
+    #               * exp(sqrt(log(log(x))) * (log(log(log(x))))**3)) / sqrt(x),
+    #               x, oo) == 0
+    # # 8.10
+    # assert gruntz((x*log(x)*(log(x*exp(x) - x**2))**2)
+    #               / (log(log(x**2 + 2*exp(exp(3*x**3*log(x)))))), x, oo) == S(1)/3
+    # # 8.11
+    # assert gruntz((exp(x*exp(-x)/(exp(-x) + exp(-2*x**2/(x + 1)))) - exp(x))/x,
+    #               x, oo) == -exp(2)
+    # # 8.12
+    # assert gruntz((3**x + 5**x)**(1/x), x, oo) == 5
+    # # 8.13
+    # assert gruntz(x/log(x**(log(x**(log(2)/log(x))))), x, oo) == oo
+    # # 8.14
+    # assert gruntz(exp(exp(2*log(x**5 + x)*log(log(x))))
+    #               / exp(exp(10*log(x)*log(log(x)))), x, oo) == oo
+    # # 8.15
+    # assert gruntz(exp(exp(S(5)/2*x**(-S(5)/7) + S(21)/8*x**(S(6)/11)
+    #                       + 2*x**(-8) + S(54)/17*x**(S(49)/45) ))**8
+    #               / log(log(-log(S(4)/3*x**(-S(5)/14))))**(S(7)/6), x, oo) == oo
+    # # 8.16
+    # assert gruntz((exp(4*x*exp(-x)/(1/exp(x) + 1/exp(2*x**2/(x + 1)))) - exp(x))
+    #               / exp(x)**4, x, oo) == 1
+    # # 8.17
+    # assert gruntz(exp(x*exp(-x)/(exp(-x) + exp(-2*x**2/(x + 1))))/exp(x), x, oo) \
+    #     == 1
+    # # 8.19
+    # assert gruntz(log(x)*(log(log(x) + log(log(x))) - log(log(x)))
+    #               / (log(log(x) + log(log(log(x))))), x, oo) == 1
+    # # 8.20
+    # assert gruntz(exp((log(log(x + exp(log(x)*log(log(x))))))
+    #               / (log(log(log(exp(x) + x + log(x)))))), x, oo) == E
+    # # Another
+    # assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x, oo) == oo
+    assert False # test hangs
 
 
 def test_gruntz_evaluation_slow():
@@ -95,23 +96,23 @@ def test_gruntz_evaluation_slow():
 
 
 def test_gruntz_eval_special():
-    # Gruntz, p. 126
-    assert gruntz(exp(x)*(sin(1/x + exp(-x)) - sin(1/x + exp(-x**2))), x, oo) == 1
-    assert gruntz((erf(x - exp(-exp(x))) - erf(x)) * exp(exp(x)) * exp(x**2),
-                  x, oo) == -2/sqrt(pi)
-    assert gruntz(exp(exp(x)) * (exp(sin(1/x + exp(-exp(x)))) - exp(sin(1/x))),
-                  x, oo) == 1
-    assert gruntz(exp(x)*(gamma(x + exp(-x)) - gamma(x)), x, oo) == oo
-    assert gruntz(exp(exp(digamma(digamma(x))))/x, x, oo) == exp(-S(1)/2)
-    assert gruntz(exp(exp(digamma(log(x))))/x, x, oo) == exp(-S(1)/2)
-    assert gruntz(digamma(digamma(digamma(x))), x, oo) == oo
-    assert gruntz(loggamma(loggamma(x)), x, oo) == oo
-    assert gruntz(((gamma(x + 1/gamma(x)) - gamma(x))/log(x) - cos(1/x))
-                  * x*log(x), x, oo) == -S(1)/2
-    assert gruntz(x * (gamma(x - 1/gamma(x)) - gamma(x) + log(x)), x, oo) \
-        == S(1)/2
-    assert gruntz((gamma(x + 1/gamma(x)) - gamma(x)) / log(x), x, oo) == 1
-
+    # # Gruntz, p. 126
+    # assert gruntz(exp(x)*(sin(1/x + exp(-x)) - sin(1/x + exp(-x**2))), x, oo) == 1
+    # assert gruntz((erf(x - exp(-exp(x))) - erf(x)) * exp(exp(x)) * exp(x**2),
+    #               x, oo) == -2/sqrt(pi)
+    # assert gruntz(exp(exp(x)) * (exp(sin(1/x + exp(-exp(x)))) - exp(sin(1/x))),
+    #               x, oo) == 1
+    # assert gruntz(exp(x)*(gamma(x + exp(-x)) - gamma(x)), x, oo) == oo
+    # assert gruntz(exp(exp(digamma(digamma(x))))/x, x, oo) == exp(-S(1)/2)
+    # assert gruntz(exp(exp(digamma(log(x))))/x, x, oo) == exp(-S(1)/2)
+    # assert gruntz(digamma(digamma(digamma(x))), x, oo) == oo
+    # assert gruntz(loggamma(loggamma(x)), x, oo) == oo
+    # assert gruntz(((gamma(x + 1/gamma(x)) - gamma(x))/log(x) - cos(1/x))
+    #               * x*log(x), x, oo) == -S(1)/2
+    # assert gruntz(x * (gamma(x - 1/gamma(x)) - gamma(x) + log(x)), x, oo) \
+    #     == S(1)/2
+    # assert gruntz((gamma(x + 1/gamma(x)) - gamma(x)) / log(x), x, oo) == 1
+    assert False # test hangs
 
 def test_gruntz_eval_special_slow():
     _sskip()

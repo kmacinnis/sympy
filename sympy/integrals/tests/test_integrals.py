@@ -792,11 +792,11 @@ def test_issue_1100():
 
 def test_issue_841():
     a, b, c, d = symbols('a:d', positive=True, bounded=True)
-    assert integrate(exp(-x**2 + I*c*x), x) == \
-        -sqrt(pi)*exp(-c**2/4)*erf(I*c/2 - x)/2
-    assert integrate(exp(a*x**2 + b*x + c), x) == \
-        sqrt(pi)*exp(c)*exp(-b**2/(4*a))*erfi(sqrt(a)*x + b/(2*sqrt(a)))/(2*sqrt(a))
-
+    # assert integrate(exp(-x**2 + I*c*x), x) == \
+    #     -sqrt(pi)*exp(-c**2/4)*erf(I*c/2 - x)/2
+    # assert integrate(exp(a*x**2 + b*x + c), x) == \
+    #     sqrt(pi)*exp(c)*exp(-b**2/(4*a))*erfi(sqrt(a)*x + b/(2*sqrt(a)))/(2*sqrt(a))
+    assert False # test hangs
 
 def test_issue_2314():
     # Note that this is not the same as testing ratint() becuase integrate()
@@ -835,8 +835,8 @@ def test_issue_1793b():
     # 8*cos(y)**2)/(2*(3 - cos(y)))) + x**2*sin(y)/2 + 2*x*cos(y)
 
     expr = (sin(y)*x**3 + 2*cos(y)*x**2 + 12)/(x**2 + 2)
-    assert trigsimp(factor(integrate(expr, x).diff(x) - expr)) == 0
-
+    # assert trigsimp(factor(integrate(expr, x).diff(x) - expr)) == 0
+    assert False # test hangs
 
 def test_issue_2079():
     assert integrate(sin(x)*f(y, z), (x, 0, pi), (y, 0, pi), (z, 0, pi)) == \
@@ -947,10 +947,11 @@ def test_issue_3154():
 
 
 def test_issue1054():
-    assert integrate(1/(1 + x + y + z), (x, 0, 1), (y, 0, 1), (z, 0, 1)) in [
-        -12*log(3) - 3*log(6)/2 + 3*log(8)/2 + 5*log(2) + 7*log(4),
-        6*log(2) + 8*log(4) - 27*log(3)/2, 22*log(2) - 27*log(3)/2,
-        -12*log(3) - 3*log(6)/2 + 47*log(2)/2]
+    # assert integrate(1/(1 + x + y + z), (x, 0, 1), (y, 0, 1), (z, 0, 1)) in [
+    #     -12*log(3) - 3*log(6)/2 + 3*log(8)/2 + 5*log(2) + 7*log(4),
+    #     6*log(2) + 8*log(4) - 27*log(3)/2, 22*log(2) - 27*log(3)/2,
+    #     -12*log(3) - 3*log(6)/2 + 47*log(2)/2]
+    assert False # test hangs
 
 
 def test_issue_1227():

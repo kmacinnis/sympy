@@ -2889,6 +2889,14 @@ class Expr(Basic, EvalfMixin):
 
         return expr
 
+    def _dist_const(self):
+        if self.is_Atom:
+            return self
+        else:
+            cls = self.__class__
+            newargs = [arg._dist_const() for arg in self.args]
+            return cls(*newargs)
+
     ###########################################################################
     ################### GLOBAL ACTION VERB WRAPPER METHODS ####################
     ###########################################################################

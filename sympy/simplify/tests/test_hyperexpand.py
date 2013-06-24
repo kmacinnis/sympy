@@ -119,10 +119,11 @@ def test_hyperexpand_bases():
 
 
 def test_hyperexpand_parametric():
-    assert hyperexpand(hyper([a, S(1)/2 + a], [S(1)/2], z)) \
-        == (1 + sqrt(z))**(-2*a)/2 + (1 - sqrt(z))**(-2*a)/2
-    assert hyperexpand(hyper([a, -S(1)/2 + a], [2*a], z)) \
-        == 2**(2*a - 1)*((-z + 1)**(S(1)/2) + 1)**(-2*a + 1)
+    # assert hyperexpand(hyper([a, S(1)/2 + a], [S(1)/2], z)) \
+    #     == (1 + sqrt(z))**(-2*a)/2 + (1 - sqrt(z))**(-2*a)/2
+    # assert hyperexpand(hyper([a, -S(1)/2 + a], [2*a], z)) \
+    #     == 2**(2*a - 1)*((-z + 1)**(S(1)/2) + 1)**(-2*a + 1)
+    assert False # test hangs
 
 
 def test_shifted_sum():
@@ -206,32 +207,32 @@ def op(f):
 
 
 def test_plan():
-    assert devise_plan(Hyper_Function([0], ()),
-            Hyper_Function([0], ()), z) == []
-    with raises(ValueError):
-        devise_plan(Hyper_Function([1], ()), Hyper_Function((), ()), z)
-    with raises(ValueError):
-        devise_plan(Hyper_Function([2], [1]), Hyper_Function([2], [2]), z)
-    with raises(ValueError):
-        devise_plan(Hyper_Function([2], []), Hyper_Function([S("1/2")], []), z)
-
-    # We cannot use pi/(10000 + n) because polys is insanely slow.
-    a1, a2, b1 = map(lambda n: randcplx(n), range(3))
-    b1 += 2*I
-    h = hyper([a1, a2], [b1], z)
-
-    h2 = hyper((a1 + 1, a2), [b1], z)
-    assert tn(apply_operators(h,
-        devise_plan(Hyper_Function((a1 + 1, a2), [b1]),
-            Hyper_Function((a1, a2), [b1]), z), op),
-        h2, z)
-
-    h2 = hyper((a1 + 1, a2 - 1), [b1], z)
-    assert tn(apply_operators(h,
-        devise_plan(Hyper_Function((a1 + 1, a2 - 1), [b1]),
-            Hyper_Function((a1, a2), [b1]), z), op),
-        h2, z)
-
+    # assert devise_plan(Hyper_Function([0], ()),
+    #         Hyper_Function([0], ()), z) == []
+    # with raises(ValueError):
+    #     devise_plan(Hyper_Function([1], ()), Hyper_Function((), ()), z)
+    # with raises(ValueError):
+    #     devise_plan(Hyper_Function([2], [1]), Hyper_Function([2], [2]), z)
+    # with raises(ValueError):
+    #     devise_plan(Hyper_Function([2], []), Hyper_Function([S("1/2")], []), z)
+    # 
+    # # We cannot use pi/(10000 + n) because polys is insanely slow.
+    # a1, a2, b1 = map(lambda n: randcplx(n), range(3))
+    # b1 += 2*I
+    # h = hyper([a1, a2], [b1], z)
+    # 
+    # h2 = hyper((a1 + 1, a2), [b1], z)
+    # assert tn(apply_operators(h,
+    #     devise_plan(Hyper_Function((a1 + 1, a2), [b1]),
+    #         Hyper_Function((a1, a2), [b1]), z), op),
+    #     h2, z)
+    # 
+    # h2 = hyper((a1 + 1, a2 - 1), [b1], z)
+    # assert tn(apply_operators(h,
+    #     devise_plan(Hyper_Function((a1 + 1, a2 - 1), [b1]),
+    #         Hyper_Function((a1, a2), [b1]), z), op),
+    #     h2, z)
+    assert False # test hangs
 
 def test_plan_derivatives():
     a1, a2, a3 = 1, 2, S('1/2')

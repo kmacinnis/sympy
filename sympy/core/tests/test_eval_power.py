@@ -163,8 +163,8 @@ def test_issue1263():
     assert (b**(-y)).as_numer_denom() == (1, b**y)
     assert (b**(-S.One)).as_numer_denom() == ((notp + x)**2, notp**2)
     nonp = Symbol('nonp', nonpositive=True)
-    assert (((1 + x/nonp)**-2)**(-S.One)).as_numer_denom() == ((-nonp -
-            x)**2, nonp**2)
+    assert (((1 + x/nonp)**-2)**(-S.One)).as_numer_denom() == \
+            ((nonp + x)**2, nonp**2)
 
     n = Symbol('n', negative=True)
     assert (x**n).as_numer_denom() == (1, x**-n)
@@ -251,7 +251,7 @@ def test_issue_3109():
     assert root((6*I)**(2*I), 3).as_base_exp()[1] == Rational(1, 3)  # != 2*I/3
     assert root((6*I)**(I/3), 3).as_base_exp()[1] == I/9
     assert sqrt(exp(3*I)) == exp(3*I/2)
-    assert sqrt(-sqrt(3)*(1 + 2*I)) == sqrt(sqrt(3))*sqrt(-1 - 2*I)
+    assert sqrt(-sqrt(3)*(1 + 2*I)) == sqrt(sqrt(3))*sqrt(-(1 + 2*I))
     assert sqrt(exp(5*I)) == -exp(5*I/2)
     assert root(exp(5*I), 3).exp == Rational(1, 3)
 

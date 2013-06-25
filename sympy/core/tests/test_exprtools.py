@@ -202,7 +202,7 @@ def test_gcd_terms():
     a = alpha**2 - alpha*x**2 + alpha + x**3 - x*(alpha + 1)
     rep = (alpha, (1 + sqrt(5))/2 + alpha1*x + alpha2*x**2 + alpha3*x**3)
     s = (a/(x - alpha)).subs(*rep).series(x, 0, 1)
-    assert simplify(collect(s, x)) == -sqrt(5)/2 - S(3)/2 + O(x)
+    assert simplify(collect(s, x)) == (-2*sqrt(5) - 6 + O(x))/4
 
     # issue 2818
     assert _gcd_terms([S.Zero, S.Zero]) == (0, 0, 1)

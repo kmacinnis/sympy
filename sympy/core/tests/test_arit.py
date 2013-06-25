@@ -1257,7 +1257,7 @@ def test_Add_as_content_primitive():
     p = 3 + x + y
     assert (2*p).expand().as_content_primitive() == (2, p)
     assert (2.0*p).expand().as_content_primitive() == (1, (2.*p)._dist_const())
-    p *= -1
+    p = -3 - x - y
     assert (2*p).expand().as_content_primitive() == (2, p)
 
 

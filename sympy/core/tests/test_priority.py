@@ -81,7 +81,7 @@ def test_sub():
     l = Lower()
     assert l - h == h - l == 'high'
     assert x - h == h - x == 'high'
-    assert l - x == -(x - l) != 'low'
+    assert l - x  != 'low'
 
 
 def test_pow():

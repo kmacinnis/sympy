@@ -53,8 +53,8 @@ class Mod(Function):
                         rv += q
                     return rv
 
-            # by differencec
-            d = p - q
+            # by difference
+            d = (p - q)._dist_const()
             if (d < 0) is True:
                 if (q < 0) is True:
                     return d
@@ -77,7 +77,8 @@ class Mod(Function):
         G = gcd(p, q)
         if G is not S.One:
             p, q = [
-                gcd_terms(i/G, clear=False, fraction=False) for i in (p, q)]
+                gcd_terms(i/G, clear=False, fraction=False)._dist_const() 
+                                                            for i in (p, q)]
         pwas, qwas = p, q
 
         # simplify terms
@@ -124,6 +125,9 @@ class Mod(Function):
             p = (G*p)._dist_const()
             return cls(p, q, evaluate=False)
         elif G.is_Mul and G.args[0].is_Float and G.args[0] == 1:
-            p = (G.args[0]*p)._dist_const()
+            try:
+                p = (G.args[0]*p)._dist_const()
+            except:
+                p = G.args[0]*p
             G = Mul._from_args(G.args[1:])
         return G*cls(p, q, evaluate=(p, q) != (pwas, qwas))

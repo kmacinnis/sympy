@@ -604,7 +604,7 @@ class Add(Expr, AssocOp):
                                *[s._subs(old, new) for s in ret_set])
 
                 args_old = Add.make_args(
-                    -terms_old)     # (a+b+c+d).subs(-b-c,x) -> a-x+d
+                    (-terms_old)._dist_const())     # (a+b+c+d).subs(-b-c,x) -> a-x+d
                 old_set = set(args_old)
                 if old_set < self_set:
                     ret_set = self_set - old_set

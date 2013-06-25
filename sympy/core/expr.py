@@ -2035,7 +2035,7 @@ class Expr(Basic, EvalfMixin):
            True
 
         """
-        negative_self = -self
+        negative_self = (-self)._dist_const()
         self_has_minus = (self.extract_multiplicatively(-1) is not None)
         negative_self_has_minus = (
             (negative_self).extract_multiplicatively(-1) is not None)

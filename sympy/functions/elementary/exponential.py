@@ -227,9 +227,9 @@ class exp(ExpBase):
             if arg in [Ioo, -Ioo]:
                 return S.NaN
 
-            coeff = arg.coeff(S.Pi*S.ImaginaryUnit)
+            coeff = arg.coeff(S.Pi*S.ImaginaryUnit)._dist_const()
             if coeff:
-                if (2*coeff).is_integer:
+                if (2*coeff)._dist_const().is_integer:
                     if coeff.is_even:
                         return S.One
                     elif coeff.is_odd:

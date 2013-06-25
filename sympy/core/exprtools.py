@@ -843,7 +843,7 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
             terms = sympify(terms)
         terms, reps = mask(terms)
         cont, numer, denom = _gcd_terms(terms, isprimitive, fraction)
-        numer = numer.xreplace(reps)
+        numer = numer._dist_const().xreplace(reps)
         coeff, factors = cont.as_coeff_Mul()
         return _keep_coeff(coeff, factors*numer/denom, clear=clear)
 

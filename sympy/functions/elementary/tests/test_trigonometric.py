@@ -1,7 +1,7 @@
 from sympy import (symbols, Symbol, nan, oo, zoo, I, sinh, sin, acot, pi, atan,
         acos, Rational, sqrt, asin, acot, cot, coth, E, S, tan, tanh, cos,
         cosh, atan2, exp, log, asinh, acoth, atanh, O, cancel, Matrix, re, im,
-        Float, Pow, gcd, sec, csc, cot)
+        Float, Pow, gcd, sec, csc, cot, expand)
 
 from sympy.utilities.pytest import XFAIL, slow, raises
 
@@ -56,8 +56,8 @@ def test_sin():
     assert sin(7*pi/6) == -S.Half
     assert sin(-5*pi/6) == -S.Half
 
-    assert sin(1*pi/5) == sqrt((5 - sqrt(5)) / 8)
-    assert sin(2*pi/5) == sqrt((5 + sqrt(5)) / 8)
+    assert sin(1*pi/5) == sqrt(Rational(5,8) - sqrt(5) / 8)
+    assert sin(2*pi/5) == sqrt(Rational(5,8) + sqrt(5) / 8)
     assert sin(3*pi/5) == sin(2*pi/5)
     assert sin(4*pi/5) == sin(1*pi/5)
     assert sin(6*pi/5) == -sin(1*pi/5)
@@ -65,7 +65,7 @@ def test_sin():
 
     assert sin(-1273*pi/5) == -sin(2*pi/5)
 
-    assert sin(pi/8) == sqrt((2 - sqrt(2))/4)
+    assert sin(pi/8) == sqrt(S.Half - sqrt(2)/4)
 
     assert sin(104*pi/105) == sin(pi/105)
     assert sin(106*pi/105) == -sin(pi/105)
@@ -226,8 +226,8 @@ def test_cos():
     assert cos(7*pi/6) == -S.Half*sqrt(3)
     assert cos(-5*pi/6) == -S.Half*sqrt(3)
 
-    assert cos(1*pi/5) == (sqrt(5) + 1)/4
-    assert cos(2*pi/5) == (sqrt(5) - 1)/4
+    assert cos(1*pi/5) == sqrt(5)/4 + S(1)/4
+    assert cos(2*pi/5) == sqrt(5)/4 - S(1)/4
     assert cos(3*pi/5) == -cos(2*pi/5)
     assert cos(4*pi/5) == -cos(1*pi/5)
     assert cos(6*pi/5) == -cos(1*pi/5)
@@ -235,7 +235,7 @@ def test_cos():
 
     assert cos(-1273*pi/5) == -cos(2*pi/5)
 
-    assert cos(pi/8) == sqrt((2 + sqrt(2))/4)
+    assert cos(pi/8) == sqrt(sqrt(2)/4 + S.Half)
 
     assert cos(104*pi/105) == -cos(pi/105)
     assert cos(106*pi/105) == -cos(pi/105)
@@ -272,9 +272,9 @@ def test_cos_series():
 
 
 def test_cos_rewrite():
-    assert cos(x).rewrite(exp) == exp(I*x)/2 + exp(-I*x)/2
+    assert cos(x).rewrite(exp) == (exp(I*x) + exp(-I*x))/2
     assert cos(x).rewrite(tan) == (1 - tan(x/2)**2)/(1 + tan(x/2)**2)
-    assert cos(x).rewrite(cot) == -(1 - cot(x/2)**2)/(1 + cot(x/2)**2)
+    assert cos(x).rewrite(cot) == (cot(x/2)**2 - 1)/(cot(x/2)**2 + 1)
     assert cos(sinh(x)).rewrite(
         exp).subs(x, 3).n() == cos(x).rewrite(exp).subs(x, sinh(3)).n()
     assert cos(cosh(x)).rewrite(
@@ -578,7 +578,7 @@ def test_acos():
 def test_acos_series():
     assert acos(x).series(x, 0, 8) == \
         pi/2 - x - x**3/6 - 3*x**5/40 - 5*x**7/112 + O(x**8)
-    assert acos(x).series(x, 0, 8) == pi/2 - asin(x).series(x, 0, 8)
+    assert acos(x).series(x, 0, 8) == (pi/2 - asin(x).series(x, 0, 8)).expand()
     t5 = acos(x).taylor_term(5, x)
     assert t5 == -3*x**5/40
     assert acos(x).taylor_term(7, x, t5, 0) == -5*x**7/112
@@ -660,7 +660,7 @@ def _check_even_rewrite(func, arg):
     """Checks that the expr has been rewritten using f(-x) -> f(x)
     arg : -x
     """
-    return func(arg).args[0] == -arg
+    return func(arg).args[0] == expand(-arg)
 
 
 def _check_odd_rewrite(func, arg):
@@ -697,7 +697,7 @@ def test_evenodd_rewrite():
 
 def test_issue1448():
     assert sin(x).rewrite(cot) == 2*cot(x/2)/(1 + cot(x/2)**2)
-    assert cos(x).rewrite(cot) == -(1 - cot(x/2)**2)/(1 + cot(x/2)**2)
+    assert cos(x).rewrite(cot) == (cot(x/2)**2 - 1)/(cot(x/2)**2 + 1)
     assert tan(x).rewrite(cot) == 1/cot(x)
     assert cot(x).fdiff() == -1 - cot(x)**2
 

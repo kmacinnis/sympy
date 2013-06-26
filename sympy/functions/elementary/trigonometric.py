@@ -185,7 +185,7 @@ class sin(TrigonometricFunction):
                 return
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg)._dist_const())
 
         i_coeff = arg.as_coefficient(S.ImaginaryUnit)
         if i_coeff is not None:
@@ -211,7 +211,7 @@ class sin(TrigonometricFunction):
                 if 2*x > 1:
                     return cls((1 - x)*S.Pi)
                 narg = ((pi_coeff + C.Rational(3, 2)) % 2)*S.Pi
-                result = cos(narg)
+                result = cos(narg)._dist_const()
                 if not isinstance(result, cos):
                     return result
                 if pi_coeff*S.Pi != arg:
@@ -421,7 +421,7 @@ class cos(TrigonometricFunction):
                 return
 
         if arg.could_extract_minus_sign():
-            return cls(-arg)
+            return cls((-arg)._dist_const())
 
         i_coeff = arg.as_coefficient(S.ImaginaryUnit)
         if i_coeff is not None:
@@ -475,7 +475,7 @@ class cos(TrigonometricFunction):
                         return None
                     x = (2*pi_coeff + 1)/2
                     sign_cos = (-1)**((-1 if x < 0 else 1)*int(abs(x)))
-                    return sign_cos*sqrt( (1 + nval)/2 )
+                    return sign_cos*sqrt((nval/2)._dist_const() + S.Half)
             return None
 
         if arg.is_Add:
@@ -789,7 +789,7 @@ class tan(TrigonometricFunction):
                 return S.Zero
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg)._dist_const())
 
         i_coeff = arg.as_coefficient(S.ImaginaryUnit)
         if i_coeff is not None:
@@ -1000,7 +1000,7 @@ class cot(TrigonometricFunction):
                 return S.ComplexInfinity
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg)._dist_const())
 
         i_coeff = arg.as_coefficient(S.ImaginaryUnit)
         if i_coeff is not None:
@@ -1243,7 +1243,7 @@ class asin(Function):
                 return -S.Pi / 2
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg)._dist_const())
 
         if arg.is_number:
             cst_table = {
@@ -1260,7 +1260,9 @@ class asin(Function):
                 sqrt(2 - sqrt(2))/2: 8,
                 -sqrt(2 - sqrt(2))/2: -8,
                 (sqrt(5) - 1)/4: 10,
+                sqrt(5)/4 - S(1)/4: 10,
                 (1 - sqrt(5))/4: -10,
+                S(1)/4 - sqrt(5)/4: -10,
                 (sqrt(3) - 1)/sqrt(2**3): 12,
                 (1 - sqrt(3))/sqrt(2**3): -12,
                 (sqrt(5) + 1)/4: S(10)/3,
@@ -1503,7 +1505,7 @@ class atan(Function):
             elif arg is S.NegativeOne:
                 return -S.Pi / 4
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg)._dist_const())
 
         if arg.is_number:
             cst_table = {
@@ -1515,12 +1517,14 @@ class atan(Function):
                 -sqrt(3): -3,
                 (1 + sqrt(2)): S(8)/3,
                 -(1 + sqrt(2)): S(8)/3,
+                (-1 - sqrt(2)): S(8)/3,
                 (sqrt(2) - 1): 8,
                 (1 - sqrt(2)): -8,
                 sqrt((5 + 2*sqrt(5))): S(5)/2,
                 -sqrt((5 + 2*sqrt(5))): -S(5)/2,
                 (2 - sqrt(3)): 12,
-                -(2 - sqrt(3)): -12
+                -(2 - sqrt(3)): -12,
+                (-2 + sqrt(3)): -12
             }
 
             if arg in cst_table:
@@ -1611,7 +1615,7 @@ class acot(Function):
                 return -S.Pi / 4
 
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg)._dist_const())
 
         if arg.is_number:
             cst_table = {
@@ -1623,14 +1627,17 @@ class acot(Function):
                 -sqrt(3): -6,
                 (1 + sqrt(2)): 8,
                 -(1 + sqrt(2)): -8,
+                (-1 - sqrt(2)): -8,
                 (1 - sqrt(2)): -S(8)/3,
                 (sqrt(2) - 1): S(8)/3,
                 sqrt(5 + 2*sqrt(5)): 10,
                 -sqrt(5 + 2*sqrt(5)): -10,
                 (2 + sqrt(3)): 12,
                 -(2 + sqrt(3)): -12,
+                (-2 - sqrt(3)): -12,
                 (2 - sqrt(3)): S(12)/5,
                 -(2 - sqrt(3)): -S(12)/5,
+                (-2 + sqrt(3)): -S(12)/5,
             }
 
             if arg in cst_table:

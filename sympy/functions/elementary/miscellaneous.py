@@ -541,8 +541,8 @@ class Min(MinMaxBase, Application):
         if 0 < argindex and argindex <= n:
             argindex -= 1
             if n == 2:
-                return Heaviside( self.args[1-argindex] - self.args[argindex] )
+                return Heaviside( self.args[1-argindex] - self.args[argindex] )._dist_const()
             newargs = tuple([ self.args[i] for i in xrange(n) if i != argindex])
-            return Heaviside( Min(*newargs) - self.args[argindex] )
+            return Heaviside( Min(*newargs) - self.args[argindex] )._dist_const()
         else:
             raise ArgumentIndexError(self, argindex)

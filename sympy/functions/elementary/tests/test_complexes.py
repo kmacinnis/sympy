@@ -68,7 +68,7 @@ def test_re():
     assert re(a * (2 + b*I)) == 2*a
 
     assert re((1 + sqrt(a + b*I))/2) == \
-        (a**2 + b**2)**Rational(1, 4)*cos(atan2(b, a)/2)/2 + Rational(1, 2)
+        ((a**2 + b**2)**Rational(1, 4)*cos(atan2(b, a)/2) + 1)/2
 
 
 def test_im():
@@ -252,11 +252,8 @@ def test_as_real_imag():
     # issue 754
     a, b = symbols('a,b', real=True)
     assert ((1 + sqrt(a + b*I))/2).as_real_imag() == \
-           (
-               (a**2 + b**2)**Rational(
-                   1, 4)*cos(atan2(b, a)/2)/2 + Rational(1, 2),
-               (a**2 + b**2)**Rational(1, 4)*sin(atan2(b, a)/2)/2)
-
+            (   ((a**2 + b**2)**Rational(1, 4)*cos(atan2(b, a)/2) + 1)/2, 
+                (a**2 + b**2)**Rational(1, 4)*sin(atan2(b, a)/2)/2)
 
 @XFAIL
 def test_sign_issue_3068():

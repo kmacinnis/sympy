@@ -711,6 +711,9 @@ class Basic(object):
         """
         return iter(self.args)
 
+    def _dist_const(self):
+        return self
+
     def as_poly(self, *gens, **args):
         """Converts ``self`` to a polynomial or returns ``None``.
 

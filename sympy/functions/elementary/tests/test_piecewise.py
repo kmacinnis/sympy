@@ -88,7 +88,7 @@ def test_piecewise():
     assert x*p + p == p + x*p
     assert p + f == f + p
     assert p + dp == dp + p
-    assert p - dp == -(dp - p)
+    assert p - dp == (-(dp - p)).expand()
 
     # Test power
     dp2 = Piecewise((0, x < -1), (4*x**2, x < 0), (1/x**2, x >= 0))

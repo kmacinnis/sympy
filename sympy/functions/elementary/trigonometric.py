@@ -1266,7 +1266,9 @@ class asin(Function):
                 (sqrt(3) - 1)/sqrt(2**3): 12,
                 (1 - sqrt(3))/sqrt(2**3): -12,
                 (sqrt(5) + 1)/4: S(10)/3,
-                -(sqrt(5) + 1)/4: -S(10)/3
+                sqrt(5)/4 + S(1)/4: S(10)/3,
+                -(sqrt(5) + 1)/4: -S(10)/3,
+                -sqrt(5)/4 - S(1)/4: -S(10)/3,
             }
 
             if arg in cst_table:

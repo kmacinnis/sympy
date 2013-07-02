@@ -758,7 +758,8 @@ class Add(Expr, AssocOp):
 
         terms = []
         inf = False
-        for a in self.args:
+        s = self._dist_const()
+        for a in s.args:
             c, m = a.as_coeff_Mul()
             if not c.is_Rational:
                 c = S.One
@@ -821,8 +822,9 @@ class Add(Expr, AssocOp):
 
         See docstring of Expr.as_content_primitive for more examples.
         """
+        s = self._dist_const()
         con, prim = Add(*[_keep_coeff(*a.as_content_primitive(
-            radical=radical)) for a in self.args]).primitive()
+            radical=radical)) for a in s.args]).primitive()
         if radical and prim.is_Add:
             # look for common radicals that can be removed
             args = prim.args

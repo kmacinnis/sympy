@@ -1983,7 +1983,7 @@ class Expr(Basic, EvalfMixin):
         # a number.
         if c.is_Add and c.args[0].is_Number:
             # whole term as a term factor
-            co = self.coeff(c)
+            co = self.coeff(c)._dist_const()
             xa0 = (co.extract_additively(1) or 0)*c
             if xa0:
                 diff = (self - co*c)._dist_const()
@@ -2000,7 +2000,7 @@ class Expr(Basic, EvalfMixin):
             return xa + xa2
 
         # whole term as a term factor
-        co = self.coeff(c)
+        co = self.coeff(c)._dist_const()
         xa0 = (co.extract_additively(1) or 0)*c
         if xa0:
             diff = (self - co*c)._dist_const()
@@ -2009,7 +2009,7 @@ class Expr(Basic, EvalfMixin):
         coeffs = []
         for a in Add.make_args(c):
             ac, at = a.as_coeff_Mul()
-            co = self.coeff(at)
+            co = self.coeff(at)._dist_const()
             if not co:
                 return None
             coc, cot = co.as_coeff_Add()

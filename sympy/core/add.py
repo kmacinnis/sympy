@@ -759,6 +759,10 @@ class Add(Expr, AssocOp):
         terms = []
         inf = False
         s = self._dist_const()
+        
+        if not s.is_Add:
+            return s.primitive()
+        
         for a in s.args:
             c, m = a.as_coeff_Mul()
             if not c.is_Rational:

@@ -1403,6 +1403,7 @@ def test_primitive():
     assert (S.Infinity + 2*x/3 + 4*y/7).primitive() == \
         (S(1)/21, 14*x + 12*y + oo)
     assert S.Zero.primitive() == (S.One, S.Zero)
+    assert -3*(x+y+7)+3*(x+y+8) == (S(3), S.One)
 
 
 def test_issue_2744():

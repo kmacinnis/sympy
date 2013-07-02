@@ -396,6 +396,12 @@ class Add(Expr, AssocOp):
 
     def as_numer_denom(self):
 
+        # handle expressions that aren't Adds after 
+        # distributing constants
+        s = self._dist_const()
+        if not s.is_Add:
+            return s.as_numer_denom()
+            
         # clear rational denominator
         content, expr = self.primitive()
         ncon, dcon = content.as_numer_denom()

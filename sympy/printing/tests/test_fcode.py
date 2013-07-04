@@ -25,7 +25,7 @@ def test_fcode_Pow():
     assert fcode(x**3) == "      x**3"
     assert fcode(x**(y**3)) == "      x**(y**3)"
     assert fcode(1/(sin(x)*3.5)**(x - y**x)/(x**2 + y)) == \
-        "      (3.5d0*sin(x))**(-x + y**x)/(x**2 + y)"
+        "      (3.5d0*sin(x))**(-(x - y**x))/(x**2 + y)"
     assert fcode(sqrt(x)) == '      sqrt(x)'
     assert fcode(sqrt(n)) == '      sqrt(dble(n))'
     assert fcode(x**0.5) == '      sqrt(x)'

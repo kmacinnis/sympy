@@ -881,7 +881,7 @@ class assoc_legendre(Function):
             # P^0_n  --->  L_n
             return legendre(n, x)
         if x == 0:
-            return 2**m*sqrt(S.Pi) / (C.gamma((1 - m - n)/2)*C.gamma(1 - (m - n)/2))
+            return 2**m*sqrt(S.Pi) / (C.gamma((1 - m - n)/2)*C.gamma(1 + (-m + n)/2))
         if n.is_Number and m.is_Number and n.is_integer and m.is_integer:
             if n.is_negative:
                 raise ValueError("%s : 1st index must be nonnegative integer (got %r)" % (cls, n))

@@ -572,12 +572,12 @@ def test_issue_1220():
     x, y = symbols('x y')
 
     p = -x*(S(1)/8 - y)
-    ans = set([S.Zero, y - S(1)/8])
+    ans = set([S.Zero, -(S(1)/8 - y)])
 
     def ok(pat):
         assert set(p.match(pat).values()) == ans
 
-    ok(Wild("coeff", exclude=[x])*x + Wild("rest"))
+    # ok(Wild("coeff", exclude=[x])*x + Wild("rest"))
     ok(Wild("w", exclude=[x])*x + Wild("rest"))
     ok(Wild("coeff", exclude=[x])*x + Wild("rest"))
     ok(Wild("w", exclude=[x])*x + Wild("rest"))

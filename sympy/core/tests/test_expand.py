@@ -258,7 +258,8 @@ def test_power_expand():
 def test_issues_2820_3731():
     # 2820
     n = -1 + 1/x
-    z = n/x/(-n)**2 - 1/n/x
+    neg_n = 1 - 1/x
+    z = n/x/(neg_n)**2 - 1/n/x
     assert expand(z) == 1/(x**2 - 2*x + 1) - 1/(x - 2 + 1/x) - 1/(-x + 1)
 
     # 3731

@@ -183,7 +183,7 @@ def test_sympify_text():
 
 
 def test_sympify_function():
-    assert sympify('factor(x**2-1, x)') == -(1 - x)*(x + 1)
+    assert sympify('factor(x**2-1, x)') == (x - 1)*(x + 1)
     assert sympify('sin(pi/2)*cos(pi)') == -Integer(1)
 
 
@@ -436,9 +436,7 @@ def test_geometry():
 
 def test_kernS():
     s =   '-1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x)))'
-    # when 1497 is fixed, this no longer should pass: the expression
-    # should be unchanged
-    assert -1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) == -1
+    assert -1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) != -1
     # sympification should not allow the constant to enter a Mul
     # or else the structure can change dramatically
     ss = kernS(s)

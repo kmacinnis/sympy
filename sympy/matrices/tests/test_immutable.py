@@ -34,7 +34,7 @@ def test_subs():
     assert C.subs([(x, -1), (y, -2)]) == A
     assert C.subs({x: -1, y: -2}) == A
     assert C.subs({x: y - 1, y: x - 1}, simultaneous=True) == \
-        ImmutableMatrix([[1 - y, (x - 1)*(y - 1)], [2 - x - y, (x - 1)**2]])
+        ImmutableMatrix([[-(y - 1), (x - 1)*(y - 1)], [-(x + y - 2), (x - 1)**2]])
 
 
 def test_as_immutable():

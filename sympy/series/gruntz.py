@@ -467,7 +467,7 @@ def sign(e, x):
 
 @debug
 @timeit
-@cacheit
+# @cacheit   KATE - uncomment this later!
 def limitinf(e, x):
     """Limit e(x) for x-> oo"""
     #rewrite e in terms of tractable functions only
@@ -532,7 +532,7 @@ def calculate_series(e, x, skip_abs=False, logx=None):
 
 @debug
 @timeit
-@cacheit
+# @cacheit   KATE - uncomment this later!
 def mrv_leadterm(e, x):
     """Returns (c0, e0) for e."""
     Omega = SubsSet()

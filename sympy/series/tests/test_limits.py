@@ -223,8 +223,9 @@ def test_issue693():
 def test_issue991():
     assert limit(1/(x + 3), x, 2) == S(1)/5
     assert limit(1/(x + pi), x, 2) == S(1)/(2 + pi)
-    assert limit(log(x)/(x**2 + 3), x, 2) == log(2)/7
-    assert limit(log(x)/(x**2 + pi), x, 2) == log(2)/(4 + pi)
+    # assert limit(log(x)/(x**2 + 3), x, 2) == log(2)/7
+    # assert limit(log(x)/(x**2 + pi), x, 2) == log(2)/(4 + pi)
+    assert False  # test hangs
 
 
 def test_issue1448():

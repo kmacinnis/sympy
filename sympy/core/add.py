@@ -810,7 +810,7 @@ class Add(Expr, AssocOp):
         _addsort(terms)
         if c:
             terms.insert(0, c)
-        return Rational(ngcd, dlcm), self._new_rawargs(*terms)
+        return Rational(ngcd, dlcm), self._new_rawargs(*terms)._dist_const()
 
     def as_content_primitive(self, radical=False):
         """Return the tuple (R, self/R) where R is the positive Rational

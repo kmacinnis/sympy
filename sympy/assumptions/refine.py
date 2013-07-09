@@ -154,16 +154,16 @@ def refine_exp(expr, assumptions):
     """
     arg = expr.args[0]
     if arg.is_Mul:
-        coeff = arg.as_coefficient(S.Pi*S.ImaginaryUnit)
+        coeff = (arg.as_coefficient(S.Pi*S.ImaginaryUnit))._dist_const()
         if coeff:
-            if ask(Q.integer(2*coeff), assumptions):
+            if ask(Q.integer((2*coeff)._dist_const()), assumptions):
                 if ask(Q.even(coeff), assumptions):
                     return S.One
                 elif ask(Q.odd(coeff), assumptions):
                     return S.NegativeOne
-                elif ask(Q.even(coeff + S.Half), assumptions):
+                elif ask(Q.even((coeff + S.Half)._dist_const()), assumptions):
                     return -S.ImaginaryUnit
-                elif ask(Q.odd(coeff + S.Half), assumptions):
+                elif ask(Q.odd((coeff + S.Half)._dist_const()), assumptions):
                     return S.ImaginaryUnit
 
 def refine_Relational(expr, assumptions):

@@ -762,7 +762,9 @@ class Mul(Expr, AssocOp):
         """Distributes a constant over an Add.
         Designed to replicate previous default behavior."""
 
-        factors = self.args
+        if not self.is_commutative:
+            return self
+        factors = self.as_ordered_factors()
         if factors[0].is_Number and factors[1].is_Add and factors[1].is_commutative:
             fac1 = factors[1]._dist_const()
             return Add(*[factors[0]*f for f in fac1.args])* \

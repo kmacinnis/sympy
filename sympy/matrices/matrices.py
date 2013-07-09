@@ -2265,7 +2265,7 @@ class MatrixBase(object):
         else:
             for i in range(n):
                 for j in range(i, n):
-                    if self[i, j] != -self[j, i]:
+                    if self[i, j]._dist_const() != (-self[j, i])._dist_const():
                         return False
             return True
 
@@ -2398,7 +2398,7 @@ class MatrixBase(object):
                 # form of Gaussian elimination algorithm
                 for i in range(k + 1, n):
                     for j in range(k + 1, n):
-                        D = M[k, k]*M[i, j] - M[i, k]*M[k, j]
+                        D = (M[k, k]*M[i, j] - M[i, k]*M[k, j])._dist_const()
 
                         if k > 0:
                             D /= M[k - 1, k - 1]
@@ -2408,7 +2408,7 @@ class MatrixBase(object):
                         else:
                             M[i, j] = cancel(D)
 
-            det = sign*M[n - 1, n - 1]
+            det = (sign*M[n - 1, n - 1])._dist_const()
 
         return det.expand()
 
@@ -2579,7 +2579,7 @@ class MatrixBase(object):
                 if j == pivot:
                     continue
                 scale = r[j, i]
-                r.zip_row_op(j, pivot, lambda x, y: x - scale*y)
+                r.zip_row_op(j, pivot, lambda x, y: (x - scale*y)._dist_const())
             pivotlist.append(i)
             pivot += 1
         return self._new(r), pivotlist
@@ -2754,7 +2754,7 @@ class MatrixBase(object):
             return S.One
         poly = self.berkowitz()[-1]
         sign = (-1)**(len(poly) - 1)
-        return sign*poly[-1]
+        return (sign*poly[-1])._dist_const()
 
     def berkowitz_minors(self):
         """Computes principal minors using Berkowitz method.

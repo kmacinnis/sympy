@@ -1600,7 +1600,7 @@ class Basic(object):
                 pattern = [ p.__class__ for p in pattern if self.has(p) ]
 
                 if pattern:
-                    return self._eval_rewrite(tuple(pattern), rule, **hints)
+                    return self._eval_rewrite(tuple(pattern), rule, **hints)._dist_const()
                 else:
                     return self
 

@@ -561,7 +561,7 @@ class binomial(CombinatorialFunction):
 
         k = self.args[1]
         if k.is_Add and n in k.args:
-            k = n - k
+            k = (n - k)._dist_const()
 
         if k.is_Integer:
             if k == S.Zero:
@@ -579,10 +579,10 @@ class binomial(CombinatorialFunction):
             return binomial(*self.args)
 
     def _eval_rewrite_as_factorial(self, n, k):
-        return C.factorial(n)/(C.factorial(k)*C.factorial(n - k))
+        return C.factorial(n)/(C.factorial(k)*C.factorial((n - k)._dist_const()))
 
     def _eval_rewrite_as_gamma(self, n, k):
-        return C.gamma(n + 1)/(C.gamma(k + 1)*C.gamma(n - k + 1))
+        return C.gamma(n + 1)/(C.gamma(k + 1)*C.gamma((n - k + 1)._dist_const()))
 
     def _eval_is_integer(self):
         return self.args[0].is_integer and self.args[1].is_integer

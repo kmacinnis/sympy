@@ -740,7 +740,9 @@ def ratsimp(expr):
 
     f, g = cancel(expr).as_numer_denom()
     try:
-        Q, r = reduced(f, [g], field=True, expand=False)
+        Q, r = reduced(f._dist_const(), 
+                    [g._dist_const()], 
+                    field=True, expand=False)
     except ComputationFailed:
         return f/g
 
@@ -1746,6 +1748,7 @@ def split_surds(expr):
     >>> split_surds(3*sqrt(3) + sqrt(5)/7 + sqrt(6) + sqrt(10) + sqrt(15))
     (3, sqrt(2) + sqrt(5) + 3, sqrt(5)/7 + sqrt(10))
     """
+    expr = expr._dist_const()
     args = sorted(expr.args, key=default_sort_key)
     coeff_muls = [x.as_coeff_Mul() for x in args]
     surds = [x[1]**2 for x in coeff_muls if x[1].is_Pow]
@@ -3873,9 +3876,9 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
             mpmath.mp.dps = orig
     try:
         if re:
-            re = nsimplify_real(re)
+            re = nsimplify_real(re)._dist_const()
         if im:
-            im = nsimplify_real(im)
+            im = nsimplify_real(im)._dist_const()
     except ValueError:
         if rational is None:
             return _real_to_rational(expr)

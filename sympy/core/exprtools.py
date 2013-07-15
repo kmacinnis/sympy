@@ -843,7 +843,7 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
             terms = sympify(terms)
         terms, reps = mask(terms)
         cont, numer, denom = _gcd_terms(terms, isprimitive, fraction)
-        numer = numer._dist_const().xreplace(reps)
+        numer = numer.xreplace(reps)
         coeff, factors = cont.as_coeff_Mul()
         return _keep_coeff(coeff, factors*numer/denom, clear=clear)
 
@@ -957,19 +957,11 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
             if all(a.as_coeff_Mul()[0] < 0 for a in list_args):
                 cont = -cont
                 list_args = [-a for a in list_args]
-            # watch out for exp(-(x+2)) which gcd_terms will change to exp(-x-2)
-            special = {}
-            for i, a in enumerate(list_args):
-                b, e = a.as_base_exp()
-                if e.is_Mul and e != Mul(*e.args):
-                    list_args[i] = Dummy()
-                    special[list_args[i]] = a
-            # rebuild p not worrying about the order which gcd_terms will fix
             p = Add._from_args(list_args)
             p = gcd_terms(p,
                 isprimitive=True,
                 clear=clear,
-                fraction=fraction).xreplace(special)
+                fraction=fraction)
         elif p.args:
             p = p.func(
                 *[do(a) for a in p.args])

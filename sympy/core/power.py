@@ -110,8 +110,10 @@ class Pow(Expr):
                         return S.Exp1**(c*numer(ex))
                     elif den.is_Add:
                         s = sign(im(b))
-                        if s.is_Number and s and den == \
-                                log(-factor_terms(b, sign=False)) + s*S.ImaginaryUnit*S.Pi:
+                        if s.is_Number and s and den in [
+                                log(-factor_terms(b, sign=False)) + s*S.ImaginaryUnit*S.Pi,
+                                log((-factor_terms(b, sign=False))._dist_const()
+                                                    ) + s*S.ImaginaryUnit*S.Pi]:
                             return S.Exp1**(c*numer(ex))
 
                 obj = b._eval_power(e)

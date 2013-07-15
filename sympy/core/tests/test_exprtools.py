@@ -186,7 +186,7 @@ def test_gcd_terms():
     assert gcd_terms(Dict((x*(1 + y), 2), (x + x*y, y + x*y))) == \
         Dict({x*(y + 1): 2, x + x*y: y*(1 + x)})
 
-    assert gcd_terms((2*x + 2)**3 + (2*x + 2)**2) == 4*(x + 1)**2*(2*x + 3)
+    assert gcd_terms((2*x + 2)**3 + (2*x + 2)**2) == 4*(x + 1)**2*(2*(x + 1) + 1)
 
     assert gcd_terms(0) == 0
     assert gcd_terms(1) == 1
@@ -261,8 +261,6 @@ def test_factor_terms():
     assert gcd_terms(-x - y) == -x - y
     assert factor_terms(-x - y) == Mul(-1, x + y, evaluate=False)
 
-    # if not True, then "special" processesing in factor_terms is not necessary
-    assert gcd_terms(exp(Mul(-1, x + 1))) == exp(-x - 1)
     e = exp(-x - 2) + x
     assert factor_terms(e) == exp(Mul(-1, x + 2, evaluate=False)) + x
     assert factor_terms(e, sign=False) == e

@@ -182,6 +182,7 @@ def deltaproduct(f, limit):
                 delta.subs(limit[0], k) *
                 deltaproduct(newexpr, (limit[0], k + 1, limit[2])), (k, limit[1], limit[2]), no_piecewise=True
             )
+        result = result._dist_const()
         return _remove_multiple_delta(result)
 
     delta, _ = _extract_delta(f, limit[0])

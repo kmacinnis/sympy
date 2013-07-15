@@ -2035,10 +2035,12 @@ class Expr(Basic, EvalfMixin):
            True
 
         """
-        negative_self = (-self)._dist_const()
+        negative_self = -self
+        if self.is_Add:
+            negative_self = negative_self._dist_const()
         self_has_minus = (self.extract_multiplicatively(-1) is not None)
         negative_self_has_minus = (
-            (negative_self).extract_multiplicatively(-1) is not None)
+            negative_self.extract_multiplicatively(-1) is not None)
         if self_has_minus != negative_self_has_minus:
             return self_has_minus
         else:

@@ -1572,7 +1572,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
     if coeff is S.One:
         return factors
     elif coeff is S.NegativeOne and not sign:
-        return -factors
+        return (-factors)._dist_const()
     elif factors.is_Add:
         if not clear and coeff.is_Rational and coeff.q != 1:
             q = S(coeff.q)
@@ -1580,7 +1580,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
                 c, t = i.as_coeff_Mul()
                 r = c/q
                 if r == int(r):
-                    return coeff*factors
+                    return (coeff*factors)._dist_const()
         return Mul._from_args((coeff, factors))
     elif factors.is_Mul:
         margs = list(factors.args)

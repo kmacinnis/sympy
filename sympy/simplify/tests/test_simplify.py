@@ -470,8 +470,8 @@ def test_issue_458():
     solutions = solve([f_1, f_2, f_3], x, y, z, simplify=False)
 
     assert simplify(solutions[y]) == \
-        (a*i + c*d + f*g - a*f - c*g - d*i)/ \
-        (a*e*i + b*f*g + c*d*h - a*f*h - b*d*i - c*e*g)
+        -(a*f - a*i - c*d + c*g + d*i - f*g)/ \
+        (a*e*i - a*f*h - b*d*i + b*f*g + c*d*h - c*e*g)
 
 
 def test_simplify_other():

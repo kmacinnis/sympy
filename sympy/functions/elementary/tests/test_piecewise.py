@@ -2,7 +2,7 @@ from sympy import (
     adjoint, And, Basic, conjugate, diff, expand, Eq, Function, I, im,
     Integral, integrate, Interval, lambdify, log, Max, Min, oo, Or, pi,
     Piecewise, piecewise_fold, Rational, re, solve, symbols, transpose,
-    cos, exp, Abs, Not
+    cos, exp, Abs, Not, S
 )
 from sympy.utilities.pytest import XFAIL, raises
 
@@ -98,14 +98,14 @@ def test_piecewise():
     f1 = x*y + 2
     f2 = x*y**2 + 3
     peval = Piecewise( (f1, x < 0), (f2, x > 0))
-    peval_interval = f1.subs(
-        x, 0) - f1.subs(x, -1) + f2.subs(x, 1) - f2.subs(x, 0)
+    peval_interval = (f1.subs(x, 0) - f1.subs(x, -1) 
+            + f2.subs(x, 1) - f2.subs(x, 0)).expand()
     assert peval._eval_interval(x, 0, 0) == 0
     assert peval._eval_interval(x, -1, 1) == peval_interval
     peval2 = Piecewise((f1, x < 0), (f2, True))
     assert peval2._eval_interval(x, 0, 0) == 0
-    assert peval2._eval_interval(x, 1, -1) == -peval_interval
-    assert peval2._eval_interval(x, -1, -2) == f1.subs(x, -2) - f1.subs(x, -1)
+    assert peval2._eval_interval(x, 1, -1) == (-peval_interval).expand()
+    assert peval2._eval_interval(x, -1, -2) == (f1.subs(x,-2) - f1.subs(x,-1)).expand()
     assert peval2._eval_interval(x, -1, 1) == peval_interval
     assert peval2._eval_interval(x, None, 0) == peval2.subs(x, 0)
     assert peval2._eval_interval(x, -1, None) == -peval2.subs(x, -1)
@@ -187,8 +187,8 @@ def test_piecewise_integrate():
         (y**2/2 + y + 0.5, Interval(-1, 0).contains(y)),
         (0, y <= -1), (1, True))
     assert integrate(g, (x, y, 1)) == Piecewise(
-        (y**2/2 - y + 0.5, Interval(0, 1).contains(y)),
-        (-y**2/2 - y + 0.5, Interval(-1, 0).contains(y)),
+        (y**2/2 - y + S(1)/2, Interval(0, 1).contains(y)),
+        (-y**2/2 - y + S.Half, Interval(-1, 0).contains(y)),
         (1, y <= -1), (0, True))
 
     g = Piecewise((0, Or(x <= -1, x >= 1)), (1 - x, x > 0), (1 + x, True))

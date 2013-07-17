@@ -252,7 +252,7 @@ class Piecewise(Function):
                         raise NotImplementedError(
                             """The evaluation of a Piecewise interval when both the lower
                             and the upper limit are symbolic is not yet implemented.""")
-                    values.append(val)
+                    values.append(val._dist_const())
                 if len(set(values)) == 1:
                     try:
                         c = c.subs(sym, rep)
@@ -280,7 +280,7 @@ class Piecewise(Function):
                     expr.subs(sym, Min(b, int_b)) - expr.subs(sym, Max(a, int_a)))
             else:
                 ret_fun += expr._eval_interval(sym, Max(a, int_a), Min(b, int_b))
-        return mul * ret_fun
+        return (mul * ret_fun)._dist_const()
 
     def _sort_expr_cond(self, sym, a, b, targetcond=None):
         """Determine what intervals the expr, cond pairs affect.

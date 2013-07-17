@@ -1619,3 +1619,13 @@ def test_issue_3226():
     assert diff(e, t, 2) == ans
     e.diff(t, 2) == ans
     assert diff(e, t, 2, simplify=False) != ans
+
+
+def test_distribute_constant():
+    assert 3*(x + y) != 3*x + 3*y
+    assert (3*(x + y))._dist_const() == 3*x + 3*y
+    assert (3*(x + y)/(x + 1))._dist_const() == (3*x + 3*y)/(x + 1)
+    assert (S(5)/2*(x + y)/(x + 1))._dist_const() == (5*x/2 + 5*y/2)/(x + 1)
+    assert (5*(x + y)/2/(x + 1))._dist_const() == (5*x/2 + 5*y/2)/(x + 1)
+    assert (-1 * (-y - (-2*y + 2) + 2))._dist_const() == -y
+    assert (-(x + y)/2)._dist_const() == -x/2 - y/2

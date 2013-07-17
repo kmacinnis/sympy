@@ -2784,7 +2784,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
 
         # rebuild the expression
         newexpr = Mul(
-            *(newexpr + [Pow(b, e) for b, e in c_powers.iteritems()]))
+            *(newexpr + [Pow(b, e)._dist_const() for b, e in c_powers.iteritems()]))
         if combine == 'exp':
             return Mul(newexpr, Mul(*nc_part))
         else:

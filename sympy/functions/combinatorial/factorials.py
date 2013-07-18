@@ -544,7 +544,7 @@ class binomial(CombinatorialFunction):
         elif (n - k).simplify().is_negative:
             return S.Zero
         else:
-            d = n - k
+            d = (n - k)._dist_const()
 
             if d.is_Integer:
                 return cls.eval(n, d)

@@ -1260,7 +1260,7 @@ def test_combsimp():
     assert combsimp(factorial(n)*binomial(n + 1, k + 1)/binomial(n, k)) == \
         factorial(n)*(1 + n)/(1 + k)
 
-    assert combsimp(binomial(n - 1, k)) == -((-n + k)*binomial(n, k))/n
+    assert combsimp(binomial(n - 1, k)) == (n - k)*binomial(n, k)/n
 
     assert combsimp(binomial(n + 2, k + S(1)/2)) == 4*((n + 1)*(n + 2) *
         binomial(n, k + S(1)/2))/((2*k - 2*n - 1)*(2*k - 2*n - 3))

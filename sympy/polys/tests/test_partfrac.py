@@ -40,7 +40,7 @@ def test_apart():
     assert apart(Eq((x**2 + 1)/(x + 1), x), x) == Eq(x - 1 + 2/(x + 1), x)
 
     raises(NotImplementedError, lambda: apart(1/(x + 1)/(y + 2)))
-    
+
     assert False # hangs on commented out portion
 
 

@@ -98,7 +98,7 @@ def test_piecewise():
     f1 = x*y + 2
     f2 = x*y**2 + 3
     peval = Piecewise( (f1, x < 0), (f2, x > 0))
-    peval_interval = (f1.subs(x, 0) - f1.subs(x, -1) 
+    peval_interval = (f1.subs(x, 0) - f1.subs(x, -1)
             + f2.subs(x, 1) - f2.subs(x, 0)).expand()
     assert peval._eval_interval(x, 0, 0) == 0
     assert peval._eval_interval(x, -1, 1) == peval_interval

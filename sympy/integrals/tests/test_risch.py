@@ -178,18 +178,18 @@ def test_integrate_hyperexponential():
     # a = Poly((t1**3 + (x + 1)*t1**2 + t1 + x + 2)*t, t)
     # assert integrate_hyperexponential(a, d, DE) == \
     #     ((x + tan(x))*exp(tan(x)), 0, True)
-    # 
+    #
     # a = Poly(t, t)
     # d = Poly(1, t)
     # DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(2*x*t, t)],
     #     'Tfuncs': [Lambda(i, exp(x**2))]})
-    # 
+
     # assert integrate_hyperexponential(a, d, DE) == \
     #     (0, NonElementaryIntegral(exp(x**2), x), False)
-    # 
+
     # DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t, t)], 'Tfuncs': [exp]})
     # assert integrate_hyperexponential(a, d, DE) == (exp(x), 0, True)
-    # 
+
     # a = Poly(25*t**6 - 10*t**5 + 7*t**4 - 8*t**3 + 13*t**2 + 2*t - 1, t)
     # d = Poly(25*t**6 + 35*t**4 + 11*t**2 + 1, t)
     # assert integrate_hyperexponential(a, d, DE) == \
@@ -198,13 +198,13 @@ def test_integrate_hyperexponential():
     # DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t0, t0), Poly(t0*t, t)],
     #     'Tfuncs': [exp, Lambda(i, exp(exp(i)))]})
     # assert integrate_hyperexponential(Poly(2*t0*t**2, t), Poly(1, t), DE) == (exp(2*exp(x)), 0, True)
-    # 
+
     # DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t0, t0), Poly(-t0*t, t)],
     #     'Tfuncs': [exp, Lambda(i, exp(-exp(i)))]})
     # assert integrate_hyperexponential(Poly(-27*exp(9) - 162*t0*exp(9) +
     # 27*x*t0*exp(9), t), Poly((36*exp(18) + x**2*exp(18) - 12*x*exp(18))*t, t), DE) == \
     #     (27*exp(exp(x))/(-6*exp(9) + x*exp(9)), 0, True)
-    # 
+
     # DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t, t)], 'Tfuncs': [exp]})
     # assert integrate_hyperexponential(Poly(x**2/2*t, t), Poly(1, t), DE) == \
     #     ((2 - 2*x + x**2)*exp(x)/2, 0, True)
@@ -212,7 +212,7 @@ def test_integrate_hyperexponential():
     #     (-exp(-x), 1, True)  # x - exp(-x)
     # assert integrate_hyperexponential(Poly(x, t), Poly(t + 1, t), DE) == \
     #     (0, NonElementaryIntegral(x/(1 + exp(x)), x), False)
-    # 
+
     # DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1/x, t0), Poly(2*x*t1, t1)],
     #     'Tfuncs': [log, Lambda(i, exp(i**2))]})
     # assert integrate_hyperexponential(Poly((8*x**7 - 12*x**5 + 6*x**3 - x)*t1**4 +

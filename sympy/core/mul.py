@@ -764,13 +764,13 @@ class Mul(Expr, AssocOp):
 
         if not self.is_commutative:
             return self
-        c, m = self.as_coeff_Mul() 
+        c, m = self.as_coeff_Mul()
         if c == 1:
             return self
         factors = m.as_ordered_factors()
         has_add = any([f.is_Add for f in factors])
         # we do not want to use as_numer_denom, because it will flatten
-        # nested fractions, but we do want to ignore factors in the 
+        # nested fractions, but we do want to ignore factors in the
         # denominator, and distribute the coeff if the first factor
         # of the numerator is an Add.
         while has_add and factors[0].is_Pow and factors[0].exp < 0:
@@ -780,8 +780,8 @@ class Mul(Expr, AssocOp):
             return Add(*[ c*f for f in fac0.as_ordered_terms() ])* \
                 Mul(*[f._dist_const() for f in factors[1:]])
         else:
-            return c * Mul(*[f._dist_const() for f in factors]) 
-    
+            return c * Mul(*[f._dist_const() for f in factors])
+
     def _matches_simple(self, expr, repl_dict):
         # handle (w*3).matches('x*5') -> {w: x*5/3}
         coeff, terms = self.as_coeff_Mul()

@@ -77,7 +77,7 @@ class Mod(Function):
         G = gcd(p, q)
         if G is not S.One:
             p, q = [
-                gcd_terms(i/G, clear=False, fraction=False)._dist_const() 
+                gcd_terms(i/G, clear=False, fraction=False)._dist_const()
                                                             for i in (p, q)]
         pwas, qwas = p, q
 

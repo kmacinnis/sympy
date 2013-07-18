@@ -740,8 +740,8 @@ def ratsimp(expr):
 
     f, g = cancel(expr).as_numer_denom()
     try:
-        Q, r = reduced(f._dist_const(), 
-                    [g._dist_const()], 
+        Q, r = reduced(f._dist_const(),
+                    [g._dist_const()],
                     field=True, expand=False)
     except ComputationFailed:
         return f/g
@@ -3072,7 +3072,7 @@ def combsimp(expr):
                             return rf(_a, b)*rf(_a + c, -c)/rf(_a + b + c, -c)
 
     expr = expr.replace(binomial,
-        lambda n, k: rf((n - k + 1).expand(), k.expand())/rf(1, k.expand()))
+        lambda n, k: rf(((n - k)._dist_const() + 1).expand(), k.expand())/rf(1, k.expand()))
     expr = expr.replace(factorial,
         lambda n: rf(1, n.expand()))
     expr = expr.rewrite(gamma)
@@ -3232,7 +3232,7 @@ def combsimp(expr):
                     new.append(g1)
                     continue
                 for i, g2 in enumerate(gammas):
-                    n = g1 + g2 - 1
+                    n = (g1 + g2 - 1)._dist_const()
                     if not n.is_Integer:
                         continue
                     numer.append(S.Pi)
@@ -3240,10 +3240,10 @@ def combsimp(expr):
                     gammas.pop(i)
                     if n > 0:
                         for k in range(n):
-                            numer.append(1 - g1 + k)
+                            numer.append((1 - g1 + k)._dist_const())
                     elif n < 0:
                         for k in range(-n):
-                            denom.append(-g1 - k)
+                            denom.append((-g1 - k)._dist_const())
                     break
                 else:
                     new.append(g1)
@@ -3263,7 +3263,7 @@ def combsimp(expr):
             while True:
                 for x in ng:
                     for y in dg:
-                        n = x - 2*y
+                        n = (x - 2*y)._dist_const()
                         if n.is_Integer:
                             break
                     else:
@@ -3275,12 +3275,12 @@ def combsimp(expr):
                 dg.remove(y)
                 if n > 0:
                     for k in xrange(n):
-                        no.append(2*y + k)
+                        no.append((2*y + k)._dist_const())
                 elif n < 0:
                     for k in xrange(-n):
                         do.append(2*y - 1 - k)
                 ng.append(y + S(1)/2)
-                no.append(2**(2*y - 1))
+                no.append(2**((2*y - 1)._dist_const()))
                 do.append(sqrt(S.Pi))
 
         # Try to reduce the number of gamma factors by applying the
@@ -3364,9 +3364,9 @@ def combsimp(expr):
 
                     # (2)
                     numer.append((2*S.Pi)**(S(n - 1)/2)*
-                                 n**(S(1)/2 - con))
+                                 n**((S(1)/2 - con)._dist_const()))
                     # (3)
-                    new.append(con)
+                    new.append(con._dist_const())
 
                 # restore resid to coeffs
                 rats[resid] = [resid + c for c in coeffs] + new
@@ -3458,9 +3458,10 @@ def combsimp(expr):
 
         # =========== rebuild expr ==================================
 
-        return C.Mul(*[gamma(g) for g in numer_gammas]) \
-            / C.Mul(*[gamma(g) for g in denom_gammas]) \
-            * C.Mul(*numer_others) / C.Mul(*denom_others)
+        return ( C.Mul(*[gamma(g) for g in numer_gammas])
+                 / C.Mul(*[gamma(g) for g in denom_gammas])
+                 * C.Mul(*numer_others) / C.Mul(*denom_others)
+                 )._dist_const()
 
     # (for some reason we cannot use Basic.replace in this case)
     was = factor(expr)

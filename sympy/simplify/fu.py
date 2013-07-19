@@ -581,7 +581,7 @@ def TR7(rv):
             return rv
         return (1 + cos(2*rv.base.args[0]))/2
 
-    return bottom_up(rv, f)
+    return bottom_up(rv, f)._dist_const()
 
 
 def TR8(rv, first=True):
@@ -656,7 +656,7 @@ def TR8(rv, first=True):
             args.append(sin(s.pop()))
         return TR8(expand_mul(Mul(*args)))
 
-    return bottom_up(rv, f)
+    return bottom_up(rv, f)._dist_const()
 
 
 def TR9(rv):
@@ -750,7 +750,7 @@ def TR9(rv):
 
         return process_common_addends(rv, do)  # DON'T sift by free symbols
 
-    return bottom_up(rv, f)
+    return bottom_up(rv, f)._dist_const()
 
 
 def TR10(rv, first=True):
@@ -930,7 +930,7 @@ def TR10i(rv):
 
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(rv, f)._dist_const()
 
 
 def TR11(rv, base=None):
@@ -1010,7 +1010,7 @@ def TR11(rv, base=None):
                     rv = c**2 - s**2
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(rv, f)._dist_const()
 
 
 def TR12(rv, first=True):
@@ -1218,7 +1218,7 @@ def TR13(rv):
             args.append(cot(c.pop()))
         return Mul(*args)
 
-    return bottom_up(rv, f)
+    return bottom_up(rv, f)._dist_const()
 
 
 def TRmorrie(rv):
@@ -1335,7 +1335,7 @@ def TRmorrie(rv):
 
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(rv, f)._dist_const()
 
 
 def TR14(rv, first=True):
@@ -1485,7 +1485,7 @@ def TR15(rv, max=4, pow=False):
             rv = a
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(rv, f)._dist_const()
 
 
 def TR16(rv, max=4, pow=False):
@@ -1514,7 +1514,7 @@ def TR16(rv, max=4, pow=False):
             rv = a
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(rv, f)._dist_const()
 
 
 def TR111(rv):

@@ -1425,7 +1425,7 @@ def trigsimp(expr, **opts):
         'old': lambda x: trigsimp_old(x, **opts),
                    }[method]
 
-    return trigsimpfunc(expr)
+    return trigsimpfunc(expr)._dist_const()
 
 
 def collect_sqrt(expr, evaluate=True):

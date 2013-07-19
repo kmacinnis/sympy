@@ -765,8 +765,6 @@ class Mul(Expr, AssocOp):
         if not self.is_commutative:
             return self
         c, m = self.as_coeff_Mul()
-        if c == 1:
-            return self
         factors = m.as_ordered_factors()
         has_add = any([f.is_Add for f in factors])
         # we do not want to use as_numer_denom, because it will flatten

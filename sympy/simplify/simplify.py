@@ -4005,7 +4005,7 @@ def logcombine(expr, force=False):
 
         # logs that have the same coefficient can multiply
         for k in log1.keys():
-            log1[Mul(*k)] = log(logcombine(Mul(*[
+            log1[Mul(*k)._dist_const()] = log(logcombine(Mul(*[
                 l.args[0]**Mul(*c) for c, l in log1.pop(k)]),
                 force=force))
 
@@ -4013,10 +4013,11 @@ def logcombine(expr, force=False):
         for k in ordered(log1.keys()):
             if not k in log1:  # already popped as -k
                 continue
-            if -k in log1:
+            neg_k = (-k)._dist_const()
+            if neg_k in log1:
                 # figure out which has the minus sign; the one with
                 # more op counts should be the one
-                num, den = k, -k
+                num, den = k, neg_k
                 if num.count_ops() > den.count_ops():
                     num, den = den, num
                 other.append(num*log(log1.pop(num).args[0]/log1.pop(den).args[0]))

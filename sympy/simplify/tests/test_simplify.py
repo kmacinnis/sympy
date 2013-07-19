@@ -1509,7 +1509,7 @@ def test_radsimp_issue_3214():
 def test_collect_const():
     # coverage not provided by above tests
     assert collect_const(2*sqrt(3) + 4*a*sqrt(5)) == \
-        2*(2*sqrt(5)*a + sqrt(3))  # let the primitive reabsorb
+        4*sqrt(5)*a + 2*sqrt(3) # let the primitive reabsorb
     assert collect_const(2*sqrt(3) + 4*a*sqrt(5), sqrt(3)) == \
         2*sqrt(3) + 4*a*sqrt(5)
     assert collect_const(sqrt(2)*(1 + sqrt(2)) + sqrt(3) + x*sqrt(2)) == \
@@ -1528,7 +1528,7 @@ def test_collect_const():
     # this is why the content_primitive is used
     eq = (sqrt(15 + 5*sqrt(2))*x + sqrt(3 + sqrt(2))*y)*2
     assert collect_sqrt(eq + 2) == \
-        2*sqrt(sqrt(2) + 3)*(sqrt(5)*x + y) + 2
+        2*(sqrt(sqrt(2) + 3)*(sqrt(5)*x + y) + 1)
 
 
 def test_issue2834():
@@ -1754,7 +1754,7 @@ def test_3712():
     assert simplify(eq) == (x + 1)*(x + 2*y)*2
     # reject the 2-arg Mul -- these are a headache for test writing
     assert simplify(eq.expand()) == \
-        2*x**2 + 4*x*y + 2*x + 4*y
+        2*(x**2 + 2*x*y + x + 2*y)
 
 
 @XFAIL

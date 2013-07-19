@@ -184,7 +184,7 @@ def test_TR10i():
             args = zip(si, a)
             ex = Add(*[Mul(*ai) for ai in args])
             t = TR10i(ex)
-            assert not (ex - t.expand(trig=True) or t.is_Add)
+            assert not ((ex - t.expand(trig=True))._dist_const() or t.is_Add)
 
     c = cos(x)
     s = sin(x)
@@ -195,15 +195,15 @@ def test_TR10i():
             args = zip(si, a)
             ex = Add(*[Mul(*ai) for ai in args])
             t = TR10i(ex)
-            assert not (ex - t.expand(trig=True) or t.is_Add)
+            assert not ((ex - t.expand(trig=True))._dist_const() or t.is_Add)
 
 
 def test_TR11():
 
     assert TR11(sin(2*x)) == 2*sin(x)*cos(x)
-    assert TR11(sin(4*x)) == 4*((-sin(x)**2 + cos(x)**2)*sin(x)*cos(x))
+    assert TR11(sin(4*x)) == (-4*sin(x)**2 + 4*cos(x)**2)*sin(x)*cos(x)
     assert TR11(sin(4*x/3)) == \
-        4*((-sin(x/3)**2 + cos(x/3)**2)*sin(x/3)*cos(x/3))
+        (-4*sin(x/3)**2 + 4*cos(x/3)**2)*sin(x/3)*cos(x/3)
 
     assert TR11(cos(2*x)) == -sin(x)**2 + cos(x)**2
     assert TR11(cos(4*x)) == \

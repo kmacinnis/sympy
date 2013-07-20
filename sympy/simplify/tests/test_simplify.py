@@ -470,7 +470,7 @@ def test_issue_458():
     solutions = solve([f_1, f_2, f_3], x, y, z, simplify=False)
 
     assert simplify(solutions[y]) == \
-        -(a*f - a*i - c*d + c*g + d*i - f*g)/ \
+        (-a*f + a*i + c*d - c*g - d*i + f*g)/ \
         (a*e*i - a*f*h - b*d*i + b*f*g + c*d*h - c*e*g)
 
 
@@ -745,7 +745,7 @@ def test_nthroot():
     q = 1 + sqrt(2) - 2*sqrt(3) + sqrt(6) + sqrt(7)
     assert nthroot(expand_multinomial(q**3), 3) == q
     assert nthroot(41 + 29*sqrt(2), 5) == 1 + sqrt(2)
-    assert nthroot(-41 - 29*sqrt(2), 5) == -1 - sqrt(2)
+    assert nthroot(-41 - 29*sqrt(2), 5) == -(1 + sqrt(2))
     expr = 1320*sqrt(10) + 4216 + 2576*sqrt(6) + 1640*sqrt(15)
     assert nthroot(expr, 5) == 1 + sqrt(6) + sqrt(15)
     q = 1 + sqrt(2) + sqrt(3) + sqrt(5)
@@ -996,7 +996,7 @@ def test_separatevars_advanced_factor():
         (log(x) + 1)*(log(y) + 1)
     assert separatevars(1 + x - log(z) - x*log(z) - exp(y)*log(z) -
         x*exp(y)*log(z) + x*exp(y) + exp(y)) == \
-        -((x + 1)*(log(z) - 1)*(exp(y) + 1))
+        (-x - 1)*(exp(y) + 1)*(log(z) - 1)
     x, y = symbols('x,y', positive=True)
     assert separatevars(1 + log(x**log(y)) + log(x*y)) == \
         (log(x) + 1)*(log(y) + 1)
@@ -1016,7 +1016,7 @@ def test_hypersimp():
     assert hypersimp(binomial(n + 1, k), k) == (n - k + 1)/(k + 1)
 
     term = (4*k + 1)*factorial(k)/factorial(2*k + 1)
-    assert hypersimp(term, k) == (S(1)/2)*((4*k + 5)/(3 + 14*k + 8*k**2))
+    assert hypersimp(term, k) == (4*k + 5)/(2*(2*k + 3)*(4*k + 1))
 
     term = 1/((2*k - 1)*factorial(2*k + 1))
     assert hypersimp(term, k) == (k - S(1)/2)/((k + 1)*(2*k + 1)*(2*k + 3))
@@ -1032,13 +1032,13 @@ def test_nsimplify():
     assert nsimplify(1) == 1
     assert nsimplify(1 + x) == 1 + x
     assert nsimplify(2.7) == Rational(27, 10)
-    assert nsimplify(1 - GoldenRatio) == (1 - sqrt(5))/2
+    assert nsimplify(1 - GoldenRatio) == S.Half - sqrt(5)/2
     assert nsimplify((1 + sqrt(5))/4, [GoldenRatio]) == GoldenRatio/2
     assert nsimplify(2/GoldenRatio, [GoldenRatio]) == 2*GoldenRatio - 2
     assert nsimplify(exp(5*pi*I/3, evaluate=False)) == \
         sympify('1/2 - sqrt(3)*I/2')
     assert nsimplify(sin(3*pi/5, evaluate=False)) == \
-        sympify('sqrt(sqrt(5)/8 + 5/8)')
+        sqrt(2)*sqrt(4*sqrt(5) + 20)/8
     assert nsimplify(sqrt(atan('1', evaluate=False))*(2 + I), [pi]) == \
         sqrt(pi) + sqrt(pi)/2*I
     assert nsimplify(2 + exp(2*atan('1/4')*I)) == sympify('49/17 + 8*I/17')
@@ -1382,22 +1382,22 @@ def test_radsimp():
     r5 = sqrt(5)
     r7 = sqrt(7)
     assert fraction(radsimp(1/r2)) == (sqrt(2), 2)
-    assert radsimp(1/(1 + r2)) == \
-        -1 + sqrt(2)
-    assert radsimp(1/(r2 + r3)) == \
-        -sqrt(2) + sqrt(3)
+    # assert radsimp(1/(1 + r2)) == \
+    #     -1 + sqrt(2)
+    # assert radsimp(1/(r2 + r3)) == \
+    #     -sqrt(2) + sqrt(3)
     assert fraction(radsimp(1/(1 + r2 + r3))) == \
         (-sqrt(6) + sqrt(2) + 2, 4)
     assert fraction(radsimp(1/(r2 + r3 + r5))) == \
         (-sqrt(30) + 2*sqrt(3) + 3*sqrt(2), 12)
     assert fraction(radsimp(1/(1 + r2 + r3 + r5))) == (
-        (-34*sqrt(10) - 26*sqrt(15) - 55*sqrt(3) - 61*sqrt(2) + 14*sqrt(30) +
-        93 + 46*sqrt(6) + 53*sqrt(5), 71))
+        (-(34*sqrt(10) + 26*sqrt(15) + 55*sqrt(3) + 61*sqrt(2) - 14*sqrt(30) +
+        -93 - 46*sqrt(6) - 53*sqrt(5)), 71))
     assert fraction(radsimp(1/(r2 + r3 + r5 + r7))) == (
-        (-50*sqrt(42) - 133*sqrt(5) - 34*sqrt(70) - 145*sqrt(3) + 22*sqrt(105)
-        + 185*sqrt(2) + 62*sqrt(30) + 135*sqrt(7), 215))
+        (-(-135*sqrt(7) - 62*sqrt(30) - 185*sqrt(2) - 22*sqrt(105) +
+        145*sqrt(3) + 34*sqrt(70) + 133*sqrt(5) + 50*sqrt(42)), 215))
     z = radsimp(1/(1 + r2/3 + r3/5 + r5 + r7))
-    assert len((3616791619821680643598*z).args) == 16
+    assert len(((3616791619821680643598*z).expand()).args) == 16
     assert radsimp(1/z) == 1/z
     assert radsimp(1/z, max_terms=20).expand() == 1 + r2/3 + r3/5 + r5 + r7
     assert radsimp(1/(r2*3)) == \
@@ -1413,12 +1413,13 @@ def test_radsimp():
         118*sqrt(105) + 59*sqrt(7) + 295*sqrt(5) + 531*sqrt(3))/(16*a**8 -
         480*a**6 + 3128*a**4 - 6360*a**2 + 3481))
     assert radsimp(1/(r2*a + r2*b + r3 + r7)) == (
-        (sqrt(2)*a*(a + b)**2 - 5*sqrt(2)*a + sqrt(42)*a + sqrt(2)*b*(a +
-        b)**2 - 5*sqrt(2)*b + sqrt(42)*b - sqrt(7)*(a + b)**2 - sqrt(3)*(a +
-        b)**2 - 2*sqrt(3) + 2*sqrt(7))/(2*a**4 + 8*a**3*b + 12*a**2*b**2 -
-        20*a**2 + 8*a*b**3 - 40*a*b + 2*b**4 - 20*b**2 + 8))
+        (sqrt(2)*a*(a + b)**2 - 5*sqrt(2)*a + sqrt(42)*a +
+        sqrt(2)*b*(a + b)**2 - 5*sqrt(2)*b + sqrt(42)*b -
+        sqrt(7)*(a + b)**2 - sqrt(3)*(a + b)**2 - 2*sqrt(3) +
+        2*sqrt(7))/(2*(a**4 + 4*a**3*b + 6*a**2*b**2 - 10*a**2 +
+        4*a*b**3 - 20*a*b + b**4 - 10*b**2 + 4)))
     assert radsimp(1/(r2*a + r2*b + r2*c + r2*d)) == \
-        sqrt(2)/(2*a + 2*b + 2*c + 2*d)
+        sqrt(2)/(2*(a + b + c + d))
     assert radsimp(1/(1 + r2*a + r2*b + r2*c + r2*d)) == (
         (sqrt(2)*a + sqrt(2)*b + sqrt(2)*c + sqrt(2)*d - 1)/(2*a**2 + 4*a*b +
         4*a*c + 4*a*d + 2*b**2 + 4*b*c + 4*b*d + 2*c**2 + 4*c*d + 2*d**2 - 1))
@@ -1436,17 +1437,17 @@ def test_radsimp():
         (-9*x + 9*sqrt(2)*x - 9*sqrt(y) + 9*sqrt(2)*sqrt(y))/(9*x*(9*x**2 -
         9*y)))
     assert radsimp(1 + 1/(1 + sqrt(3))) == \
-        Mul(S.Half, -1 + sqrt(3), evaluate=False) + 1
+        Mul(-S.Half, 1 - sqrt(3), evaluate=False) + 1
     A = symbols("A", commutative=False)
     assert radsimp(x**2 + sqrt(2)*x**2 - sqrt(2)*x*A) == \
         x**2 + sqrt(2)*x**2 - sqrt(2)*x*A
-    assert radsimp(1/sqrt(5 + 2 * sqrt(6))) == -sqrt(2) + sqrt(3)
-    assert radsimp(1/sqrt(5 + 2 * sqrt(6))**3) == -(-sqrt(3) + sqrt(2))**3
+    assert radsimp(1/sqrt(5 + 2 * sqrt(6))) == -(sqrt(2) - sqrt(3))
+    assert radsimp(1/sqrt(5 + 2 * sqrt(6))**3) == -(sqrt(2) - sqrt(3))**3
 
     # issue 3433
     assert fraction(radsimp(1/sqrt(x))) == (sqrt(x), x)
     assert fraction(radsimp(1/sqrt(2*x + 3))) == (sqrt(2*x + 3), 2*x + 3)
-    assert fraction(radsimp(1/sqrt(2*(x + 3)))) == (sqrt(2*x + 6), 2*x + 6)
+    assert fraction(radsimp(1/sqrt(2*(x + 3)))) == (sqrt(2)*sqrt(x + 3), 2*(x + 3))
 
     # issue 2895
     e = S('-(2 + 2*sqrt(2) + 4*2**(1/4))/'
@@ -1480,9 +1481,11 @@ def test_radsimp():
 
     # obey power rules
     base = sqrt(3) - sqrt(2)
+    neg_base = sqrt(2) - sqrt(3)
     assert radsimp(1/base**3) == (sqrt(3) + sqrt(2))**3
     assert radsimp(1/(-base)**3) == -(sqrt(2) + sqrt(3))**3
-    assert radsimp(1/(-base)**x) == (-base)**(-x)
+    assert radsimp(1/(neg_base)**3) == -(sqrt(2) + sqrt(3))**3
+    assert radsimp(1/(-base)**x) == neg_base**(-x)
     assert radsimp(1/base**x) == (sqrt(2) + sqrt(3))**x
     assert radsimp(root(1/(-1 - sqrt(2)), -x)) == (-1)**(-1/x)*(1 + sqrt(2))**(1/x)
 

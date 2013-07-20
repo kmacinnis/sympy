@@ -1914,7 +1914,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
             n = n.func(*[handle(a) for a in n.args])
             return _umul(n, 1/d)
         elif n is not S.One:
-            return Mul(n, handle(1/d))
+            return _umul(n, handle(1/d))
         elif d.is_Mul:
             return _umul(*[handle(1/d) for d in d.args])
 
@@ -2004,7 +2004,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
         return _umul(n, 1/d)
 
     coeff, expr = expr.as_coeff_Add()
-    expr = expr.normal()
+    expr = expr.normal()._dist_const()
     old = fraction(expr)
     n, d = fraction(handle(expr))
     if old != (n, d):
@@ -2627,9 +2627,10 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
         be = c_powers.items()
         _n = S.NegativeOne
         for i, (b, e) in enumerate(be):
-            if ((-b).is_Symbol or b.is_Add) and -b in c_powers:
+            neg_b = (-b)._dist_const()
+            if (neg_b.is_Symbol or b.is_Add) and neg_b in c_powers:
                 if (b.is_positive in (0, 1) or e.is_integer):
-                    c_powers[-b] += c_powers.pop(b)
+                    c_powers[neg_b] += c_powers.pop(b)
                     if _n in c_powers:
                         c_powers[_n] += e
                     else:
@@ -3709,8 +3710,10 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     short = shorter(short, factor_terms(short), expand_power_exp(expand_mul(short)))
     if short.has(C.TrigonometricFunction, C.HyperbolicFunction, C.ExpBase):
         short = exptrigsimp(short, simplify=False)
+    short = shorter(short, short._dist_const())
 
     # get rid of hollow 2-arg Mul factorization
+    # Do we still need this?  -KATE
     from sympy.core.rules import Transform
     hollow_mul = Transform(
         lambda x: Mul(*x.args),

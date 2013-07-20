@@ -1054,6 +1054,7 @@ class Pow(Expr):
         """
 
         b, e = self.as_base_exp()
+        e = e._dist_const()
         b = _keep_coeff(*b.as_content_primitive(radical=radical))
         ce, pe = e.as_content_primitive(radical=radical)
         if b.is_Rational:

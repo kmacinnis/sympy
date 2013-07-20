@@ -624,7 +624,9 @@ def test_powsimp():
     assert powsimp((z**x*z**y)**x, deep=True) == (z**(x + y))**x
     assert powsimp(x*(z**x*z**y)**x, deep=True) == x*(z**(x + y))**x
     p = symbols('p', positive=True)
-    assert powsimp((1/x)**log(2)/x) == (1/x)**(1 + log(2))
+    # Changed test because (1/x)**(1+log(2)) used to automatically flatten to this.
+    # Not sure what this difference is supposed to be for pos vs non-neg.  --KATE
+    assert powsimp((1/x)**log(2)/x) == x**(-1 - log(2))
     assert powsimp((1/p)**log(2)/p) == p**(-1 - log(2))
 
     # coefficient of exponent can only be simplified for positive bases

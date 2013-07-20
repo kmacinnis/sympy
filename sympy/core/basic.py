@@ -1592,7 +1592,7 @@ class Basic(object):
                 rule = '_eval_rewrite_as_' + args[-1].__name__
 
             if not pattern:
-                return self._eval_rewrite(None, rule, **hints)
+                return self._eval_rewrite(None, rule, **hints)._dist_const()
             else:
                 if iterable(pattern[0]):
                     pattern = pattern[0]

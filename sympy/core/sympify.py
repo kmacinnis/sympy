@@ -45,7 +45,8 @@ class CantSympify(object):
     SympifyError: SympifyError: {}
 
     """
-    pass
+    def _dist_const(self):
+        return self
 
 def sympify(a, locals=None, convert_xor=True, strict=False, rational=False):
     """

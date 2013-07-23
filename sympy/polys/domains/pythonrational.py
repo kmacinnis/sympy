@@ -219,3 +219,6 @@ class PythonRational(PicklableWithSlots, DefaultPrinting):
 
     numerator = numer
     denominator = denom
+
+    def _dist_const(self):
+        return self

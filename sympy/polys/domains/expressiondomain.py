@@ -192,3 +192,4 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
 
     def lcm(self, a, b):
         return a.lcm(b)
+

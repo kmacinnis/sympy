@@ -131,7 +131,7 @@ def _separate_sq(p):
     p1 = Add(*a1)
     p2 = Add(*a2)
     p = _mexpand(p1**2) - _mexpand(p2**2)
-    return p
+    return p._dist_const()
 
 def _minimal_polynomial_sq(p, n, x):
     """
@@ -573,7 +573,7 @@ def minimal_polynomial(ex, x=None, **args):
         x, cls = Dummy('x'), PurePoly
 
     if compose:
-        result = _minpoly1(ex, x)
+        result = _minpoly1(ex, x)._dist_const()
         result = result.primitive()[1]
         c = result.coeff(x**degree(result, x))
         if c < 0:
@@ -610,7 +610,7 @@ def minimal_polynomial(ex, x=None, **args):
             return Mul(*[ bottom_up_scan(g) for g in ex.args ])
         elif ex.is_Pow:
             if ex.exp.is_Rational:
-                if ex.exp < 0 and ex.base.is_Add:
+                if ex.exp < 0 and ex.base.is_Add: 
                     coeff, terms = ex.base.as_coeff_add()
                     elt, _ = primitive_element(terms, polys=True)
 

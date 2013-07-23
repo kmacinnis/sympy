@@ -1360,7 +1360,7 @@ def _solve(f, *symbols, **flags):
                         gen = poly.gen
                         if gen != symbol:
                             u = Dummy()
-                            inversion = _solve(gen - u, symbol, **flags)
+                            inversion = _solve((gen - u)._dist_const(), symbol, **flags)
                             soln = list(ordered(set([i.subs(u, s) for i in
                                         inversion for s in soln])))
                         result = soln

@@ -4807,3 +4807,8 @@ def __trigsimp(expr, deep=False):
 
     return expr
 #------------------- end of old trigsimp routines --------------------
+
+def dc(l):
+    """Distributes constants for every element of a list.
+    Useful, but maybe should be located somewhere else. -KATE"""
+    return [i._dist_const() for i in l]

@@ -8,7 +8,7 @@ from simplify import (collect, rcollect, separate, radsimp, ratsimp, fraction,
     simplify, trigsimp, powsimp, combsimp, hypersimp, hypersimilar, nsimplify,
     logcombine, separatevars, numer, denom, powdenest, posify, polarify,
     unpolarify, collect_const, signsimp, besselsimp, ratsimpmodprime,
-    exptrigsimp)
+    exptrigsimp, dc)
 
 from fu import FU, fu
 

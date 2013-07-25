@@ -120,8 +120,11 @@ def apart(f, x=None, full=False, **options):
             terms += term
         else:
             terms += factor(term)
-
-    return common*(poly.as_expr() + terms)
+    if common == -1:
+        return Add(*[-t
+            for t in Add.make_args(poly.as_expr() + terms)])
+    else:
+        return common*(poly.as_expr() + terms)
 
 
 def apart_undetermined_coeffs(P, Q):

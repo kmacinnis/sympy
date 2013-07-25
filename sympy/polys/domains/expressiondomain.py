@@ -20,10 +20,14 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         __slots__ = ['ex']
 
         def __init__(self, ex):
+            """Constants are distributed here because of unpredictable behavior
+            otherwise: EX(-(-16 + 14*sqrt(2))) + EX(-14+14*sqrt(2)) == EX(0)
+            Is there a better solution?  --KATE
+            """
             if not isinstance(ex, self.__class__):
-                self.ex = sympify(ex)
+                self.ex = sympify(ex)._dist_const()
             else:
-                self.ex = ex.ex
+                self.ex = ex.ex._dist_const()
 
         def __repr__(f):
             return 'EX(%s)' % repr(f.ex)
@@ -101,6 +105,9 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         def lcm(f, g):
             from sympy.polys import lcm
             return f.__class__(lcm(f.ex, f.__class__(g).ex))
+
+        def _dist_const(f):
+            return f.__class__(f.ex._dist_const())
 
     dtype = Expression
 
@@ -192,4 +199,3 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
 
     def lcm(self, a, b):
         return a.lcm(b)
-

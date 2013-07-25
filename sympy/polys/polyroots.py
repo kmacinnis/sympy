@@ -17,10 +17,11 @@ from sympy.polys.polyerrors import PolynomialError, GeneratorsNeeded, DomainErro
 from sympy.polys.polyquinticconst import PolyQuintic
 from sympy.polys.rationaltools import together
 
-from sympy.simplify import simplify, powsimp
+from sympy.simplify import simplify, powsimp, radsimp, dc
 from sympy.utilities import default_sort_key
 
 from sympy.core.compatibility import reduce
+
 
 
 def roots_linear(f):
@@ -86,11 +87,12 @@ def roots_quadratic(f):
 
 def roots_cubic(f):
     """Returns a list of roots of a cubic polynomial."""
+
     _, a, b, c = f.monic().all_coeffs()
 
     if c is S.Zero:
         x1, x2 = roots([1, a, b], multiple=True)
-        return [x1, S.Zero, x2]
+        return dc([x1, S.Zero, x2])
 
     p = b - a**2/3
     q = c - a*b/3 + 2*a**3/27
@@ -100,7 +102,7 @@ def roots_cubic(f):
 
     if p is S.Zero:
         if q is S.Zero:
-            return [-aon3]*3
+            return dc([-aon3]*3)
         else:
             if q.is_real:
                 if q > 0:
@@ -111,7 +113,7 @@ def roots_cubic(f):
                 u1 = (-q)**Rational(1, 3)
     elif q is S.Zero:
         y1, y2 = roots([1, 0, p], multiple=True)
-        return [tmp - aon3 for tmp in [y1, S.Zero, y2]]
+        return dc([tmp - aon3 for tmp in [y1, S.Zero, y2]])
     else:
         u1 = (q/2 + sqrt(q**2/4 + pon3**3))**Rational(1, 3)
 
@@ -121,7 +123,7 @@ def roots_cubic(f):
     u3 = u1*(-S.Half - coeff)
 
     if p is S.Zero:
-        return [u1 - aon3, u2 - aon3, u3 - aon3]
+        return dc([u1 - aon3, u2 - aon3, u3 - aon3])
 
     soln = [
         -u1 + pon3/u1 - aon3,
@@ -129,7 +131,7 @@ def roots_cubic(f):
         -u3 + pon3/u3 - aon3
     ]
 
-    return soln
+    return dc(soln)
 
 def _roots_quartic_euler(p, q, r, a):
     """
@@ -185,7 +187,7 @@ def _roots_quartic_euler(p, q, r, a):
     A = -R - p/2
     c2 = sqrt(A + B)
     c3 = sqrt(A - B)
-    return [c1 - c2 - a, -c1 - c3 - a, -c1 + c3 - a, c1 + c2 - a]
+    return dc([c1 - c2 - a, -c1 - c3 - a, -c1 + c3 - a, c1 + c2 - a])
 
 
 def roots_quartic(f):
@@ -254,10 +256,10 @@ def roots_quartic(f):
         return r1 + r2
     else:
         a2 = a**2
-        e = b - 3*a2/8
-        f = c + a*(a2/8 - b/2)
-        g = d - a*(a*(3*a2/256 - b/16) + c/4)
-        aon4 = a/4
+        e = (b - 3*a2/8)._dist_const()
+        f = (c + a*(a2/8 - b/2))._dist_const()
+        g = (d - a*(a*(3*a2/256 - b/16) + c/4))._dist_const()
+        aon4 = (a/4)._dist_const()
 
         if f is S.Zero:
             y1, y2 = [sqrt(tmp) for tmp in
@@ -273,11 +275,11 @@ def roots_quartic(f):
                 return sols
             # Ferrari method, see [1, 2]
             a2 = a**2
-            e = b - 3*a2/8
-            f = c + a*(a2/8 - b/2)
-            g = d - a*(a*(3*a2/256 - b/16) + c/4)
-            p = -e**2/12 - g
-            q = -e**3/108 + e*g/3 - f**2/8
+            e = (b - 3*a2/8)._dist_const()
+            f = (c + a*(a2/8 - b/2))._dist_const()
+            g = (d - a*(a*(3*a2/256 - b/16) + c/4))._dist_const()
+            p = (-e**2/12 - g)._dist_const()
+            q = (-e**3/108 + e*g/3 - f**2/8)._dist_const()
             TH = Rational(1, 3)
             if p.is_zero:
                 y = -5*e/6 - q**TH
@@ -386,7 +388,7 @@ def roots_cyclotomic(f, factor=False):
         g = Poly(f, extension=(-1)**Rational(1, n))
 
         for h, _ in g.factor_list()[1]:
-            roots.append(-h.TC())
+            roots.append((-h.TC())._dist_const())
 
     return sorted(roots, key=default_sort_key)
 
@@ -769,6 +771,7 @@ def roots(f, *gens, **flags):
             raise PolynomialError('multivariate polynomials are not supported')
 
     def _update_dict(result, root, k):
+        root = root._dist_const()
         if root in result:
             result[root] += k
         else:
@@ -869,7 +872,7 @@ def roots(f, *gens, **flags):
                         if res[0] is None:
                             translate_x, f = res[2:]
                         else:
-                            rescale_x, f = res[1], res[-1]
+                            rescale_x, f = radsimp(res[1]), res[-1]
                         result = roots(f)
                         if not result:
                             for root in _try_decompose(f):
@@ -914,12 +917,12 @@ def roots(f, *gens, **flags):
     if rescale_x:
         result1 = {}
         for k, v in result.items():
-            result1[k*rescale_x] = v
+            result1[(k*rescale_x)._dist_const()] = v
         result = result1
     if translate_x:
         result1 = {}
         for k, v in result.items():
-            result1[k + translate_x] = v
+            result1[(k + translate_x)._dist_const()] = v
         result = result1
 
     if not multiple:

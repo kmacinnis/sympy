@@ -5484,7 +5484,7 @@ def to_rational_coeffs(f):
         n = f.degree()
         f1 = f.monic()
         coeffs = f1.all_coeffs()[1:]
-        c = simplify(coeffs[0])
+        c = simplify(coeffs[0])._dist_const()
         if c and not c.is_rational:
             if c.is_Add:
                 args = c.args

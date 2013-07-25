@@ -550,7 +550,7 @@ class RootSum(Expr):
 
             terms.append(k*term)
 
-        return mul_const*Add(*terms) + deg*add_const
+        return Add(*[mul_const*t for t in terms]) + deg*add_const
 
     @classmethod
     def _new(cls, poly, func, auto=True):

@@ -274,13 +274,15 @@ def test_roots():
     r1_2, r1_3, r1_9, r4_9, r19_27 = [ Rational(*r)
         for r in ((1, 2), (1, 3), (1, 9), (4, 9), (19, 27)) ]
 
-    U = -r1_2 - r1_2*I*3**r1_2
-    V = -r1_2 + r1_2*I*3**r1_2
+    U = r1_2 + r1_2*I*3**r1_2
+    nU = -r1_2 - r1_2*I*3**r1_2
+    V = r1_2 - r1_2*I*3**r1_2
+    nV = -r1_2 + r1_2*I*3**r1_2
     W = (r19_27 + r1_9*33**r1_2)**r1_3
 
     assert roots(x**3 + x**2 - x + 1, x, cubics=True) == {
-        -r1_3 - U*W - r4_9*(U*W)**(-1): 1,
-        -r1_3 - V*W - r4_9*(V*W)**(-1): 1,
+        -r1_3 + U*W - r4_9*(nU*W)**(-1): 1,
+        -r1_3 + V*W - r4_9*(nV*W)**(-1): 1,
         -r1_3 - W - r4_9*(  W)**(-1): 1,
     }
 
@@ -358,7 +360,7 @@ def test_roots():
     r = roots(x**3 + 40*x + 64)
     real_root = [rx for rx in r if rx.is_real][0]
     cr = 4 + 2*sqrt(1074)/9
-    assert real_root == -2*cr**(S(1)/3) + 20/(3*cr**(S(1)/3))
+    assert real_root == 2*(-cr**(S(1)/3) + 10/(3*cr**(S(1)/3)))
 
     eq = Poly((7 + 5*sqrt(2))*x**3 + (-6 - 4*sqrt(2))*x**2 + (-sqrt(2) - 1)*x + 2, x, domain='EX')
     assert roots(eq) == {-1 + sqrt(2): 1, -2 + 2*sqrt(2): 1, -sqrt(2) + 1: 1}

@@ -23,12 +23,12 @@ def test_jacobi_poly():
         (a/2 + b/2 + 1)*x + a/2 - b/2, x, domain='ZZ(a,b)')
 
     assert jacobi_poly(0, a, b, x) == 1
-    assert jacobi_poly(1, a, b, x) == a/2 - b/2 + x*(a/2 + b/2 + 1)
-    assert jacobi_poly(2, a, b, x) == (a**2/8 - a*b/4 - a/8 + b**2/8 - b/8 + x**2*(a**2/8 + a*b/4 + 7*a/8 +
-                                       b**2/8 + 7*b/8 + S(3)/2) + x*(a**2/4 + 3*a/4 - b**2/4 - 3*b/4) - S(1)/2)
+    assert jacobi_poly(1, a, b, x) == x*(a + b + 2)/2 + (a - b)/2
+    assert jacobi_poly(2, a, b, x) == (x**2*(a**2 + 2*a*b + 7*a + b**2 + 7*b + 12)/8 +
+                    x*(a**2 + 3*a - b**2 - 3*b)/4 + (a**2 - 2*a*b - a + b**2 - b - 4)/8)
 
     assert jacobi_poly(1, a, b, polys=True) == Poly(
-        (a/2 + b/2 + 1)*x + a/2 - b/2, x, domain='ZZ(a,b)')
+        (a + b + 2)/2*x + (a - b)/2, x, domain='ZZ(a,b)')
 
 
 def test_gegenbauer_poly():
@@ -41,7 +41,7 @@ def test_gegenbauer_poly():
     assert gegenbauer_poly(1, a, x) == 2*a*x
     assert gegenbauer_poly(2, a, x) == -a + x**2*(2*a**2 + 2*a)
     assert gegenbauer_poly(
-        3, a, x) == x**3*(4*a**3/3 + 4*a**2 + 8*a/3) + x*(-2*a**2 - 2*a)
+        3, a, x) == x**3*(4*a**3 + 12*a**2 + 8*a)/3 + x*(-2*a**2 - 2*a)
 
     assert gegenbauer_poly(1, S.Half).dummy_eq(x)
     assert gegenbauer_poly(1, a, polys=True) == Poly(2*a*x, x, domain='ZZ(a)')
@@ -133,9 +133,9 @@ def test_laguerre_poly():
 
     assert laguerre_poly(0, x, a) == 1
     assert laguerre_poly(1, x, a) == -x + a + 1
-    assert laguerre_poly(2, x, a) == x**2/2 + (-a - 2)*x + a**2/2 + 3*a/2 + 1
-    assert laguerre_poly(3, x, a) == -x**3/6 + (a/2 + Q(
-        3)/2)*x**2 + (-a**2/2 - 5*a/2 - 3)*x + a**3/6 + a**2 + 11*a/6 + 1
+    assert laguerre_poly(2, x, a) == x**2/2 + x*(-a - 2) + (a**2 + 3*a + 2)/2
+    assert laguerre_poly(3, x, a) == -x**3/6 + x**2*(a + 3)/2 + \
+                x*(-a**2 - 5*a - 6)/2 + (a**3 + 6*a**2 + 11*a + 6)/6
 
     assert laguerre_poly(1).dummy_eq(-x + 1)
     assert laguerre_poly(1, polys=True) == Poly(-x + 1)

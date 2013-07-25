@@ -79,7 +79,8 @@ def together(expr, deep=False):
         return expr
 
 
-    if expr.is_algebraic_expr() and not expr.is_polynomial():
+    if isinstance(expr, Basic) \
+            and expr.is_algebraic_expr() and not expr.is_polynomial():
         n,d =  _together(sympify(expr)).as_numer_denom()
         return n._dist_const()/d._dist_const()
     else:

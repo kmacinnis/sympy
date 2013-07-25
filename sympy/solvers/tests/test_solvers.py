@@ -301,10 +301,10 @@ def test_tsolve():
         log(y - sqrt(y**2 - 4)) - log(2),
         log(y + sqrt(y**2 - 4)) - log(2)
     ]), set([
-        log((y - sqrt((y - 2)*(y + 2)))/2), 
+        log((y - sqrt((y - 2)*(y + 2)))/2),
         log((y + sqrt((y - 2)*(y + 2)))/2)
     ]), set([
-        log(y - sqrt(y**-4)/2), 
+        log(y - sqrt(y**-4)/2),
         log(y + sqrt(y**-4)/2)
     ])]
     assert solve(exp(x) - 3, x) == [log(3)]
@@ -577,7 +577,7 @@ def test_issue_1572_1364_1368():
     assert solve((sqrt(x**2 - 1) - 2)) in ([sqrt(5), -sqrt(5)],
                                            [-sqrt(5), sqrt(5)])
     assert set(solve((2**exp(y**2/x) + 2)/(x**2 + 15), y)) == set(
-        [-sqrt(x)*sqrt(-(log(log(2)) - log(log(2) + I*pi))), 
+        [-sqrt(x)*sqrt(-(log(log(2)) - log(log(2) + I*pi))),
         sqrt(x)*sqrt(-log(log(2)) + log(log(2) + I*pi))])
 
     C1, C2 = symbols('C1 C2')
@@ -605,7 +605,7 @@ def test_issue_1572_1364_1368():
         a**2 + 1) * (sin(a*x) + cos(a*x)), x)) == set([-pi/(4*a), 3*pi/(4*a)])
     assert solve(3 - (sinh(a*x) + cosh(a*x)), x) == [log(3)/a]
     assert set(solve(3 - (sinh(a*x) + cosh(a*x)**2), x)) == \
-        set([log(-2 + sqrt(5))/a, log(-(-1 + sqrt(2)))/a, 
+        set([log(-2 + sqrt(5))/a, log(-(-1 + sqrt(2)))/a,
         log(1 + sqrt(2))/a, log(-(2 + sqrt(5)))/a])
     assert solve(atan(x) - 1) == [tan(1)]
 
@@ -635,11 +635,11 @@ def test_issue_2033():
         (log(sqrt(-z**2 + sin(y))),)]))
     assert set(solve(eqs, x, y)) == \
         set([
-            (log(-sqrt(-(z**2 + sin(log(3))))), -log(3)), 
+            (log(-sqrt(-(z**2 + sin(log(3))))), -log(3)),
             (log(sqrt(-(z**2 + sin(log(3))))), -log(3))])
     assert set(solve(eqs, y, z)) == \
         set([
-            (-log(3), -sqrt(-(exp(2*x) + sin(log(3))))), 
+            (-log(3), -sqrt(-(exp(2*x) + sin(log(3))))),
             (-log(3), sqrt(-(exp(2*x) + sin(log(3)))))])
     eqs = [exp(x)**2 - sin(y) + z, 1/exp(y) - 3]
     assert solve(eqs, set=True) == ([x, y], set([

@@ -67,7 +67,7 @@ class ContinuousProbability(object):
             -erf(sqrt(2)/2)/2 + 1/2
 
         """
-        return s.cdf(b) - s.cdf(a)
+        return (s.cdf(b) - s.cdf(a))._dist_const()
 
     def random(s, n=None):
         """
@@ -250,7 +250,7 @@ class Uniform(ContinuousProbability):
     mean = property(lambda s: (s.a + s.b)/2)
     median = property(lambda s: (s.a + s.b)/2)
     mode = property(lambda s: (s.a + s.b)/2)  # arbitrary
-    variance = property(lambda s: (s.b - s.a)**2 / 12)
+    variance = property(lambda s: ((s.b - s.a)._dist_const())**2 / 12)
     stddev = property(lambda s: sqrt(s.variance))
 
     def pdf(s, x):

@@ -932,16 +932,17 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
     gcd_terms, sympy.polys.polytools.terms_gcd
 
     """
-    from sympy.simplify.simplify import bottom_up
+    from sympy.simplify.simplify import bottom_up, dc
 
     def do(expr):
         is_iterable = iterable(expr)
 
         if not isinstance(expr, Basic) or expr.is_Atom:
             if is_iterable:
-                return type(expr)([do(i) for i in expr])
+                return type(expr)([do(i._dist_const()) for i in expr])
             return expr
 
+        expr = expr._dist_const()
         if expr.is_Pow or expr.is_Function or \
                 is_iterable or not hasattr(expr, 'args_cnc'):
             args = expr.args

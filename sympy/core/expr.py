@@ -2468,7 +2468,7 @@ class Expr(Basic, EvalfMixin):
             s = s.removeO()
             if o and x0:
                 rep2b = 0  # when O() can handle x0 != 0 this can be removed
-            return s.subs(x, rep2 + rep2b) + o
+            return s.subs(x, rep2 + rep2b)._dist_const() + o
 
         # from here on it's x0=0 and dir='+' handling
 

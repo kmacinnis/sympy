@@ -26,7 +26,7 @@ def finite_diff(expression, variable, increment=1):
     expression = expression.expand()
     expression2 = expression.subs(variable, variable + increment)
     expression2 = expression2.expand()
-    return expression2 - expression
+    return (expression2 - expression)._dist_const()
 
 def finite_diff_kauers(sum):
     """

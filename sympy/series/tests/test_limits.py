@@ -223,9 +223,9 @@ def test_issue693():
 def test_issue991():
     assert limit(1/(x + 3), x, 2) == S(1)/5
     assert limit(1/(x + pi), x, 2) == S(1)/(2 + pi)
-    # assert limit(log(x)/(x**2 + 3), x, 2) == log(2)/7
-    # assert limit(log(x)/(x**2 + pi), x, 2) == log(2)/(4 + pi)
-    assert False  # test hangs
+    assert limit(log(x)/(x**2 + 3), x, 2) == log(2)/7
+    assert limit(log(x)/(x**2 + pi), x, 2) == log(2)/(4 + pi)
+    # assert False  # test hangs
 
 
 def test_issue1448():
@@ -389,7 +389,7 @@ def test_factorial():
 def test_issue_3461():
     e = 5*x**3/4 - 3*x/4 + (y*(3*x**2/2 - S(1)/2) + \
         35*x**4/8 - 15*x**2/4 + S(3)/8)/(2*(y + 1))
-    assert limit(e, y, oo) == (5*x**3 + 3*x**2 - 3*x - 1)/4
+    assert limit(e, y, oo) == 5*x**3/4 - 3*x/4 + (3*x**2 - 1)/4
 
 
 def test_issue_2641():

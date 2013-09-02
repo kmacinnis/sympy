@@ -412,8 +412,9 @@ class exp(ExpBase):
         exp_series = exp(t)._taylor(t, n)
         o = exp_series.getO()
         exp_series = exp_series.removeO()
-        r = exp(arg0)*exp_series.subs(t, arg_series - arg0)
-        r += C.Order(o.expr.subs(t, (arg_series - arg0)), x)
+        arg_diff = (arg_series - arg0)._dist_const()
+        r = exp(arg0)*exp_series.subs(t, arg_diff)
+        r += C.Order(o.expr.subs(t, arg_diff), x)
         r = r.expand()
         return powsimp(r, deep=True, combine='exp')
 

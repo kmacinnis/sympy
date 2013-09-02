@@ -5,7 +5,7 @@ from sympy.polys.polytools import parallel_poly_from_expr
 from sympy.polys.polyerrors import (ComputationFailed,
     PolificationFailed, CoercionFailed)
 from sympy.utilities import postfixes
-from sympy.simplify import rcollect
+from sympy.simplify import rcollect, dc
 from sympy.core import S
 
 
@@ -90,7 +90,8 @@ def solve_biquadratic(f, g, opt):
 
     for q_root in q_roots:
         for p_root in p_roots:
-            solution = (p_root.subs(y, q_root), q_root)
+            solution = (p_root.subs(y, q_root)._dist_const(),
+                                        q_root._dist_const())
             solutions.append(solution)
 
     return sorted(solutions)
@@ -218,7 +219,7 @@ def solve_generic(polys, opt):
                     new_system.append(eq)
 
             for solution in _solve_reduced_system(new_system, new_gens):
-                solutions.append(solution + (zero,))
+                solutions.append(dc(solution) + (zero._dist_const(),))
 
         return solutions
 
@@ -312,6 +313,6 @@ def solve_triangulated(polys, *gens, **args):
     solutions = list(solutions)
 
     for i, (solution, _) in enumerate(solutions):
-        solutions[i] = solution
+        solutions[i] = dc(solution)
 
     return sorted(solutions)

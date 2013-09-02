@@ -13,6 +13,7 @@ from sympy.polys.rootoftools import RootOf
 
 from sympy.utilities.pytest import slow, XFAIL, raises, skip
 from sympy.utilities.randtest import test_numerically as tn
+from sympy.simplify.simplify import dc
 
 from sympy.abc import a, b, c, d, k, h, p, x, y, z, t, q, m
 
@@ -166,11 +167,8 @@ def test_solve_polynomial1():
     assert solve((x - y, x + y), (x, y)) == solution
     assert solve((x - y, x + y), [x, y]) == solution
 
-    assert set(solve(x**3 - 15*x - 4, x)) == set([
-        -2 + 3**Rational(1, 2),
-        S(4),
-        -(2 + 3**Rational(1, 2))
-    ])
+    assert set(solve(x**3 - 15*x - 4, x)) == set(
+            [S(4), -2 - sqrt(3), -2 + sqrt(3)])
 
     assert set(solve((x**2 - 1)**2 - a, x)) == \
         set([sqrt(1 + sqrt(a)), -sqrt(1 + sqrt(a)),
@@ -318,9 +316,9 @@ def test_tsolve():
     assert len(ans) == 1 and ans[0].expand() == \
         -Rational(5, 3) + LambertW(-10240*2**(S(1)/3)*log(2)/3)/(5*log(2))
     assert solve(5*x - 1 + 3*exp(2 - 7*x), x) == \
-        [Rational(1, 5) + LambertW(-21*exp(Rational(3, 5))/5)/7]
+        [(7 + 5*LambertW(-21*exp(Rational(3, 5))/5))/35]
     assert solve(2*x + 5 + log(3*x - 2), x) == \
-        [Rational(2, 3) + LambertW(2*exp(-Rational(19, 3))/3)/2]
+        [(3*LambertW(2*exp(Rational(-19, 3))/3) + 4)/6]
     assert solve(3*x + log(4*x), x) == [LambertW(Rational(3, 4))/3]
     assert set(solve((2*x + 8)*(8 + exp(x)), x)) == set([S(-4), log(8) + pi*I])
     eq = 2*exp(3*x + 4) - 3
@@ -336,10 +334,10 @@ def test_tsolve():
     # it works if expanded, too
     assert solve(eq.expand(), x) == result
 
-    assert solve(z*cos(x) - y, x) == [-acos(y/z) + 2*pi, acos(y/z)]
-    assert solve(z*cos(2*x) - y, x) == [-acos(y/z)/2 + pi, acos(y/z)/2]
+    assert solve(z*cos(x) - y, x) == [-(acos(y/z) - 2*pi), acos(y/z)]
+    assert solve(z*cos(2*x) - y, x) == [-(acos(y/z)/2 - pi), acos(y/z)/2]
     assert solve(z*cos(sin(x)) - y, x) == [
-        asin(acos(y/z) - 2*pi) + pi, -asin(acos(y/z)) + pi,
+        asin(acos(y/z) - 2*pi) + pi, -(asin(acos(y/z)) - pi), 
         -asin(acos(y/z) - 2*pi), asin(acos(y/z))]
 
     assert solve(z*cos(x), x) == [pi/2, 3*pi/2]
@@ -605,8 +603,8 @@ def test_issue_1572_1364_1368():
         a**2 + 1) * (sin(a*x) + cos(a*x)), x)) == set([-pi/(4*a), 3*pi/(4*a)])
     assert solve(3 - (sinh(a*x) + cosh(a*x)), x) == [log(3)/a]
     assert set(solve(3 - (sinh(a*x) + cosh(a*x)**2), x)) == \
-        set([log(-2 + sqrt(5))/a, log(-(-1 + sqrt(2)))/a,
-        log(1 + sqrt(2))/a, log(-(2 + sqrt(5)))/a])
+        set([log(-2 + sqrt(5))/a, log(-2 - sqrt(5))/a, 
+        log(1 + sqrt(2))/a, log(1 - sqrt(2))/a])
     assert solve(atan(x) - 1) == [tan(1)]
 
 
@@ -705,7 +703,7 @@ def test_unrad():
         rv, ans = list(rv), list(ans)
         rv[0] = rv[0].expand()
         ans[0] = ans[0].expand()
-        return rv[0] in [ans[0], -ans[0]] and rv[1:] == ans[1:]
+        return rv[0] in [ans[0], (-ans[0])._dist_const()] and rv[1:] == ans[1:]
 
     def s_check(rv, ans):
         # get the dummy
@@ -945,8 +943,8 @@ def test_issue_2750():
     assert solve(e, I1, I4, Q2, Q4, dI1, dI4, dQ2, dQ4, manual=True) == ans
     # the matrix solver (tested below) doesn't like this because it produces
     # a zero row in the matrix. Is this related to issue 1452?
-    assert [ei.subs(
-        ans[0]) for ei in e] == [0, 0, I3 - I6, -I3 + I6, 0, 0, 0, 0, 0]
+    assert dc([ei.subs(
+        ans[0]) for ei in e]) == [0, 0, I3 - I6, -I3 + I6, 0, 0, 0, 0, 0]
 
 
 def test_2750_matrix():
@@ -966,14 +964,14 @@ def test_2750_matrix():
         I4 - 2*I5 + 2*Q4 + dI4
     )
     assert solve(e, I1, I4, Q2, Q4, dI1, dI4, dQ2, dQ4) == {
-        dI4: -I3 + 3*I5 - 2*Q4,
-        dI1: -4*I2 - 8*I3 - 4*I5 - 6*I6 + 24,
+        dI4: -(I3 - 3*I5 + 2*Q4),
+        dI1: -(4*I2 + 8*I3 + 4*I5 + 6*I6 - 24),
         dQ2: I2,
         I1: I2 + I3,
         Q2: 2*I3 + 2*I5 + 3*I6,
         dQ4: I3 - I5,
-        I4: I3 - I5}
-
+        I4: I3 - I5,
+        }
 
 def test_issue_2802():
     f, g, h = map(Function, 'fgh')
@@ -1037,14 +1035,14 @@ def test_issue_2802():
     assert solve(x - sin(x), x, implicit=True) == \
         [sin(x)]
     assert solve(x**2 + x - 3, x, implicit=True) == \
-        [-x**2 + 3]
+        [-(x**2 - 3)]
     assert solve(x**2 + x - 3, x**2, implicit=True) == \
         [-x + 3]
 
 
 def test_issue_2813():
     assert set(solve(x**2 - x - 0.1, rational=True)) == \
-        set([S(1)/2 + sqrt(35)/10, -sqrt(35)/10 + S(1)/2])
+        set([(5 + sqrt(35))/10, (-sqrt(35) + 5)/10])
     # [-0.0916079783099616, 1.09160797830996]
     ans = solve(x**2 - x - 0.1, rational=False)
     assert len(ans) == 2 and all(a.is_Number for a in ans)
@@ -1113,7 +1111,7 @@ def test_issue_2961():
         Piecewise((y + 3, S(0) <= y), (S.NaN, True))
     ]
     y = Symbol('y', positive=True)
-    assert solve(absxm3 - y, x) == [-y + 3, y + 3]
+    assert solve(absxm3 - y, x) == [-(y - 3), y + 3]
 
 
 def test_issue_2574():
@@ -1205,12 +1203,11 @@ def test__ispow():
 
 def test_issue_3545():
     eq = -sqrt((m - q)**2 + (-m/(2*q) + S(1)/2)**2) + sqrt((-m**2/2 - sqrt(
-    4*m**4 - 4*m**2 + 8*m + 1)/4 - S(1)/4)**2 + (m**2/2 - m - sqrt(
-    4*m**4 - 4*m**2 + 8*m + 1)/4 - S(1)/4)**2)
+        4*m**4 - 4*m**2 + 8*m + 1)/4 - S(1)/4)**2 + (m**2/2 - m - sqrt(
+        4*m**4 - 4*m**2 + 8*m + 1)/4 - S(1)/4)**2)
     assert solve(eq, q) == [
-        m**2/2 - sqrt(4*m**4 - 4*m**2 + 8*m + 1)/4 - S(1)/4,
-        m**2/2 + sqrt(4*m**4 - 4*m**2 + 8*m + 1)/4 - S(1)/4]
-
+        (2*m**2 - sqrt(4*m**4 - 4*m**2 + 8*m + 1) - 1)/4, 
+        (2*m**2 + sqrt(4*m**4 - 4*m**2 + 8*m + 1) - 1)/4]
 
 def test_issue_3653():
     assert solve([a**2 + a, a - b], [a, b]) == [(-1, -1), (0, 0)]
@@ -1344,8 +1341,8 @@ def test_uselogcombine():
     eq = z - log(x) + log(y/(x*(-1 + y**2/x**2)))
     assert solve(eq, x, force=True) == [-sqrt(y*(y - exp(z))), sqrt(y*(y - exp(z)))]
     assert solve(log(x + 3) + log(1 + 3/x) - 3) == [
-        -3 + sqrt(-12 + exp(3))*exp(S(3)/2)/2 + exp(3)/2,
-        -sqrt(-12 + exp(3))*exp(S(3)/2)/2 - 3 + exp(3)/2]
+        -3 + sqrt(-12 + exp(3))*exp(Rational(3, 2))/2 + exp(3)/2,
+        -sqrt(-(-exp(3) + 12))*exp(Rational(3, 2))/2 - 3 + exp(3)/2]
 
 
 def test_atan2():

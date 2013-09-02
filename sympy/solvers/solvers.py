@@ -33,7 +33,7 @@ from sympy.functions import (log, exp, LambertW, cos, sin, tan, cot, cosh,
                              sqrt, atan2)
 from sympy.functions.elementary.miscellaneous import real_root
 from sympy.simplify import (simplify, collect, powsimp, posify, powdenest,
-                            nsimplify, denom, logcombine)
+                            nsimplify, denom, logcombine, dc)
 from sympy.simplify.sqrtdenest import sqrt_depth, _mexpand
 from sympy.simplify.fu import TR1, hyper_as_trig
 from sympy.matrices import Matrix, zeros
@@ -1413,7 +1413,7 @@ def _solve_system(exprs, symbols, **flags):
     for j, g in enumerate(exprs):
         dens.update(denoms(g, symbols))
         i, d = _invert(g, *symbols)
-        g = d - i
+        g = (d - i)._dist_const()
         g = exprs[j] = g.as_numer_denom()[0]
         if manual:
             failed.append(g)
@@ -1439,7 +1439,7 @@ def _solve_system(exprs, symbols, **flags):
                         j = list(monom).index(1)
                         matrix[i, j] = coeff
                     except ValueError:
-                        matrix[i, m] = -coeff
+                        matrix[i, m] = (-coeff)._dist_const()
 
             # returns a dictionary ({symbols: values}) or None
             if flags.pop('minimal', False):
@@ -1953,7 +1953,8 @@ def solve_linear_system(system, *symbols, **flags):
 
                 # subtract from the current row the row containing
                 # pivot and multiplied by extracted coefficient
-                matrix.row_op(k, lambda x, j: simplify(x - matrix[i, j]*coeff))
+                matrix.row_op(k, lambda x, j: 
+                        simplify((x - matrix[i, j]*coeff))._dist_const())
 
         i += 1
 
@@ -2140,20 +2141,20 @@ def _tsolve(eq, sym, **flags):
         if lhs.is_Add:
             # it's time to try factoring; powdenest is used
             # to try get powers in standard form for better factoring
-            f = factor(powdenest(lhs - rhs))
+            f = factor(powdenest((lhs - rhs)._dist_const()))
             if f.is_Mul:
                 return _solve(f, sym, **flags)
             if rhs:
                 f = logcombine(lhs, force=flags.get('force', False))
                 if f.count(log) != lhs.count(log):
                     if f.func is log:
-                        return _solve(f.args[0] - exp(rhs), sym, **flags)
-                    return _tsolve(f - rhs, sym)
+                        return _solve((f.args[0] - exp(rhs))._dist_const(), sym, **flags)
+                    return _tsolve((f - rhs)._dist_const(), sym)
 
         elif lhs.is_Pow:
             if lhs.exp.is_Integer:
                 if lhs - rhs != eq:
-                    return _solve(lhs - rhs, sym, **flags)
+                    return _solve((lhs - rhs)._dist_const(), sym, **flags)
             elif sym not in lhs.exp.free_symbols:
                 return _solve(lhs.base - rhs**(1/lhs.exp), sym, **flags)
             elif not rhs and sym in lhs.exp.free_symbols:
@@ -2183,7 +2184,7 @@ def _tsolve(eq, sym, **flags):
 
         rewrite = lhs.rewrite(exp)
         if rewrite != lhs:
-            return _solve(rewrite - rhs, sym, **flags)
+            return _solve((rewrite - rhs)._dist_const(), sym, **flags)
     except NotImplementedError:
         pass
 
@@ -2204,13 +2205,13 @@ def _tsolve(eq, sym, **flags):
         down = g.difference(up_or_log)
         eq_down = expand_log(expand_power_exp(eq)).subs(
             dict(zip(up_or_log, [0]*len(up_or_log))))
-        eq = expand_power_exp(factor(eq_down, deep=True) + (eq - eq_down))
-        rhs, lhs = _invert(eq, sym)
+        eq = expand_power_exp(factor(eq_down, deep=True) + (eq - eq_down)._dist_const())
+        rhs, lhs = dc(_invert(eq._dist_const(), sym))
         if lhs.has(sym):
             try:
                 poly = lhs.as_poly()
                 g = _filtered_gens(poly, sym)
-                return _solve_lambert(lhs - rhs, sym, g)
+                return _solve_lambert((lhs - rhs)._dist_const(), sym, g)
             except NotImplementedError:
                 # maybe it's a convoluted function
                 if len(g) == 2:
@@ -2220,7 +2221,7 @@ def _tsolve(eq, sym, **flags):
                             raise NotImplementedError
                         g, p, u = gpu
                         flags['bivariate'] = False
-                        inversion = _tsolve(g - u, sym, **flags)
+                        inversion = _tsolve((g - u)._dist_const(), sym, **flags)
                         if inversion:
                             sol = _solve(p, u, **flags)
                             return list(ordered([i.subs(u, s)
@@ -2230,7 +2231,7 @@ def _tsolve(eq, sym, **flags):
 
     if flags.pop('force', True):
         flags['force'] = False
-        pos, reps = posify(lhs - rhs)
+        pos, reps = posify((lhs - rhs)._dist_const())
         for u, s in reps.iteritems():
             if s == sym:
                 break
@@ -2410,7 +2411,7 @@ def _invert(eq, *symbols, **kwargs):
                     break
 
                 lhs = dep
-                rhs -= indep
+                rhs = (rhs - indep)._dist_const()
 
             # dep * indep == rhs
             else:
@@ -2577,9 +2578,9 @@ def unrad(eq, *syms, **flags):
         free = eq.free_symbols
         if len(free) == 1:
             if eq.coeff(free.pop()**degree(eq)) < 0:
-                eq = -eq
+                eq = (-eq)._dist_const()
         elif eq.could_extract_minus_sign():
-            eq = -eq
+            eq = (-eq)._dist_const()
 
         return eq
 
@@ -2674,7 +2675,7 @@ def unrad(eq, *syms, **flags):
         eq = rterms[0]**lcm - (-args)**lcm
 
     elif len(rterms) == 2 and not args:
-        eq = rterms[0]**lcm - rterms[1]**lcm
+        eq = (rterms[0]**lcm - rterms[1]**lcm)._dist_const()
 
     elif log(lcm, 2).is_Integer and (not args and
             len(rterms) == 4 or len(rterms) < 4):

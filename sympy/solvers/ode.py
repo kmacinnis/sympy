@@ -502,7 +502,7 @@ def dsolve(eq, func=None, hint="default", simplify=True, **kwargs):
     else:
         # The key 'hint' stores the hint needed to be solved for.
         hint = hints['hint']
-        return _helper_simplify(eq, hint, hints, simplify)
+        return _helper_simplify(eq._dist_const(), hint, hints, simplify)
 
 def _helper_simplify(eq, hint, match, simplify=True):
     r"""
@@ -721,8 +721,8 @@ def classify_ode(eq, func=None, dict=False, **kwargs):
              b: dep.coeff(f(x)),
              c: ind}
         # double check f[a] since the preconditioning may have failed
-        if not r[a].has(f) and (
-                r[a]*df + r[b]*f(x) + r[c]).expand() - reduced_eq == 0:
+        if not r[a].has(f) and expand(r[a]*df
+                        + r[b]*f(x) + r[c] - reduced_eq) == 0:
             r['a'] = a
             r['b'] = b
             r['c'] = c
@@ -763,7 +763,7 @@ def classify_ode(eq, func=None, dict=False, **kwargs):
             # dP/dy == dQ/dx
             try:
                 if r[d] != 0:
-                    numerator = simplify(r[d].diff(y) - r[e].diff(x))
+                    numerator = simplify(r[d].diff(y) - r[e].diff(x))._dist_const()
                     # The following few conditions try to convert a non-exact
                     # differential equation into an exact one.
                     # References : Differential equations with applications
@@ -783,7 +783,7 @@ def classify_ode(eq, func=None, dict=False, **kwargs):
                         else:
                             # If (dP/dy - dQ/dx) / -P = f(y)
                             # then exp(integral(f(y))*equation becomes exact
-                            factor = simplify(-numerator/r[d])
+                            factor = simplify(-numerator/r[d])._dist_const()
                             variables = factor.free_symbols
                             if len(variables) == 1 and y == variables.pop():
                                 factor = exp(C.Integral(factor).doit())
@@ -1107,7 +1107,7 @@ def odesimp(eq, func, order, hint):
     else:
         # The solution is not solved, so try to solve it
         try:
-            eqsol = solve(eq, func, force=True)
+            eqsol = solve(eq._dist_const(), func, force=True)
             if not eqsol:
                 raise NotImplementedError
         except (NotImplementedError, PolynomialError):
@@ -1387,11 +1387,11 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
         raise NotImplementedError("Unable to test if " + str(sol) +
             " is a solution to " + str(ode) + ".")
     else:
-        return (False, s)
+        return (False, s._dist_const())
 
 
 def ode_sol_simplicity(sol, func, trysolving=True):
-    r"""
+    R"""
     Returns an extended integer representing how simple a solution to an ODE
     is.
 

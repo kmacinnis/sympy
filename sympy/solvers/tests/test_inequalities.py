@@ -215,8 +215,8 @@ def test_reduce_inequalities_errors():
 
 
 def test_hacky_inequalities():
-    assert reduce_inequalities(x + y < 1, symbols=[x]) == (x < 1 - y)
-    assert reduce_inequalities(x + y >= 1, symbols=[x]) == (x >= 1 - y)
+    assert reduce_inequalities(x + y < 1, symbols=[x]) == (x < -(y - 1))
+    assert reduce_inequalities(x + y >= 1, symbols=[x]) == (x >= -(y - 1))
 
 
 def test_issue_3244():

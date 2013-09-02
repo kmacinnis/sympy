@@ -130,7 +130,7 @@ def _lambert(eq, x):
     if not x in other.free_symbols:
         return [] # violated assumptions
     d, f, X2 = _linab(other, x)
-    logterm = collect(eq - other, mainlog)
+    logterm = collect((eq - other)._dist_const(), mainlog)
     a = logterm.as_coefficient(mainlog)
     if a is None or x in a.free_symbols:
         return []  # violated assumptions

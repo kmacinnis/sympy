@@ -507,7 +507,7 @@ def test_homogeneous_order():
     raises(ValueError, lambda: homogeneous_order(x*y))
 
 
-def test_1st_homogeneous_coeff_ode():
+def test_1st_homogeneous_coeff_ode_k():
     # Type: First order homogeneous, y'=f(y/x)
     eq1 = f(x)/x*cos(f(x)/x) - (x/f(x)*sin(f(x)/x) + cos(f(x)/x))*f(x).diff(x)
     eq2 = x*f(x).diff(x) - f(x) - x*sin(f(x)/x)

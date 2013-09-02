@@ -2527,7 +2527,7 @@ class Expr(Basic, EvalfMixin):
                     ndid = 0
                     ndo = len(si.args)
                     while 1:
-                        do = (si - yielded + o).removeO()
+                        do = (si - yielded + o)._dist_const().removeO()
                         o *= x
                         if not do or do.is_Order:
                             continue

@@ -445,7 +445,7 @@ def test_simplify_expr():
 
     A = Matrix([[2*k - m*w**2, -k], [-k, k - m*w**2]]).inv()
     assert simplify((A*Matrix([0, f]))[1]) == \
-        -f*(2*k - m*w**2)/(k**2 - (k - m*w**2)*(2*k - m*w**2))
+        f*(2*k - m*w**2)/(k**2 - 3*k*m*w**2 + m**2*w**4)
 
     f = -x + y/(z + t) + z*x/(z + t) + z*a/(z + t) + t*x/(z + t)
     assert simplify(f) == (y + a*z)/(z + t)
@@ -745,7 +745,7 @@ def test_nthroot():
     q = 1 + sqrt(2) - 2*sqrt(3) + sqrt(6) + sqrt(7)
     assert nthroot(expand_multinomial(q**3), 3) == q
     assert nthroot(41 + 29*sqrt(2), 5) == 1 + sqrt(2)
-    assert nthroot(-41 - 29*sqrt(2), 5) == -(1 + sqrt(2))
+    assert nthroot(-41 - 29*sqrt(2), 5) == -1 - sqrt(2)
     expr = 1320*sqrt(10) + 4216 + 2576*sqrt(6) + 1640*sqrt(15)
     assert nthroot(expr, 5) == 1 + sqrt(6) + sqrt(15)
     q = 1 + sqrt(2) + sqrt(3) + sqrt(5)

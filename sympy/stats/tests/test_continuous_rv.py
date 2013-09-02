@@ -126,7 +126,7 @@ def test_cdf():
     Y = Exponential('y', 10)
     d = cdf(Y)
     assert d(-5) == 0
-    assert P(Y > 3) == 1 - d(3)
+    assert P(Y > 3) == (1 - d(3))._dist_const()
 
     raises(ValueError, lambda: cdf(X + Y))
 
@@ -223,8 +223,8 @@ def test_chi_noncentral():
     l = Symbol("l")
 
     X = ChiNoncentral("x", k, l)
-    assert density(X)(x) == (x**k*l*(x*l)**(-k/2)*
-                          exp(-x**2/2 - l**2/2)*besseli(k/2 - 1, x*l))
+    assert density(X)(x) == (x**k*l*(l*x)**(-k/2)*
+                              exp(-(l**2 + x**2)/2)*besseli(k/2 - 1, l*x))
 
 def test_chi_squared():
     k = Symbol("k", integer=True)
@@ -238,7 +238,7 @@ def test_dagum():
     a = Symbol("a", positive=True)
 
     X = Dagum('x', p, a, b)
-    assert density(X)(x) == a*p*(x/b)**(a*p)*((x/b)**a + 1)**(-p - 1)/x
+    assert density(X)(x) == a*p*(x/b)**(a*p)*((x/b)**a + 1)**(-(p + 1))/x
 
 def test_erlang():
     k = Symbol("k", integer=True, positive=True)
@@ -268,8 +268,8 @@ def test_f_distribution():
     d2 = Symbol("d2", positive=True)
 
     X = FDistribution("x", d1, d2)
-    assert density(X)(x) == (d2**(d2/2)*sqrt((x*d1)**d1 *
-        (x*d1 + d2)**(-d1 - d2))*gamma(d1/2 + d2/2)/(x*gamma(d1/2)*gamma(d2/2)))
+    assert density(X)(x) == (d2**(d2/2)*sqrt((d1*x)**d1 * 
+        (d1*x + d2)**(-(d1 + d2)))*gamma(d1/2 + d2/2)/(x*gamma(d1/2)*gamma(d2/2)))
 
 def test_fisher_z():
     d1 = Symbol("d1", positive=True)
@@ -277,8 +277,8 @@ def test_fisher_z():
 
     X = FisherZ("x", d1, d2)
     assert density(X)(x) == (2*d1**(d1/2)*d2**(d2/2)*
-            (d1*exp(2*x) + d2)**(-d1/2 - d2/2)*
-             exp(x*d1)*gamma(d1/2 + d2/2)/(gamma(d1/2)*gamma(d2/2)))
+            (d1*exp(2*x) + d2)**(-(d1 + d2)/2)*
+            exp(d1*x)*gamma(d1/2 + d2/2)/(gamma(d1/2)*gamma(d2/2)))
 
 def test_frechet():
     a = Symbol("a", positive=True)
@@ -335,7 +335,7 @@ def test_logistic():
     s = Symbol("s", positive=True)
 
     X = Logistic('x', mu, s)
-    assert density(X)(x) == exp((-x + mu)/s)/(s*(exp((-x + mu)/s) + 1)**2)
+    assert density(X)(x) == exp(-(x - mu)/s)/(s*(exp(-(x - mu)/s) + 1)**2)
 
 def test_lognormal():
     mean = Symbol('mu', real=True, bounded=True)
@@ -433,7 +433,7 @@ def test_studentt():
     nu = Symbol("nu", positive=True)
 
     X = StudentT('x', nu)
-    assert density(X)(x) == ((x**2/nu + 1)**(-nu/2 - S.Half)
+    assert density(X)(x) == ((x**2/nu + 1)**(-(nu + 1)/2)
                         *gamma(nu/2 + S.Half)/(sqrt(pi)*sqrt(nu)*gamma(nu/2)))
 
 
@@ -456,8 +456,8 @@ def test_quadratic_u():
     b = Symbol("b", real=True)
 
     X = QuadraticU("x", a, b)
-    assert density(X)(x) == (Piecewise((12*(x - a/2 - b/2)**2/(-a + b)**3,
-                          And(x <= b, a <= x)), (0, True)))
+    assert density(X)(x) == Piecewise((12*(x - (a + b)/2)**2/(-a + b)**3, 
+                          And(a <= x, x <= b)), (0, True))
 
 def test_uniform():
     l = Symbol('l', real=True, bounded=True)
@@ -585,7 +585,7 @@ def test_density_unevaluated():
 def test_NormalDistribution():
     nd = NormalDistribution(0, 1)
     x = Symbol('x')
-    assert nd.cdf(x) == erf(sqrt(2)*x/2)/2 + S.One/2
+    assert nd.cdf(x) == (erf(sqrt(2)*x/2) + 1)/2
     assert isinstance(nd.sample(), float) or nd.sample().is_Number
     assert nd.expectation(1, x) == 1
     assert nd.expectation(x, x) == 0

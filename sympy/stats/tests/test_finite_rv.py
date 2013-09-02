@@ -21,7 +21,7 @@ def test_discreteuniform():
     a, b, c = symbols('a b c')
     X = DiscreteUniform('X', [a, b, c])
 
-    assert E(X) == (a + b + c)/3
+    assert E(X) == a/3 + b/3 + c/3
     assert simplify(variance(X)
                     - ((a**2 + b**2 + c**2)/3 - (a/3 + b/3 + c/3)**2)) == 0
     assert P(Eq(X, a)) == P(Eq(X, b)) == P(Eq(X, c)) == S('1/3')
@@ -140,9 +140,9 @@ def test_bernoulli():
     X = Bernoulli('B', p, 1, 0)
 
     assert E(X) == p
-    assert simplify(variance(X)) == p*(1 - p)
-    E(a*X + b) == a*E(X) + b
-    variance(a*X + b) == a**2 * variance(X)
+    assert simplify(variance(X)) == -(p**2 - p)
+    assert E(a*X + b) == a*E(X) + b
+    assert variance(a*X + b).expand() == (a**2 * variance(X)).expand()
 
 
 def test_cdf():

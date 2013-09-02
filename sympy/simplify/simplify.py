@@ -1724,14 +1724,14 @@ def nthroot(expr, n, max_len=4, prec=15):
         p = (-expr)**Rational(1, n)
         a = nsimplify(p, constants=surds)
         res = a if _mexpand(a**n) == _mexpand(-expr) else p
-        return -res
+        return (-res)._dist_const()
     a = nsimplify(p, constants=surds)
     if _mexpand(a) is not _mexpand(p) and _mexpand(a**n) == _mexpand(expr):
-        return _mexpand(a)
+        return _mexpand(a)._dist_const()
     expr = _nthroot_solve(expr, n, prec)
     if expr is None:
         return p
-    return expr
+    return expr._dist_const()
 
 
 def split_surds(expr):

@@ -142,7 +142,6 @@ def test_dependence():
     # Create a dependency
     XX, YY = given(Tuple(X, Y), Eq(X + Y, 3))
     assert dependent(XX, YY)
-    # assert False # test hangs
 
 
 @XFAIL

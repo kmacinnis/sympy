@@ -111,7 +111,7 @@ def test_f1b():
     assert limit(x*sin(pi/x), x, oo) == pi  # 220
     assert limit((1 - cos(x))/x**2, x, 0) == Rational(1, 2)  # 221
     assert limit(x*sin(1/x), x, oo) == 1  # 227b
-    assert limit((cos(m*x) - cos(n*x))/x**2, x, 0) == ((n**2 - m**2)/2)  # 232
+    assert limit((cos(m*x) - cos(n*x))/x**2, x, 0) == n**2/2 - m**2/2  # 232
     assert limit((tan(x) - sin(x))/x**3, x, 0) == Rational(1, 2)  # 233
     assert limit((x - sin(2*x))/(x + sin(3*x)), x, 0) == -Rational(1, 4)  # 237
     assert limit((1 - sqrt(cos(x)))/x**2, x, 0) == Rational(1, 4)  # 239

@@ -268,7 +268,7 @@ def test_f_distribution():
     d2 = Symbol("d2", positive=True)
 
     X = FDistribution("x", d1, d2)
-    assert density(X)(x) == (d2**(d2/2)*sqrt((d1*x)**d1 * 
+    assert density(X)(x) == (d2**(d2/2)*sqrt((d1*x)**d1 *
         (d1*x + d2)**(-(d1 + d2)))*gamma(d1/2 + d2/2)/(x*gamma(d1/2)*gamma(d2/2)))
 
 def test_fisher_z():
@@ -456,7 +456,7 @@ def test_quadratic_u():
     b = Symbol("b", real=True)
 
     X = QuadraticU("x", a, b)
-    assert density(X)(x) == Piecewise((12*(x - (a + b)/2)**2/(-a + b)**3, 
+    assert density(X)(x) == Piecewise((12*(x - (a + b)/2)**2/(-a + b)**3,
                           And(a <= x, x <= b)), (0, True))
 
 def test_uniform():

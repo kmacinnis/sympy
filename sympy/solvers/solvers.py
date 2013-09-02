@@ -1953,7 +1953,7 @@ def solve_linear_system(system, *symbols, **flags):
 
                 # subtract from the current row the row containing
                 # pivot and multiplied by extracted coefficient
-                matrix.row_op(k, lambda x, j: 
+                matrix.row_op(k, lambda x, j:
                         simplify((x - matrix[i, j]*coeff))._dist_const())
 
         i += 1

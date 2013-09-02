@@ -337,7 +337,7 @@ def test_tsolve():
     assert solve(z*cos(x) - y, x) == [-(acos(y/z) - 2*pi), acos(y/z)]
     assert solve(z*cos(2*x) - y, x) == [-(acos(y/z)/2 - pi), acos(y/z)/2]
     assert solve(z*cos(sin(x)) - y, x) == [
-        asin(acos(y/z) - 2*pi) + pi, -(asin(acos(y/z)) - pi), 
+        asin(acos(y/z) - 2*pi) + pi, -(asin(acos(y/z)) - pi),
         -asin(acos(y/z) - 2*pi), asin(acos(y/z))]
 
     assert solve(z*cos(x), x) == [pi/2, 3*pi/2]
@@ -603,7 +603,7 @@ def test_issue_1572_1364_1368():
         a**2 + 1) * (sin(a*x) + cos(a*x)), x)) == set([-pi/(4*a), 3*pi/(4*a)])
     assert solve(3 - (sinh(a*x) + cosh(a*x)), x) == [log(3)/a]
     assert set(solve(3 - (sinh(a*x) + cosh(a*x)**2), x)) == \
-        set([log(-2 + sqrt(5))/a, log(-2 - sqrt(5))/a, 
+        set([log(-2 + sqrt(5))/a, log(-2 - sqrt(5))/a,
         log(1 + sqrt(2))/a, log(1 - sqrt(2))/a])
     assert solve(atan(x) - 1) == [tan(1)]
 
@@ -1206,7 +1206,7 @@ def test_issue_3545():
         4*m**4 - 4*m**2 + 8*m + 1)/4 - S(1)/4)**2 + (m**2/2 - m - sqrt(
         4*m**4 - 4*m**2 + 8*m + 1)/4 - S(1)/4)**2)
     assert solve(eq, q) == [
-        (2*m**2 - sqrt(4*m**4 - 4*m**2 + 8*m + 1) - 1)/4, 
+        (2*m**2 - sqrt(4*m**4 - 4*m**2 + 8*m + 1) - 1)/4,
         (2*m**2 + sqrt(4*m**4 - 4*m**2 + 8*m + 1) - 1)/4]
 
 def test_issue_3653():

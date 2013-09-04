@@ -427,6 +427,9 @@ class Piecewise(Function):
     def _eval_power(self, s):
         return Piecewise(*[(e**s, c) for e, c in self.args])
 
+    def _dist_const(self):
+        return Piecewise(*[(e._dist_const(),c) for e,c in self.args])
+
     def _eval_subs(self, old, new):
         """
         Piecewise conditions may contain bool which are not of Basic type.

@@ -71,7 +71,7 @@ def test_basics():
     assert integrate(e, (t, a, x)).diff(x) == \
         Integral(e, (t, a, x)).diff(x).doit().expand()
     assert Integral(e, (t, a, x)).diff(x).doit() == ((1 + x)**2)
-    assert integrate(e, (t, x, a)).diff(x).doit() == (-(1 + x)**2).expand()
+    assert integrate(e, (t, x, a)).diff(x).doit() == -(x**2 + 2*x + 1)
 
     assert integrate(t**2, (t, x, 2*x)).diff(x) == 7*x**2
 
@@ -558,11 +558,11 @@ def test_expand_integral():
 def test_as_sum_midpoint1():
     e = Integral(sqrt(x**3 + 1), (x, 2, 10))
     assert e.as_sum(1, method="midpoint") == 8*sqrt(217)
-    assert e.as_sum(2, method="midpoint") == 4*sqrt(65) + 12*sqrt(57)
-    assert e.as_sum(3, method="midpoint") == 8*sqrt(217)/3 + \
-        8*sqrt(3081)/27 + 8*sqrt(52809)/27
-    assert e.as_sum(4, method="midpoint") == 2*sqrt(730) + \
-        4*sqrt(7) + 4*sqrt(86) + 6*sqrt(14)
+    assert e.as_sum(2, method="midpoint") == 4*(sqrt(65) + 3*sqrt(57))
+    assert e.as_sum(3, method="midpoint") == 8*(sqrt(3081)/9 +
+        sqrt(217) + sqrt(52809)/9)/3
+    assert e.as_sum(4, method="midpoint") == 2*(2*sqrt(7) +
+        3*sqrt(14) + 2*sqrt(86) + sqrt(730))
     assert abs(e.as_sum(4, method="midpoint").n() - e.n()) < 0.5
 
     e = Integral(sqrt(x**3 + y**3), (x, 2, 10), (y, 0, 10))
@@ -702,7 +702,8 @@ def test_series():
     from sympy.abc import x
     i = Integral(cos(x))
     e = i.lseries(x)
-    assert i.nseries(x, n=8).removeO() == Add(*[e.next() for j in range(4)])
+    # assert i.nseries(x, n=8).removeO() == Add(*[e.next() for j in range(4)])
+    assert False # test hangs on rhs
 
 
 def test_issue_1304():

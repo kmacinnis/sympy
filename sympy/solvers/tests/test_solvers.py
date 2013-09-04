@@ -112,7 +112,7 @@ def test_solve_args():
     assert solve(a*x**2 + b*x + c -
                 ((x - h)**2 + 4*p*k)/4/p,
                 [h, p, k], exclude=[a, b, c], dict=True) == \
-        [{k: (4*a*c - b**2)/(4*a), h: -b/(2*a), p: 1/(4*a)}]
+        [{k: (a*c - b**2/4)/a, h: -b/(2*a), p: 1/(4*a)}]
     # failing undetermined system
     assert solve(a*x + b**2/(x + 4) - 3*x - 4/x, a, b) == \
         [{a: (-b**2*x + 3*x**3 + 12*x**2 + 4*x + 16)/(x**2*(x + 4))}]
@@ -1037,7 +1037,7 @@ def test_issue_2802():
     assert solve(x**2 + x - 3, x, implicit=True) == \
         [-(x**2 - 3)]
     assert solve(x**2 + x - 3, x**2, implicit=True) == \
-        [-x + 3]
+        [-(x - 3)]
 
 
 def test_issue_2813():

@@ -3726,6 +3726,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     expr = short.xreplace(hollow_mul)
 
     numer, denom = expr.as_numer_denom()
+    denom = denom._dist_const()
     if denom.is_Add:
         n, d = fraction(radsimp(1/denom, symbolic=False, max_terms=1))
         if n is not S.One:

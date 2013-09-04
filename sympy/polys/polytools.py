@@ -5563,7 +5563,7 @@ def _torational_factor_list(p, x):
         r1 = simplify(1/r)
         a = []
         for z in factors[1:][0]:
-            a.append((simplify(z[0].subs({x:x*r1})), z[1]))
+            a.append(((z[0].subs({x:x*r1}))._dist_const(), z[1]))
     else:
         c = factors[0]
         a = []

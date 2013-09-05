@@ -1727,7 +1727,7 @@ class Commutator(Function):
             else:
                 return S.Zero
         if isinstance(a, FermionicOperator) and isinstance(b, FermionicOperator):
-            return wicks(a*b) - wicks(b*a)
+            return (wicks(a*b) - wicks(b*a))._dist_const()
 
         #
         # Canonical ordering of arguments

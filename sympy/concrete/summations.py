@@ -150,7 +150,7 @@ class Sum(Expr):
 
         for limit in self.limits:
             i, a, b = limit
-            dif = b - a
+            dif = (b - a)._dist_const()
             if dif.is_Integer and dif < 0:
                 a, b = b, a
 
@@ -165,7 +165,7 @@ class Sum(Expr):
             if not isinstance(f, Piecewise):
                 return f.doit(**hints)
 
-        return f
+        return f._dist_const()
 
     def _eval_adjoint(self):
         return Sum(self.function.adjoint(), *self.limits)
@@ -413,14 +413,14 @@ def eval_sum(f, limits):
     if f is S.Zero:
         return S.Zero
     if i not in f.free_symbols:
-        return f*(b - a + 1)
+        return f*(b - a + 1)._dist_const()
     if a == b:
         return f.subs(i, a)
 
     if f.has(KroneckerDelta) and _has_simple_delta(f, limits[0]):
         return deltasummation(f, limits)
 
-    dif = b - a
+    dif = (b - a)._dist_const()
     definite = dif.is_Integer
     # Doing it directly may be faster if there are very few terms.
     if definite and (dif < 100):

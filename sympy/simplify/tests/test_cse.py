@@ -244,4 +244,3 @@ def test_issue_3070():
     # and a check that the right thing is done with the new
     # mechanism
     assert sub_post(sub_pre((-x - y)*z - x - y)) == -z*(x + y) - (x + y)
-

@@ -497,7 +497,7 @@ def test_sho_lagrangian():
 
     assert diff(L, x, t) == diff(L, t, x)
     assert diff(L, diff(x, t), t) == m*diff(x, t, 2)
-    assert diff(L, t, diff(x, t)) == -(k*x - m*diff(x, t, 2))
+    assert diff(L, t, diff(x, t)) == -k*x + m*diff(x, t, 2)
 
 
 def test_straight_line():

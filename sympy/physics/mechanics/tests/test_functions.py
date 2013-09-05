@@ -256,10 +256,10 @@ def test_kin_eqs():
     q0d, q1d, q2d, q3d = dynamicsymbols('q0 q1 q2 q3', 1)
     u1, u2, u3 = dynamicsymbols('u1 u2 u3')
     kds = kinematic_equations([u1, u2, u3], [q0, q1, q2, q3], 'quaternion')
-    assert kds == [-0.5 * q0 * u1 - 0.5 * q2 * u3 + 0.5 * q3 * u2 + q1d,
-            -0.5 * q0 * u2 + 0.5 * q1 * u3 - 0.5 * q3 * u1 + q2d,
-            -0.5 * q0 * u3 - 0.5 * q1 * u2 + 0.5 * q2 * u1 + q3d,
-            0.5 * q1 * u1 + 0.5 * q2 * u2 + 0.5 * q3 * u3 + q0d]
+    assert kds == [-(0.5 * q0 * u1 + 0.5 * q2 * u3 - 0.5 * q3 * u2) + q1d,
+            -(0.5 * q0 * u2 - 0.5 * q1 * u3 + 0.5 * q3 * u1) + q2d,
+            -(0.5 * q0 * u3 + 0.5 * q1 * u2 - 0.5 * q2 * u1) + q3d,
+            -(-0.5 * q1 * u1 - 0.5 * q2 * u2 - 0.5 * q3 * u3) + q0d]
 
 
 def test_inertia_of_point_mass():
@@ -363,8 +363,8 @@ def test_kinetic_energy():
     Pa = Particle('Pa', P, m)
     I = outer(N.z, N.z)
     A = RigidBody('A', Ac, a, M, (I, Ac))
-    assert 0 == kinetic_energy(N, Pa, A) - (M*l1**2*omega**2/2
-            + 2*l1**2*m*omega**2 + omega**2/2)
+    assert 0 == (kinetic_energy(N, Pa, A) - (M*l1**2*omega**2/2
+            + 2*l1**2*m*omega**2 + omega**2/2)).expand()
 
 
 def test_potential_energy():

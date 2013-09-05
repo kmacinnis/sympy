@@ -57,7 +57,7 @@ def test_geometric_sums():
     assert summation(2**(-n), (n, 1, oo)) == 1
     assert summation(3**(-n), (n, 4, oo)) == Rational(1, 54)
     assert summation(2**(-4*n + 3), (n, 1, oo)) == Rational(8, 15)
-    assert summation(2**(n + 1), (n, 1, b)).expand() == 4*(2**b - 1)
+    assert summation(2**(n + 1), (n, 1, b)) == 2*2**(b + 1) - 4
 
     # issue 3565:
     assert summation(x**n, (n, 0, oo)) == \
@@ -173,7 +173,7 @@ def test_euler_maclaurin():
     def check_exact(f, a, b, m, n):
         A = Sum(f, (k, a, b))
         s, e = A.euler_maclaurin(m, n)
-        assert (e == 0) and (s.expand() == A.doit())
+        assert (e == 0) and (s.expand() == A.doit().expand())
     check_exact(k**4, a, b, 0, 2)
     check_exact(k**4 + 2*k, a, b, 1, 2)
     check_exact(k**4 + k**2, a, b, 1, 5)
@@ -224,7 +224,7 @@ def test_simple_products():
     assert product(n, (n, 1, b)) == factorial(b)
     assert product(n**3, (n, 1, b)) == factorial(b)**3
     assert product(3**(2 + n), (n, a, b)) \
-        == 3**(2*(1 - a + b) + b/2 + (b**2)/2 + a/2 - (a**2)/2)
+        == 3**(2 - 2*a + 2*b + b/2 + (b**2)/2 + a/2 - (a**2)/2)
     assert product(cos(n), (n, 3, 5)) == cos(3)*cos(4)*cos(5)
     assert product(cos(n), (n, x, x + 2)) == cos(x)*cos(x + 1)*cos(x + 2)
     assert isinstance(product(cos(n), (n, x, x + S.Half)), Product)
@@ -270,7 +270,7 @@ def test_telescopic_sums():
     assert telescopic(1/m, -m/(1 + m), (m, n - 1, n)) == \
         telescopic(1/k, -k/(1 + k), (k, n - 1, n))
 
-    assert Sum(1/x/(x - 1), (x, a, b)).doit() == -((a - b - 1)/(b*(a - 1)))
+    assert Sum(1/x/(x - 1), (x, a, b)).doit() == (-a + b + 1)/(b*(a - 1))
 
 
 def test_sum_reconstruct():
@@ -354,7 +354,7 @@ def test_hypersum():
     assert simplify(summation(x**n/fac(n), (n, 1, oo))) == -1 + exp(x)
     assert summation((-1)**n * x**(2*n) / fac(2*n), (n, 0, oo)) == cos(x)
     assert simplify(summation((-1)**n*x**(2*n + 1) /
-        factorial(2*n + 1), (n, 3, oo))) == -x + sin(x) + x**3/6 - x**5/120
+        factorial(2*n + 1), (n, 3, oo))) == -(x**5/120 - x**3/6 + x - sin(x))
 
     assert summation(1/(n + 2)**3, (n, 1, oo)) == -S(9)/8 + zeta(3)
     assert summation(1/n**4, (n, 1, oo)) == pi**4/90

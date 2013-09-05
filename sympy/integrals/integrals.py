@@ -1254,7 +1254,7 @@ class Integral(Expr):
                     _debug('NotImplementedError from meijerint_definite')
                     res = None
                 if h is not None:
-                    parts.append(coeff * h)
+                    parts.append((coeff * h)._dist_const())
                     continue
 
             if h is None:

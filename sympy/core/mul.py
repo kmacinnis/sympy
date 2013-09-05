@@ -762,8 +762,6 @@ class Mul(Expr, AssocOp):
         """Distributes a constant over an Add.
         Designed to replicate previous default behavior."""
 
-        if not self.is_commutative:
-            return self
         c, m = self.as_coeff_Mul()
         factors = m.as_ordered_factors()
         has_add = any([f.is_Add for f in factors])

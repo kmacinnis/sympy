@@ -153,10 +153,12 @@ class besselj(BesselBase):
             return S.Zero
 
         if z.could_extract_minus_sign():
-            return (z)**nu*(-z)**(-nu)*besselj(nu, -z)
+            neg_nu, neg_z = (-nu)._dist_const(), (-z)._dist_const()
+            return (z)**nu*(neg_z)**((neg_nu))*besselj(nu, neg_z)
         if nu.is_integer:
             if nu.could_extract_minus_sign():
-                return S(-1)**(-nu)*besselj(-nu, z)
+                neg_nu = (-nu)._dist_const()
+                return S(-1)**(neg_nu)*besselj(neg_nu, z)
             newz = z.extract_multiplicatively(I)
             if newz:  # NOTE we don't want to change the function if z==0
                 return I**(nu)*besseli(nu, newz)
@@ -313,13 +315,16 @@ class besseli(BesselBase):
                 return S.Zero
 
         if z.could_extract_minus_sign():
-            return (z)**nu*(-z)**(-nu)*besseli(nu, -z)
+            neg_nu, neg_z = (-nu)._dist_const(), (-z)._dist_const()
+            return (z)**nu*(neg_z)**(neg_nu)*besseli(nu, neg_z)
         if nu.is_integer:
             if nu.could_extract_minus_sign():
-                return besseli(-nu, z)
+                neg_nu = (-nu)._dist_const()
+                return besseli(neg_nu, z)
             newz = z.extract_multiplicatively(I)
             if newz:  # NOTE we don't want to change the function if z==0
-                return I**(-nu)*besselj(nu, -newz)
+                neg_nu, neg_newz = (-nu)._dist_const(), (-newz)._dist_const()
+                return I**(neg_nu)*besselj(nu, neg_newz)
 
         # branch handling:
         from sympy import unpolarify, exp
@@ -600,7 +605,7 @@ class jn(SphericalBesselBase):
     def _expand(self, **hints):
         n = self.order
         z = self.argument
-        return fn(n, z) * sin(z) + (-1)**(n + 1) * fn(-n - 1, z) * cos(z)
+        return (fn(n, z)*sin(z) + (-1)**(n + 1)*fn(-n - 1, z)*cos(z))._dist_const()
 
 
 class yn(SphericalBesselBase):

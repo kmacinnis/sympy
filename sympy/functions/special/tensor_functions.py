@@ -156,7 +156,7 @@ class KroneckerDelta(Function):
         if (i > j) is True:
             return cls(j, i)
 
-        diff = C.Abs(i - j)
+        diff = C.Abs((i - j)._dist_const())
         if diff == 0:
             return S.One
         elif diff.is_number:

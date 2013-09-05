@@ -96,6 +96,7 @@ class erf(Function):
 
     @classmethod
     def eval(cls, arg):
+        arg = arg._dist_const()
         if arg.is_Number:
             if arg is S.NaN:
                 return S.NaN
@@ -122,7 +123,7 @@ class erf(Function):
 
         # Try to pull out factors of -1
         if arg.could_extract_minus_sign():
-            return -cls(-arg)
+            return -cls((-arg)._dist_const())
 
     @staticmethod
     @cacheit

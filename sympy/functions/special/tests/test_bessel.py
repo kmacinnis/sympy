@@ -124,13 +124,13 @@ def test_expand():
     n = Symbol('n', integer=True, positive=True)
 
     assert expand_func(besseli(n + 2, z)) == \
-        besseli(n, z) + (-2*n - 2)*(-2*n*besseli(n, z)/z + besseli(n - 1, z))/z
+        besseli(n, z) - 2*(n + 1)*(-2*n*besseli(n, z)/z + besseli(n - 1, z))/z
     assert expand_func(besselj(n + 2, z)) == \
-        -besselj(n, z) + (2*n + 2)*(2*n*besselj(n, z)/z - besselj(n - 1, z))/z
+        -besselj(n, z) + 2*(n + 1)*(2*n*besselj(n, z)/z - besselj(n - 1, z))/z
     assert expand_func(besselk(n + 2, z)) == \
-        besselk(n, z) + (2*n + 2)*(2*n*besselk(n, z)/z + besselk(n - 1, z))/z
+        besselk(n, z) + 2*(n + 1)*(2*n*besselk(n, z)/z + besselk(n - 1, z))/z
     assert expand_func(bessely(n + 2, z)) == \
-        -bessely(n, z) + (2*n + 2)*(2*n*bessely(n, z)/z - bessely(n - 1, z))/z
+        -bessely(n, z) + 2*(n + 1)*(2*n*bessely(n, z)/z - bessely(n - 1, z))/z
 
     assert expand_func(besseli(n + S(1)/2, z).rewrite(jn)) == \
         sqrt(2)*sqrt(z)*exp(-I*pi*(n + S(1)/2)/2)* \

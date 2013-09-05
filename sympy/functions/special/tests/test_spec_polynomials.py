@@ -15,7 +15,7 @@ def test_jacobi():
     b = Symbol("b")
 
     assert jacobi(0, a, b, x) == 1
-    assert jacobi(1, a, b, x) == a/2 - b/2 + x*(a/2 + b/2 + 1)
+    assert jacobi(1, a, b, x) == x*(a + b + 2)/2 + (a - b)/2
 
     assert jacobi(n, a, a, x) == RisingFactorial(
         a + 1, n)*gegenbauer(n, a + S(1)/2, x)/RisingFactorial(2*a + 1, n)
@@ -45,7 +45,7 @@ def test_jacobi():
 
     assert diff(jacobi(n, a, b, x), n) == Derivative(jacobi(n, a, b, x), n)
     assert diff(jacobi(n, a, b, x), x) == \
-        (a/2 + b/2 + n/2 + S(1)/2)*jacobi(n - 1, a + 1, b + 1, x)
+        (a + b + n + 1)*jacobi(n - 1, a + 1, b + 1, x)/2
 
     assert jacobi_normalized(n, a, b, x) == \
            (jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)
@@ -60,7 +60,7 @@ def test_gegenbauer():
     assert gegenbauer(1, a, x) == 2*a*x
     assert gegenbauer(2, a, x) == -a + x**2*(2*a**2 + 2*a)
     assert gegenbauer(3, a, x) == \
-        x**3*(4*a**3/3 + 4*a**2 + 8*a/3) + x*(-2*a**2 - 2*a)
+        x**3*(4*a**3 + 12*a**2 + 8*a)/3 + x*(-2*a**2 - 2*a)
 
     assert gegenbauer(-1, a, x) == 0
     assert gegenbauer(n, S(1)/2, x) == legendre(n, x)
@@ -72,7 +72,7 @@ def test_gegenbauer():
 
     assert gegenbauer(n, a, -x) == (-1)**n*gegenbauer(n, a, x)
     assert gegenbauer(n, a, 0) == 2**n*sqrt(pi) * \
-        gamma(a + n/2)/(gamma(a)*gamma(-n/2 + S(1)/2)*gamma(n + 1))
+        gamma(a + n/2)/(gamma(a)*gamma((-n + 1)/2)*gamma(n + 1))
     assert gegenbauer(n, a, 1) == gamma(2*a + n)/(gamma(2*a)*gamma(n + 1))
 
     assert gegenbauer(n, a, -1) == zoo
@@ -105,11 +105,11 @@ def test_legendre():
     assert legendre(11, 0) == 0
 
     assert roots(legendre(4, x), x) == {
-        sqrt(Rational(3, 7) - Rational(2, 35)*sqrt(30)): 1,
-        -sqrt(Rational(3, 7) - Rational(2, 35)*sqrt(30)): 1,
-        sqrt(Rational(3, 7) + Rational(2, 35)*sqrt(30)): 1,
-        -sqrt(Rational(3, 7) + Rational(2, 35)*sqrt(30)): 1,
-    }
+        -sqrt(35)*sqrt(15 - 2*sqrt(30))/35: 1, 
+        sqrt(35)*sqrt(15 - 2*sqrt(30))/35: 1, 
+        -sqrt(35)*sqrt(15 + 2*sqrt(30))/35: 1, 
+        sqrt(35)*sqrt(15 + 2*sqrt(30))/35: 1}
+
 
     n = Symbol("n")
 
@@ -130,10 +130,10 @@ def test_assoc_legendre():
     assert Plm(0, 0, x) == 1
     assert Plm(1, 0, x) == x
     assert Plm(1, 1, x) == -Q
-    assert Plm(2, 0, x) == (3*x**2 - 1)/2
+    assert Plm(2, 0, x) == 3*x**2/2 - S(1)/2
     assert Plm(2, 1, x) == -3*x*Q
     assert Plm(2, 2, x) == 3*Q**2
-    assert Plm(3, 0, x) == (5*x**3 - 3*x)/2
+    assert Plm(3, 0, x) == 5*x**3/2 - 3*x/2
     assert Plm(3, 1, x).expand() == (( 3*(1 - 5*x**2)/2 ).expand() * Q).expand()
     assert Plm(3, 2, x) == 15*x * Q**2
     assert Plm(3, 3, x) == -15 * Q**3

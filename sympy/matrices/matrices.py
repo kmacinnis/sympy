@@ -2574,7 +2574,7 @@ class MatrixBase(object):
                     continue
                 r.row_swap(pivot, k)
             scale = r[pivot, i]
-            r.row_op(pivot, lambda x, _: x / scale)
+            r.row_op(pivot, lambda x, _: (x / scale)._dist_const())
             for j in xrange(r.rows):
                 if j == pivot:
                     continue

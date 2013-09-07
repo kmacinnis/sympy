@@ -72,7 +72,7 @@ from sympy.functions.special.hyper import (hyper, HyperRep_atanh,
         HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
         HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
         HyperRep_cosasin, HyperRep_sinasin, meijerg)
-from sympy.simplify import powdenest, simplify, polarify, unpolarify
+from sympy.simplify import powdenest, simplify, polarify, unpolarify, dc
 from sympy.polys import poly, Poly
 from sympy.series import residue
 
@@ -616,7 +616,7 @@ class G_Function(Expr):
         for dic, flip in zip(dicts, (True, False, False, True)):
             for m, items in dic.iteritems():
                 x0 = items[0]
-                items.sort(key=lambda x: x - x0, reverse=flip)
+                items.sort(key=lambda x: (x - x0)._dist_const(), reverse=flip)
                 dic[m] = items
 
         return tuple([dict(w) for w in dicts])
@@ -2265,18 +2265,18 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
             if len(pbm[m]) == 1:
                 bh = pbm[m][0]
                 fac = 1
-                bo = list(bm)
+                bo = [b._dist_const() for b in bm]
                 bo.remove(bh)
                 for bj in bo:
-                    fac *= gamma(bj - bh)
+                    fac *= gamma((bj - bh)._dist_const())
                 for aj in an:
-                    fac *= gamma(1 + bh - aj)
+                    fac *= gamma((1 + bh - aj)._dist_const())
                 for bj in bq:
-                    fac /= gamma(1 + bh - bj)
+                    fac /= gamma((1 + bh - bj)._dist_const())
                 for aj in ap:
-                    fac /= gamma(aj - bh)
-                nap = [1 + bh - a for a in list(an) + list(ap)]
-                nbq = [1 + bh - b for b in list(bo) + list(bq)]
+                    fac /= gamma((aj - bh)._dist_const())
+                nap = [(1 + bh - a)._dist_const() for a in list(an) + list(ap)]
+                nbq = [(1 + bh - b)._dist_const() for b in list(bo) + list(bq)]
 
                 k = polar_lift(S(-1)**(len(ap) - len(bm)))
                 harg = k*zfinal
@@ -2288,9 +2288,9 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
                 res += fac * hyp
             else:
                 b_ = pbm[m][0]
-                ki = [bi - b_ for bi in pbm[m][1:]]
+                ki = [(bi - b_)._dist_const() for bi in pbm[m][1:]]
                 u = len(ki)
-                li = [ai - b_ for ai in pap[m][:u + 1]]
+                li = [(ai - b_)._dist_const() for ai in pap[m][:u + 1]]
                 bo = list(bm)
                 for b in pbm[m]:
                     bo.remove(b)
@@ -2298,19 +2298,19 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
                 for a in pap[m][:u]:
                     ao.remove(a)
                 lu = li[-1]
-                di = [l - k for (l, k) in zip(li, ki)]
+                di = [(l - k)._dist_const() for (l, k) in zip(li, ki)]
 
                 # We first work out the integrand:
                 s = Dummy('s')
                 integrand = z**s
                 for b in bm:
-                    integrand *= gamma(b - s)
+                    integrand *= gamma((b - s)._dist_const())
                 for a in an:
-                    integrand *= gamma(1 - a + s)
+                    integrand *= gamma((1 - a + s)._dist_const())
                 for b in bq:
-                    integrand /= gamma(1 - b + s)
+                    integrand /= gamma((1 - b + s)._dist_const())
                 for a in ap:
-                    integrand /= gamma(a - s)
+                    integrand /= gamma((a - s)._dist_const())
 
                 # Now sum the finitely many residues:
                 # XXX This speeds up some cases - is it a good idea?
@@ -2318,15 +2318,15 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
                 for r in range(lu):
                     resid = residue(integrand, s, b_ + r)
                     resid = apply_operators(resid, ops, lambda f: z*f.diff(z))
-                    res -= resid
+                    res = (res - resid)._dist_const()
 
                 # Now the hypergeometric term.
                 au = b_ + lu
                 k = polar_lift(S(-1)**(len(ao) + len(bo) + 1))
                 harg = k*zfinal
                 premult = (t/k)**au
-                nap = [1 + au - a for a in list(an) + list(ap)] + [1]
-                nbq = [1 + au - b for b in list(bm) + list(bq)]
+                nap = [(1 + au - a)._dist_const() for a in list(an) + list(ap)] + [1]
+                nbq = [(1 + au - b)._dist_const() for b in list(bm) + list(bq)]
 
                 hyp = _hyperexpand(Hyper_Function(nap, nbq), harg, ops,
                                    t, premult, au, rewrite=None)
@@ -2335,20 +2335,21 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
                 for i in range(u):
                     C *= S(-1)**di[i]/rf(lu - li[i] + 1, di[i])
                 for a in an:
-                    C *= gamma(1 - a + au)
+                    C *= gamma((1 - a + au)._dist_const())
                 for b in bo:
-                    C *= gamma(b - au)
+                    C *= gamma((b - au)._dist_const())
                 for a in ao:
-                    C /= gamma(a - au)
+                    C /= gamma((a - au)._dist_const())
                 for b in bq:
-                    C /= gamma(1 - b + au)
+                    C /= gamma((1 - b + au)._dist_const())
 
-                res += C*hyp
+                res += (C*hyp)._dist_const()
 
         return res, cond
 
     t = Dummy('t')
     slater1, cond1 = do_slater(func.an, func.bm, func.ap, func.bq, z, z0)
+    kate = True
 
     def tr(l):
         return [1 - x for x in l]
@@ -2459,8 +2460,7 @@ def hyperexpand(f, allow_hyper=False, rewrite='default'):
             return r
 
     def do_meijer(ap, bq, z):
-        r = _meijergexpand(G_Function(ap[0], ap[1], bq[0], bq[1]), z,
-                           allow_hyper, rewrite=rewrite)
+        r = _meijergexpand(G_Function(ap[0], ap[1], bq[0], bq[1]), z, allow_hyper, rewrite=rewrite)
         if not r.has(nan, zoo, oo, -oo):
             return r
     return f.replace(hyper, do_replace).replace(meijerg, do_meijer)

@@ -93,8 +93,8 @@ def test_NumberOp():
     assert Commutator(N, H).doit() == Integer(0)
     assert qapply(N*k) == (k.n*k).expand()
     assert N.rewrite('a').doit() == ad*a
-    assert N.rewrite('xp').doit() == (Integer(1)/(Integer(2)*m*hbar*omega))*(
-        Px**2 + (m*omega*X)**2) - Integer(1)/Integer(2)
+    assert N.rewrite('xp').doit() == (Px**2/Integer(2) +
+        (m*omega*X)**2/Integer(2))/(m*hbar*omega) - Integer(1)/Integer(2)
     assert N.rewrite('H').doit() == H/(hbar*omega) - Integer(1)/Integer(2)
     for i in range(ndim):
         assert N_rep[i,i] == i
@@ -105,7 +105,7 @@ def test_Hamiltonian():
     assert qapply(H*k) == ((hbar*omega*(k.n + Integer(1)/Integer(2)))*k).expand()
     assert H.rewrite('a').doit() == hbar*omega*(ad*a + Integer(1)/Integer(2))
     assert H.rewrite('xp').doit() == \
-        (Integer(1)/(Integer(2)*m))*(Px**2 + (m*omega*X)**2)
+        (Px**2/2 + (m*omega*X)**2/2)/m
     assert H.rewrite('N').doit() == hbar*omega*(N + Integer(1)/Integer(2))
     for i in range(ndim):
         assert H_rep[i,i] == hbar*omega*(i + Integer(1)/Integer(2))

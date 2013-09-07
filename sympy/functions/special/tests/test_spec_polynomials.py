@@ -105,9 +105,9 @@ def test_legendre():
     assert legendre(11, 0) == 0
 
     assert roots(legendre(4, x), x) == {
-        -sqrt(35)*sqrt(15 - 2*sqrt(30))/35: 1, 
-        sqrt(35)*sqrt(15 - 2*sqrt(30))/35: 1, 
-        -sqrt(35)*sqrt(15 + 2*sqrt(30))/35: 1, 
+        -sqrt(35)*sqrt(15 - 2*sqrt(30))/35: 1,
+        sqrt(35)*sqrt(15 - 2*sqrt(30))/35: 1,
+        -sqrt(35)*sqrt(15 + 2*sqrt(30))/35: 1,
         sqrt(35)*sqrt(15 + 2*sqrt(30))/35: 1}
 
 

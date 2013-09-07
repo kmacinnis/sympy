@@ -272,7 +272,7 @@ def test_cos_series():
 
 
 def test_cos_rewrite():
-    assert cos(x).rewrite(exp) == (exp(I*x) + exp(-I*x))/2
+    assert cos(x).rewrite(exp) == exp(I*x)/2 + exp(-I*x)/2
     assert cos(x).rewrite(tan) == (1 - tan(x/2)**2)/(1 + tan(x/2)**2)
     assert cos(x).rewrite(cot) == (cot(x/2)**2 - 1)/(cot(x/2)**2 + 1)
     assert cos(sinh(x)).rewrite(

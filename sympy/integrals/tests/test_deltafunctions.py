@@ -45,10 +45,10 @@ def test_deltaintegrate():
         Heaviside(x - 1)/3 + Heaviside(x + 2)/3
 
     p = cos(x)*(DiracDelta(x) + DiracDelta(x**2 - 1))*sin(x)*(x - pi)
-    assert deltaintegrate(p, x) - (-pi*(cos(1)*Heaviside(-1 + x)*sin(1)/2 - \
+    assert (deltaintegrate(p, x) - (-pi*(cos(1)*Heaviside(-1 + x)*sin(1)/2 - \
         cos(1)*Heaviside(1 + x)*sin(1)/2) + \
         cos(1)*Heaviside(1 + x)*sin(1)/2 + \
-        cos(1)*Heaviside(-1 + x)*sin(1)/2) == 0
+        cos(1)*Heaviside(-1 + x)*sin(1)/2))._dist_const() == 0
 
     p = x_2*DiracDelta(x - x_2)*DiracDelta(x_2 - x_1)
     assert deltaintegrate(p, x_2) == x*DiracDelta(x - x_1)*Heaviside(x_2 - x)

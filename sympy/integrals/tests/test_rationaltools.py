@@ -60,14 +60,14 @@ def test_ratint():
         (4 + 6*x + 8*x**2 + 3*x**3)/(4*x + 4*x**3 + x**5) + log(x)
 
     assert ratint((x**3*f)/(x*g), x) == \
-        -(12 - 16*x + 6*x**2 - 14*x**3)/(4 + 4*x**2 + x**4) - \
+        (14*x**3 - 6*x**2 + 16*x - 12)/(x**4 + 4*x**2 + 4) - \
         5*sqrt(2)*atan(x*sqrt(2)/2) + S(1)/2*x**2 - 3*log(2 + x**2)
 
     f = x**5 - x**4 + 4*x**3 + x**2 - x + 5
     g = x**4 - 2*x**3 + 5*x**2 - 4*x + 4
 
     assert ratint(f/g, x) == \
-        x + S(1)/2*x**2 + S(1)/2*log(2 - x + x**2) - (4*x - 9)/(14 - 7*x + 7*x**2) + \
+        x + S(1)/2*x**2 + S(1)/2*log(2 - x + x**2) + (-4*x + 9)/(14 - 7*x + 7*x**2) + \
         13*sqrt(7)*atan(-S(1)/7*sqrt(7) + 2*x*sqrt(7)/7)/49
 
     assert ratint(1/(x**2 + x + 1), x) == \
@@ -88,7 +88,7 @@ def test_ratint():
     # Issue 1892
     assert ratint(1/(x*(a + b*x)**3), x) == \
         (3*a + 2*b*x)/(2*a**4 + 4*a**3*b*x + 2*a**2*b**2*x**2) + (
-            log(x) - log(a/b + x))/a**3
+            log(x))/a**3 - log(a/b + x)/a**3
 
     assert ratint(x/(1 - x**2), x) == -log(x**2 - 1)/2
     assert ratint(-x/(1 - x**2), x) == log(x**2 - 1)/2

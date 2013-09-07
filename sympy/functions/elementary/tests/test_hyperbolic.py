@@ -540,7 +540,7 @@ def test_issue1037():
 
 def test_sinh_rewrite():
     x = Symbol('x')
-    assert sinh(x).rewrite(exp) == (exp(x) - exp(-x))/2
+    assert sinh(x).rewrite(exp) == exp(x)/2 - exp(-x)/2
     assert sinh(x).rewrite(cosh) == -I*cosh(x + I*pi/2)
     tanh_half = tanh(S.Half*x)
     assert sinh(x).rewrite(tanh) == 2*tanh_half/(1 - tanh_half**2)
@@ -550,7 +550,7 @@ def test_sinh_rewrite():
 
 def test_cosh_rewrite():
     x = Symbol('x')
-    assert cosh(x).rewrite(exp) == (exp(x) + exp(-x))/2
+    assert cosh(x).rewrite(exp) == exp(x)/2 + exp(-x)/2
     assert cosh(x).rewrite(sinh) == -I*sinh(x + I*pi/2)
     tanh_half = tanh(S.Half*x)**2
     assert cosh(x).rewrite(tanh) == (1 + tanh_half)/(1 - tanh_half)

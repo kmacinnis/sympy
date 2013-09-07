@@ -190,7 +190,7 @@ def test_line():
     assert p1 not in l3
     assert Line((-x, x), (-x + 1, x - 1)).coefficients == (1, 1, 0)
 
-    assert simplify(l1.equation()) in (x - y, y - x)
+    assert simplify(l1.equation()) in (x - y, y - x, -(x-y), -(y-x))
     assert simplify(l3.equation()) in (x - x1, x1 - x)
 
     assert Line(p1, p2).scale(2, 1) == Line(p1, p9)
@@ -699,7 +699,7 @@ def test_polygon():
     assert p1.circumradius == p1.radius == 10
     assert p2.circumcircle == Circle(Point(0, 0), 5)
     assert p2.incircle == Circle(Point(0, 0), p2.apothem)
-    assert p2.inradius == p2.apothem == (5 * (1 + sqrt(5)) / 4)
+    assert p2.inradius == p2.apothem == 5*(S(1)/4  + sqrt(5)/4)
     p2.spin(pi / 10)
     dict1 = p2.angles
     assert dict1[Point(0, 5)] == 3 * pi / 5
@@ -725,7 +725,7 @@ def test_polygon():
     assert p1.rotate(pi/3) == RegularPolygon(Point(0, 0), 10, 5, 2*pi/3)
     assert p1 == p1_old
 
-    assert p1.area == (-250*sqrt(5) + 1250)/(4*tan(pi/5))
+    assert p1.area == (125 + 125*sqrt(5))*sqrt(-sqrt(5)/8 + Rational(5, 8))
     assert p1.length == 20*sqrt(-sqrt(5)/8 + S(5)/8)
     assert p1.scale(2, 2) == \
         RegularPolygon(p1.center, p1.radius*2, p1._n, p1.rotation)

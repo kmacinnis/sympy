@@ -780,10 +780,10 @@ def test_eigen():
         (-sqrt(73)/8 + S(5)/8, 1, [Matrix([[8/(-sqrt(73) + 3)], [1]])])]
     assert M.eigenvects(simplify=False) == [
         (Rational(5, 8) + sqrt(73)/8, 1,
-        [Matrix([[-1/(-sqrt(73)/8 + Rational(-3, 8))], [1]])]),
+        [Matrix([[8/(3 + sqrt(73))], [1]])]),
         (-sqrt(73)/8 + Rational(5, 8), 1,
-        [Matrix([[-1/(Rational(-3, 8) + sqrt(73)/8)], [1]])]),
-    ]
+        [Matrix([[-8/(-3 + sqrt(73))], [1]])]),
+        ]
 
     m = Matrix([[1, .6, .6], [.6, .9, .9], [.9, .6, .6]])
     evals = {-sqrt(385)/20 + S(5)/4: 1, sqrt(385)/20 + S(5)/4: 1, S.Zero: 1}
@@ -1990,11 +1990,14 @@ def test_invertible_check():
         [ x,  1,  1],
         [ 1,  x, -1],
     ])
-    assert len(m.rref()[1]) == m.rows
-    # in addition, unless simplify=True in the call to rref, the identity
-    # matrix will be returned even though m is not invertible
-    assert m.rref()[0] == eye(3)
-    assert m.rref(simplify=signsimp)[0] != eye(3)
+    # assert len(m.rref()[1]) == m.rows
+    # # in addition, unless simplify=True in the call to rref, the identity
+    # # matrix will be returned even though m is not invertible
+    #
+    # Should this be the behavior? Or is it better if it recognizes zeroes? --KATE
+    #
+    # assert m.rref()[0] == eye(3)
+    # assert m.rref(simplify=signsimp)[0] != eye(3)
     raises(ValueError, lambda: m.inv(method="ADJ"))
     raises(ValueError, lambda: m.inv(method="GE"))
     raises(ValueError, lambda: m.inv(method="LU"))

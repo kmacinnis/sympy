@@ -3921,7 +3921,7 @@ def test_j2():
 
 def test_jx():
     assert Commutator(Jx, Jz).doit() == -I*hbar*Jy
-    assert Jx.rewrite('plusminus') == (Jminus + Jplus)/2
+    assert Jx.rewrite('plusminus') == Jminus/2 + Jplus/2
     assert represent(Jx, basis=Jz, j=1) == (
         represent(Jplus, basis=Jz, j=1) + represent(Jminus, basis=Jz, j=1))/2
     # Normal operators, normal states

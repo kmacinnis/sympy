@@ -1570,7 +1570,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
             result, i = result.subs(DE.backsubs), i.subs(DE.backsubs)
             if not separate_integral:
                 result += i
-                return result
+                return result._dist_const()
             else:
 
                 if isinstance(i, NonElementaryIntegral):

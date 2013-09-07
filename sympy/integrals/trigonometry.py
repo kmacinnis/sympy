@@ -90,8 +90,8 @@ def trigintegrate(f, x, conds='piecewise'):
         fi = integrate(ff, u)  # XXX cyclic deps
         fx = fi.subs(u, uu)
         if conds == 'piecewise':
-            return Piecewise((zz, Eq(a, 0)), (fx / a, True))
-        return fx / a
+            return Piecewise((zz, Eq(a, 0)), (fx / a, True))._dist_const()
+        return (fx / a)._dist_const()
 
     # n & m are both even
     #
@@ -218,8 +218,8 @@ def trigintegrate(f, x, conds='piecewise'):
                        Rational(n - 1, m + 1) *
                        integrate(cos(x)**(m + 2)*sin(x)**(n - 2), x))
     if conds == 'piecewise':
-        return Piecewise((zz, Eq(a, 0)), (res.subs(x, a*x) / a, True))
-    return res.subs(x, a*x) / a
+        return Piecewise((zz, Eq(a, 0)), (res.subs(x, a*x) / a, True))._dist_const()
+    return (res.subs(x, a*x) / a)._dist_const()
 
 
 def _sin_pow_integrate(n, x):

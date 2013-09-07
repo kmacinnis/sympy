@@ -102,7 +102,7 @@ def ratint(f, x, **flags):
 
         result += eps
 
-    return coeff*result
+    return (coeff*result)._dist_const()
 
 
 def ratint_ratpart(f, g, x):

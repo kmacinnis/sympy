@@ -832,4 +832,4 @@ def manualintegrate(f, var):
     sympy.integrals.integrals.Integral.doit
     sympy.integrals.integrals.Integral
     """
-    return _manualintegrate(integral_steps(f, var))
+    return _manualintegrate(integral_steps(f, var))._dist_const()

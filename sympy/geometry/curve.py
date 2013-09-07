@@ -76,7 +76,7 @@ class Curve(GeometryEntity):
         if not is_sequence(limits) or len(limits) != 3:
             raise ValueError("Limit argument should be (t, tmin, tmax) "
                 "but got %s" % str(limits))
-
+        fun = [f._dist_const() for f in fun]
         return GeometryEntity.__new__(cls, Tuple(*fun), Tuple(*limits))
 
     def _eval_subs(self, old, new):
@@ -223,9 +223,10 @@ class Curve(GeometryEntity):
         """
         if pt:
             pt = Point(pt)
-            return self.translate(*(-pt).args).scale(x, y).translate(*pt.args)
+            return (self.translate(
+                *(-pt).args).scale(x, y).translate(*pt.args))._dist_const()
         fx, fy = self.functions
-        return self.func((fx*x, fy*y), self.limits)
+        return (self.func((fx*x, fy*y), self.limits))._dist_const()
 
     def translate(self, x=0, y=0):
         """Translate the Curve by (x, y).

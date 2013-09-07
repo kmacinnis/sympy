@@ -217,7 +217,7 @@ class Polygon(GeometryEntity):
             x1, y1 = args[i - 1].args
             x2, y2 = args[i].args
             area += x1*y2 - x2*y1
-        return simplify(area) / 2
+        return (simplify(area) / 2)._dist_const()
 
     @property
     def angles(self):
@@ -1085,7 +1085,7 @@ class RegularPolygon(Polygon):
         True
         """
         c, r, n, rot = self.args
-        return sign(r)*n*self.length**2/(4*tan(pi/n))
+        return (sign(r)*n*self.length**2/(4*tan(pi/n)))._dist_const()
 
     @property
     def length(self):
@@ -2103,7 +2103,7 @@ class Triangle(Polygon):
         1
 
         """
-        return simplify(2 * self.area / self.perimeter)
+        return simplify(2 * self.area / self.perimeter)._dist_const()
 
     @property
     def incircle(self):

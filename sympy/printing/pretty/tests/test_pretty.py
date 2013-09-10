@@ -810,7 +810,7 @@ def test_issue_2425():
 u"""\
         ⎛         ___    ⎞           2\n\
 (x - 5)⋅⎝-x - 2⋅╲╱ 2  + 5⎠ - (-y + 5) \
-"""
+""")
 
 
 def test_pretty_ordering():

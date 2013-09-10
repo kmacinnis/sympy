@@ -335,7 +335,7 @@ class Product(Expr):
         if term.has(KroneckerDelta) and _has_simple_delta(term, limits[0]):
             return deltaproduct(term, limits)
 
-        dif = n - a
+        dif = (n - a)._dist_const()
         if dif.is_Integer:
             return Mul(*[term.subs(k, a + i) for i in xrange(dif + 1)])
 

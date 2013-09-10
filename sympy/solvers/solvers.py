@@ -2211,7 +2211,7 @@ def _tsolve(eq, sym, **flags):
         eq_down = expand_log(expand_power_exp(eq)).subs(
             dict(list(zip(up_or_log, [0]*len(up_or_log)))))
         eq = expand_power_exp(factor(eq_down, deep=True) + (eq - eq_down)._dist_const())
-        rhs, lhs = dc(_invert(eq_dist_const(), sym))
+        rhs, lhs = dc(_invert(eq._dist_const(), sym))
         if lhs.has(sym):
             try:
                 poly = lhs.as_poly()

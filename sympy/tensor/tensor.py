@@ -95,8 +95,6 @@ class TIDS(object):
         self.dum = dum
         self._ext_rank = len(self.free) + 2*len(self.dum)
 
-<<<<<<< HEAD
-=======
     def get_components_with_free_indices(self):
         """
         Get a list of components with their associated indices.
@@ -149,7 +147,6 @@ class TIDS(object):
 
         return ret_comp
 
->>>>>>> upstream/master
     @staticmethod
     def from_components_and_indices(components, indices):
         """
@@ -1406,51 +1403,6 @@ class TensExpr(Basic):
         return expr
 
 
-<<<<<<< HEAD
-def _tensAdd_collect_terms(args):
-    """
-    collect TensMul terms differing at most by their coefficient
-    """
-    a = []
-    pprev = None
-    prev = args[0]
-    prev_coeff = prev._coeff
-    changed = False
-
-    for x in args[1:]:
-        # if x and prev have the same tensor, update the coeff of prev
-        if x.components == prev.components \
-                and x.free == prev.free and x.dum == prev.dum:
-            prev_coeff = prev_coeff + x._coeff
-            changed = True
-            op = 0
-        else:
-            # x and prev are different; if not changed, prev has not
-            # been updated; store it
-            if not changed:
-                a.append(prev)
-            else:
-                # get a tensor from prev with coeff=prev_coeff and store it
-                if prev_coeff:
-                    t = TensMul.from_data(prev_coeff, prev.components,
-                        prev.free, prev.dum)
-                    a.append(t)
-            # move x to prev
-            op = 1
-            pprev, prev = prev, x
-            pprev_coeff, prev_coeff = prev_coeff, x._coeff
-            changed = False
-    # if the case op=0 prev was not stored; store it now
-    # in the case op=1 x was not stored; store it now (as prev)
-    if op == 0 and prev_coeff:
-        prev = TensMul.from_data(prev_coeff, prev.components, prev.free, prev.dum)
-        a.append(prev)
-    elif op == 1:
-        a.append(prev)
-    return a
-=======
->>>>>>> upstream/master
-
 def _tensAdd_flatten(args):
     """
     flatten TensAdd, coerce terms which are not tensors to tensors
@@ -1476,18 +1428,6 @@ def _tensAdd_flatten(args):
     args = [x for x in a if x._coeff]
     return args
 
-<<<<<<< HEAD
-def _tensAdd_check(args):
-    """
-    check that all addends have the same free indices
-    """
-    indices0 = sorted([x[0] for x in args[0].free], key=lambda x: x.name)
-    list_indices = [sorted([y[0] for y in x.free], key=lambda x: x.name) for x in args[1:]]
-    if not all(x == indices0 for x in list_indices):
-        raise ValueError('all tensors must have the same indices')
-
-=======
->>>>>>> upstream/master
 
 class TensAdd(TensExpr):
     """
@@ -1550,11 +1490,7 @@ class TensAdd(TensExpr):
 
         # collect canonicalized terms
         args.sort(key=lambda x: (x.components, x.free, x.dum))
-<<<<<<< HEAD
-        a = _tensAdd_collect_terms(args)
-=======
         a = TensAdd._tensAdd_collect_terms(args)
->>>>>>> upstream/master
         if not a:
             return S.Zero
         # it there is only a component tensor return it

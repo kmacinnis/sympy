@@ -144,7 +144,7 @@ def refine_Pow(expr, assumptions):
                     expr = expr.base**(Add(*terms))
 
                 # Handle (-1)**((-1)**n/2 + m/2)
-                e2 = 2*expr.exp
+                e2 = (2*expr.exp)._dist_const()
                 if ask(Q.even(e2), assumptions):
                     if e2.could_extract_minus_sign():
                         e2 *= expr.base

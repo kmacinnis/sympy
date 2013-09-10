@@ -744,7 +744,7 @@ class Mul(Expr, AssocOp):
         # nested fractions, but we do want to ignore factors in the
         # denominator, and distribute the coeff if the first factor
         # of the numerator is an Add.
-        while has_add and factors[0].is_Pow and factors[0].exp < 0:
+        while has_add and factors[0].is_Pow and ((factors[0].exp < 0) is True):
             factors.append(factors.pop(0))
         if factors[0].is_Add:
             fac0 = factors[0]._dist_const()

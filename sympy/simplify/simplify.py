@@ -4964,7 +4964,12 @@ def __trigsimp(expr, deep=False):
 def dc(arg):
     """Distributes constants for every element of a list or tuple.
     Useful, but maybe should be located somewhere else. -KATE"""
-    if iterable(arg):
+    from sympy.core.compatibility import iterable
+    from sympy.core.containers import Dict
+
+    if isinstance(arg,dict) or isinstance(arg,Dict):
+        type(arg)(dict([(dc(k),dc(arg[k])) for k in arg]))
+    elif iterable(arg):
         return type(arg)([dc(i) for i in arg])
     elif isinstance(arg,Basic):
         return arg._dist_const()

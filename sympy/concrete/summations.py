@@ -558,14 +558,14 @@ def eval_sum(f, limits):
 def eval_sum_direct(expr, limits):
     (i, a, b) = limits
 
-    dif = b - a
+    dif = (b - a)._dist_const()
     return Add(*[expr.subs(i, a + j) for j in xrange(dif + 1)])
 
 
 def eval_sum_symbolic(f, limits):
     (i, a, b) = limits
     if not f.has(i):
-        return f*(b - a + 1)
+        return f*(b - a + 1)._dist_const()
 
     # Linearity
     if f.is_Mul:

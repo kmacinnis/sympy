@@ -1,7 +1,7 @@
 from sympy import (symbols, Symbol, nan, oo, zoo, I, sinh, sin, acot, pi, atan,
         acos, Rational, sqrt, asin, acot, cot, coth, E, S, tan, tanh, cos,
         cosh, atan2, exp, log, asinh, acoth, atanh, O, cancel, Matrix, re, im,
-        Float, Pow, gcd, sec, csc, cot, diff, simplify, Heaviside, arg, conjugate)
+        Float, Pow, gcd, sec, csc, cot, diff, simplify, dc, Heaviside, arg, conjugate)
 
 from sympy.utilities.pytest import XFAIL, slow, raises
 from sympy.core.compatibility import xrange
@@ -702,7 +702,7 @@ def _check_even_rewrite(func, arg):
     """Checks that the expr has been rewritten using f(-x) -> f(x)
     arg : -x
     """
-    return func(arg).args[0] == expand(-arg)
+    return func(arg).args[0] == dc(-arg)
 
 
 def _check_odd_rewrite(func, arg):

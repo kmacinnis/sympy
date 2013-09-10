@@ -286,7 +286,7 @@ def test_change_index():
     assert change_index(Product(x**2, (x, a, b)), x, -x, y) == \
         Product((-y)**2, (y, -b, -a))
     assert change_index(Product(x, (x, a, b)), x, -x - 1) == \
-        Product(-x - 1, (x, - b - 1, -a - 1))
+        Product(-(x + 1), (x, - b - 1, -a - 1))
     assert change_index(Product(x*y, (x, a, b), (y, c, d)), x, x - 1, z) == \
         Product((z + 1)*y, (z, a - 1, b - 1), (y, c, d))
 

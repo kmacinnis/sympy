@@ -7,7 +7,7 @@ from sympy import (
 from sympy.abc import a, b, c, d, f, k, m, x, y, z
 from sympy.concrete.summations import telescopic
 from sympy.utilities.pytest import XFAIL, raises
-from sympy import simplify
+from sympy import simplify, expand
 from sympy.concrete.simplification import change_index, reorder, reverse_order
 
 n = Symbol('n', integer=True)
@@ -153,7 +153,7 @@ def test_karr_proposition_2b():
         b = n - 1
         S3 = Sum(s, (i, a, b)).doit()
         # Test if S1 = S2 + S3 as required
-        assert S1 - (S2 + S3) == 0
+        assert expand(S1 - (S2 + S3)) == 0
 
     # l < m < n
     test_the_sum(u,     u+v,   u+v+w)
@@ -675,13 +675,13 @@ def test_change_index():
     assert change_index(Sum(x**2, (x, a, b)), x, -x, y) == \
         Sum((-y)**2, (y, -b, -a))
     assert change_index(Sum(x, (x, a, b)), x, -x - 1) == \
-        Sum(-x - 1, (x, -b - 1, -a - 1))
+        Sum(-(x + 1), (x, -b - 1, -a - 1))
     assert change_index(Sum(x*y, (x, a, b), (y, c, d)), x, x - 1, z) == \
         Sum((z + 1)*y, (z, a - 1, b - 1), (y, c, d))
     assert change_index(Sum(x, (x, a, b)), x, x + v) == \
         Sum(-v + x, (x, a + v, b + v))
     assert change_index(Sum(x, (x, a, b)), x, -x - v) == \
-        Sum(-v - x, (x, -b - v, -a - v))
+        Sum(-(v + x), (x, -b - v, -a - v))
 
 
 def test_reorder():

@@ -1523,7 +1523,7 @@ class TensAdd(TensExpr):
             # if x and prev have the same tensor, update the coeff of prev
             if x.components == prev.components \
                     and x.free == prev.free and x.dum == prev.dum:
-                prev_coeff = prev_coeff + x._coeff
+                prev_coeff = (prev_coeff + x._coeff)._dist_const()
                 changed = True
                 op = 0
             else:

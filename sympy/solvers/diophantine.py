@@ -565,8 +565,8 @@ def _diop_quadratic(var, coeff, t):
                 s0 = solution[0]
                 t0 = solution[1]
 
-                x_0 = S(B*t0 + r*s0 + r*t0 - B*s0)/(4*A*r)
-                y_0 = S(s0 - t0)/(2*r)
+                x_0 = (S(B*t0 + r*s0 + r*t0 - B*s0)/(4*A*r))._dist_const()
+                y_0 = (S(s0 - t0)/(2*r))._dist_const()
 
                 if isinstance(s0, Symbol) or isinstance(t0, Symbol):
                     if check_param(x_0, y_0, 4*A*r, t) != (None, None):
@@ -1149,14 +1149,14 @@ def length(P, Q, D):
 
     x = sympify(x)
     v, res = [], []
-    q = x/y
+    q = (x/y)._dist_const()
 
     if q < 0:
         v.append(q)
         res.append(floor(q))
         q = q - floor(q)
         num, den = rad_rationalize(1, q)
-        q = num / den
+        q = (num / den)._dist_const()
 
     while 1:
         v.append(q)
@@ -1167,7 +1167,7 @@ def length(P, Q, D):
             return len(res)
 
         num, den = rad_rationalize(1,(q - a))
-        q = num / den
+        q = (num / den)._dist_const()
 
         if q in v:
             return len(res)
@@ -1366,7 +1366,7 @@ def _find_DN(var, coeff):
     v = (A*Matrix([X, Y]) + B)[1]
     eq = x**2*coeff[x**2] + x*y*coeff[x*y] + y**2*coeff[y**2] + x*coeff[x] + y*coeff[y] + coeff[Integer(1)]
 
-    simplified = simplify(Subs(eq, (x, y), (u, v)).doit())
+    simplified = simplify(Subs(eq, (x, y), (u, v)).doit())._dist_const()
 
     coeff = dict([reversed(t.as_independent(*[X, Y])) for t in simplified.args])
 
@@ -1390,8 +1390,8 @@ def check_param(x, y, a, t):
 
     for i in range(a):
 
-        z_x = simplify(Subs(x, t, a*k + i).doit()).match(p*k + q)
-        z_y = simplify(Subs(y, t, a*k + i).doit()).match(p*k + q)
+        z_x = simplify(Subs(x, t, a*k + i).doit())._dist_const().match(p*k + q)
+        z_y = simplify(Subs(y, t, a*k + i).doit())._dist_const().match(p*k + q)
 
         if (isinstance(z_x[p], Integer) and isinstance(z_x[q], Integer) and
             isinstance(z_y[p], Integer) and isinstance(z_y[q], Integer)):

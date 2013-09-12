@@ -166,28 +166,27 @@ def test_DN():
     # Some tests were created using calculator at
     # http://www.numbertheory.org/php/patz.html
 
-    # assert diop_DN(13, -4) == [(3, 1), (393, 109), (36, 10)]
-    # # Source I referred returned (3, 1), (393, 109) and (-3, 1) as fundamental solutions
-    # # So (-3, 1) and (393, 109) should be in the same equivalent class
-    # assert equivalent(-3, 1, 393, 109, 13, -4) == True
-    #
-    # assert diop_DN(13, 27) == [(220, 61), (40, 11), (768, 213), (12, 3)]
-    # assert set(diop_DN(157, 12)) == \
-    # set([(Integer(13), Integer(1)), (Integer(10663), Integer(851)), (Integer(579160), Integer(46222)), \
-    #     (Integer(483790960),Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))])
-    # assert diop_DN(13, 25) == [(3245, 900)]
-    # assert diop_DN(192, 18) == []
-    # assert diop_DN(23, 13) == [(-6, 1), (6, 1)]
-    # assert diop_DN(167, 2) == [(13, 1)]
-    # assert diop_DN(167, -2) == []
-    #
-    # assert diop_DN(123, -2) == [(11, 1)]
-    # # One calculator returned [(11, 1), (-11, 1)] but both of these are in
-    # # the same equivalence class
-    # assert equivalent(11, 1, -11, 1, 123, -2)
-    #
-    # assert diop_DN(123, -23) == [(-10, 1), (10, 1)]
-    assert False # test hangs
+    assert diop_DN(13, -4) == [(3, 1), (393, 109), (36, 10)]
+    # Source I referred returned (3, 1), (393, 109) and (-3, 1) as fundamental solutions
+    # So (-3, 1) and (393, 109) should be in the same equivalent class
+    assert equivalent(-3, 1, 393, 109, 13, -4) == True
+    
+    assert diop_DN(13, 27) == [(220, 61), (40, 11), (768, 213), (12, 3)]
+    assert set(diop_DN(157, 12)) == \
+    set([(Integer(13), Integer(1)), (Integer(10663), Integer(851)), (Integer(579160), Integer(46222)), \
+        (Integer(483790960),Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))])
+    assert diop_DN(13, 25) == [(3245, 900)]
+    assert diop_DN(192, 18) == []
+    assert diop_DN(23, 13) == [(-6, 1), (6, 1)]
+    assert diop_DN(167, 2) == [(13, 1)]
+    assert diop_DN(167, -2) == []
+    
+    assert diop_DN(123, -2) == [(11, 1)]
+    # One calculator returned [(11, 1), (-11, 1)] but both of these are in
+    # the same equivalence class
+    assert equivalent(11, 1, -11, 1, 123, -2)
+    
+    assert diop_DN(123, -23) == [(-10, 1), (10, 1)]
 
 
 def test_bf_pell():
@@ -203,13 +202,12 @@ def test_bf_pell():
 
 def test_length():
 
-    # assert length(-2, 4, 5) == 3
-    # assert length(-5, 4, 17) == 4
-    # assert length(0, 4, 13) == 6
-    # assert length(-31, 8, 613) == 67
-    # assert length(7, 13, 11) == 23
-    # assert length(-40, 5, 23) == 4
-    assert False # test hangs
+    assert length(-2, 4, 5) == 3
+    assert length(-5, 4, 17) == 4
+    assert length(0, 4, 13) == 6
+    assert length(-31, 8, 613) == 67
+    assert length(7, 13, 11) == 23
+    assert length(-40, 5, 23) == 4
 
 
 def is_pell_transformation_ok(eq):

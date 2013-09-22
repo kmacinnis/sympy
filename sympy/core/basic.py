@@ -1499,8 +1499,8 @@ class Basic(with_metaclass(ManagedProperties)):
         """
         from sympy import signsimp
         pattern = sympify(pattern)
-        s = signsimp(self)
-        p = signsimp(pattern)
+        s = signsimp(self)._dist_const()
+        p = signsimp(pattern)._dist_const()
         # if we still have the same relationship between the types of
         # input, then use the sign simplified forms
         if (pattern.func == self.func) and (s.func == p.func):

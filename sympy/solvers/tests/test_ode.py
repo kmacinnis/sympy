@@ -424,7 +424,7 @@ def test_separable3():
     eq12 = (x - 1)*cos(f(x))*f(x).diff(x) - 2*x*sin(f(x))
     eq13 = f(x).diff(x) - f(x)*log(f(x))/tan(x)
     sol11 = Eq(f(x), C1*sqrt(1 + tan(x)**2))
-    sol12 = Eq(log(-1 + cos(f(x))**2)/2, C1 + 2*x + 2*log(x - 1))
+    sol12 = Eq(-log(cos(f(x))**2 - 1)/2 , C1 - 2*(x + log(x - 1)))
     sol13 = Eq(log(log(f(x))), C1 + log(cos(x)**2 - 1)/2)
     assert dsolve(eq11, hint='separable') == simplify(sol11)
     assert dsolve(eq12, hint='separable', simplify=False) == sol12
@@ -526,8 +526,7 @@ def test_1st_homogeneous_coeff_ode_k():
     sol3 = Eq(f(x), C1*LambertW(C2*x))  # Eq(f(x), x*exp(-LambertW(C1*x) + 1))
     sol4 = Eq(log(f(x)), C1 - 2*exp(x/f(x)))
     sol5 = Eq(f(x), C1*exp(LambertW(C2*x**4)/2)/x)
-    sol6 = Eq(log(x),
-        C1 + exp(-f(x)/x)*sin(f(x)/x)/2 + exp(-f(x)/x)*cos(f(x)/x)/2)
+    sol6 = Eq(log(x), C1 + (sin(f(x)/x)/2 + cos(f(x)/x)/2)*exp(-f(x)/x))
     sol7 = Eq(log(f(x)), C1 - 2*sqrt(-x/f(x) + 1))
     sol8 = Eq(log(x), C1 - log(sqrt(1 + f(x)**2/x**2)) + atan(f(x)/x))
     assert dsolve(eq1, hint='1st_homogeneous_coeff_subs_dep_div_indep') == \
@@ -1015,7 +1014,7 @@ def test_nth_linear_constant_coeff_undetermined_coefficients():
     sol9 = Eq(f(x),
         -2*x + x**2 + (C1*sin(x*sqrt(3)/2) + C2*cos(x*sqrt(3)/2))*exp(-x/2))
     sol10 = Eq(f(x), -x*exp(x) - 2*exp(-x) + C1*exp(-2*x) + C2*exp(4*x))
-    sol11 = Eq(f(x), C1 + C2*exp(3*x) + (-3*sin(x) - cos(x))*exp(2*x)/5)
+    sol11 = Eq(f(x), C1 + C2*exp(3*x) + (-3*sin(x)/5 - cos(x)/5)*exp(2*x))
     sol12 = Eq(f(x), x - sin(x)/4 + (C1 + C2*x)*exp(-x) + (C3 + C4*x)*exp(x))
     sol13 = Eq(f(x), C1 + x**3/3 + C2*exp(-x))
     sol14 = Eq(f(x), C1 - x - sin(2*x)/5 - cos(2*x)/10 + x**2/2 + C2*exp(-x))
@@ -1024,13 +1023,13 @@ def test_nth_linear_constant_coeff_undetermined_coefficients():
     sol17 = Eq(f(x), (C1 + C2*x + x**4/12)*exp(-x))
     sol18 = Eq(f(x), (C1 + C2*x + C3*x**2 - x**5/60 + x**3/3)*exp(-x))
     sol19 = Eq(f(x), S(7)/4 - 3*x/2 + x**2/2 + C1*exp(-x) + (C2 - x)*exp(-2*x))
-    sol20 = Eq(f(x), C1*exp(x) + C2*exp(2*x) + (6*x + 5)*exp(-x)/36)
+    sol20 = Eq(f(x), C1*exp(x) + C2*exp(2*x) + (x/6 + S(5)/36)*exp(-x))
     sol21 = Eq(f(x), -S(1)/36 - x/6 + C1*exp(-3*x) + (C2 + x/5)*exp(2*x))
     sol22 = Eq(f(x), C1*sin(x) + (C2 - x/2)*cos(x) + exp(-x)/2)
     sol23 = Eq(f(x), (C1 + C2*x + C3*x**2 + x**3/6)*exp(x))
     sol24 = Eq(f(x), S(1)/2 - cos(2*x)/6 + C1*sin(x) + C2*cos(x))
     sol25 = Eq(f(x), C1 + C2*exp(-x) + C3*exp(x) +
-               (-21*sin(2*x) + 27*cos(2*x) + 130)*exp(2*x)/1560)
+               (-21*sin(2*x)/1560 + 27*cos(2*x)/1560 + S(130)/1560)*exp(2*x))
     sol26 = Eq(f(x),
         C1 + (C2 + C3*x - x**2/8)*sin(x) + (C4 + C5*x + x**2/8)*cos(x) + x**2)
     sol27 = Eq(f(x), cos(3*x)/16 + C1*cos(x) + (C2 + x/4)*sin(x))
@@ -1160,7 +1159,7 @@ def test_nth_linear_constant_coeff_variation_of_parameters():
     sol5 = Eq(f(x), 2*exp(x) + C1*exp(-x) + C2*exp(-2*x))
     sol6 = Eq(f(x), -x*exp(x) - 2*exp(-x) + C1*exp(-2*x) + C2*exp(4*x))
     sol7 = Eq(f(x), (C1 + C2*x + x**4/12)*exp(-x))
-    sol8 = Eq(f(x), C1*exp(x) + C2*exp(2*x) + (6*x + 5)*exp(-x)/36)
+    sol8 = Eq(f(x), C1*exp(x) + C2*exp(2*x) + (6*x/36 + S(5)/36)*exp(-x))
     sol9 = Eq(f(x), (C1 + C2*x + C3*x**2 + x**3/6)*exp(x))
     sol10 = Eq(f(x), (C1 + x*(C2 + log(x)))*exp(-x))
     sol11 = Eq(f(x), cos(x)*(C2 - Integral(1/cos(x), x)) + sin(x)*(C1 +
@@ -1478,7 +1477,7 @@ def test_separable_reduced():
 
     eq = x*df + f(x)*(x**2*f(x))
     sol = dsolve(eq, hint = 'separable_reduced', simplify=False)
-    assert sol == Eq(log(x**2*f(x))/2 - log(x**2*f(x) - 2)/2, C1 + log(x))
+    assert sol == Eq(-(-log(x**2*f(x))/2 + log(x**2*f(x) - 2)/2), C1 + log(x))
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
 
 

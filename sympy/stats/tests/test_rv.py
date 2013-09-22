@@ -159,7 +159,7 @@ def test_normality():
     x, z = symbols('x, z', real=True)
     dens = density(X - Y, Eq(X + Y, z))
 
-    assert integrate(dens(x), (x, -oo, oo)) == 1
+    assert integrate(dens(x), (x, -oo, oo)).expand() == 1
 
 def test_Density():
     X = Die('X', 6)

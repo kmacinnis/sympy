@@ -104,8 +104,8 @@ def test_hyperexpand_bases():
     assert hyperexpand(hyper([1, 2], [S(3)/2], z)) == -1/(2*z - 2) \
         - asin(sqrt(z))/(sqrt(z)*(2*z - 2)*sqrt(-z + 1))
     assert hyperexpand(hyper([-S.Half - 1, 1, 2], [S.Half, 3], z)) == \
-        sqrt(z)*(6*z/7 - S(6)/5)*atanh(sqrt(z)) \
-        + (-30*z**2 + 32*z - 6)/35/z - 6*log(-z + 1)/(35*z**2)
+        sqrt(z)*(30*z - 42)*atanh(sqrt(z))/35 + (-6*z**2/7 +
+        32*z/35 + S(-6)/35)/z - 6*log(-z + 1)/(35*z**2)
     assert hyperexpand(hyper([1 + S.Half, 1, 1], [2, 2], z)) == \
         -4*log(sqrt(-z + 1)/2 + S(1)/2)/z
     # TODO hyperexpand(hyper([a], [2*a + 1], z))
@@ -385,8 +385,8 @@ def test_meijerg_expand():
     # Testing a bug:
     assert hyperexpand(meijerg([0, 2], [], [], [-1, 1], z)) == \
         Piecewise((0, abs(z) < 1),
-                  (z/2 - 1/(2*z), abs(1/z) < 1),
-                  (meijerg([0, 2], [], [], [-1, 1], z), True))
+                    (z*(1 - 1/z**2)/2, abs(1/z) < 1),
+                    (meijerg(((0, 2), ()), ((), (-1, 1)), z), True))
 
     # Test that the simplest possible answer is returned:
     assert combsimp(simplify(hyperexpand(
@@ -409,8 +409,8 @@ def test_meijerg_lookup():
     assert can_do_meijer([a], [], [b - 2, a], [])
 
     assert hyperexpand(meijerg([a], [], [a, a, a - S(1)/2], [], z)) == \
-        -sqrt(pi)*z**(a - S(1)/2)*(2*cos(2*sqrt(z))*(Si(2*sqrt(z)) - pi/2)
-                                   - 2*sin(2*sqrt(z))*Ci(2*sqrt(z))) == \
+        -2*sqrt(pi)*z**(a - S(1)/2)*(cos(2*sqrt(z))*(Si(2*sqrt(z)) - pi/2)
+                                   - sin(2*sqrt(z))*Ci(2*sqrt(z))) == \
         hyperexpand(meijerg([a], [], [a, a - S(1)/2, a], [], z)) == \
         hyperexpand(meijerg([a], [], [a - S(1)/2, a, a], [], z))
     assert can_do_meijer([a - 1], [], [a + 2, a - S(3)/2, a + 1], [])

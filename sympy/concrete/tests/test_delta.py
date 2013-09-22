@@ -373,7 +373,7 @@ def test_deltasummation():
         ((l - k + 1)*x*y + 2*x, And(k <= i, i <= l)), ((l - k + 1)*x*y, True))
 
     assert ds((x + y)*(y + KD(i, j)), (j, 1, 3)) == Piecewise(
-        (3*(x + y)*y + x + y, And(S(1) <= i, i <= 3)), ((3*x + 3*y)*y, True))
+        ((3*x + 3*y)*y + x + y, And(S(1) <= i, i <= 3)), ((3*x + 3*y)*y, True))
     assert ds((x + y)*(y + KD(i, j)), (j, 1, 1)) == \
         Piecewise(((x + y)*y + x + y, Eq(i, 1)), ((x + y)*y, True))
     assert ds((x + y)*(y + KD(i, j)), (j, 2, 2)) == \
@@ -391,7 +391,7 @@ def test_deltasummation():
 
     assert ds((x + KD(i, k))*(y + KD(i, j)), (j, 1, 3)) == piecewise_fold(
         Piecewise((KD(i, k) + x, And(S(1) <= i, i <= 3)), (0, True)) +
-        3*(KD(i, k) + x)*y)
+        (3*KD(i, k) + 3*x)*y)
     assert ds((x + KD(i, k))*(y + KD(i, j)), (j, 1, 1)) == piecewise_fold(
         Piecewise((KD(i, k) + x, Eq(i, 1)), (0, True)) +
         (KD(i, k) + x)*y)

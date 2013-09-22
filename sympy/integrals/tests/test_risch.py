@@ -291,7 +291,7 @@ def test_integrate_hyperexponential():
         36*x**7 + 6*x**6 + 18*x**5 - x**4 - 3*x**3)*t1 + 8*x**10 - 12*x**8 +
         6*x**6 - x**4, t1), DE)
 
-    assert factor(elem) == -((x - 1)*log(x)/((x + exp(x**2))*(2*x**2 - 1)))
+    assert factor(elem) == ((-x + 1)*log(x)/((x + exp(x**2))*(2*x**2 - 1)))
     assert (nonelem, b) == (NonElementaryIntegral(exp(x**2)/(exp(x**2) + 1), x), False)
 
 
@@ -392,7 +392,7 @@ def test_integrate_nonlinear_no_specials():
     DE = DifferentialExtension(extension={'D': [Poly(1, x),
         Poly(-t**2 - t/x - (1 - nu**2/x**2), t)], 'Tfuncs': [f]})
     assert integrate_nonlinear_no_specials(a, d, DE) == \
-        (-log(1 + f(x)**2 + x**2/2)/2 - (4 + x**2)/(4 + 2*x**2 + 4*f(x)**2), True)
+        (-log(f(x)**2 + (x**2 + 2)/2)/2 - (4 + x**2)/(4 + 2*x**2 + 4*f(x)**2), True)
     assert integrate_nonlinear_no_specials(Poly(t, t), Poly(1, t), DE) == \
         (0, False)
 

@@ -287,7 +287,7 @@ def test_as_leading_term4():
     r = -n**3/(2*n**2 + 4*n + 2) - n**2/(n**2 + 2*n + 1) + \
         n**2/(n + 1) - n/(2*n**2 + 4*n + 2) + n/(n*x + x) + 2*n/(n + 1) - \
         1 + 1/(n*x + x) + 1/(n + 1) - 1/x
-    assert r.as_leading_term(x).cancel() == n/2
+    assert r.as_leading_term(x).factor() == n/2
 
 
 def test_as_leading_term_stub():

@@ -703,8 +703,7 @@ def test_series():
     from sympy.abc import x
     i = Integral(cos(x))
     e = i.lseries(x)
-    # assert i.nseries(x, n=8).removeO() == Add(*[next(e) for j in range(4)])
-    assert False # test hangs on rhs
+    assert i.nseries(x, n=8).removeO() == Add(*[next(e) for j in range(4)])
 
 
 def test_issue_1304():
@@ -780,7 +779,7 @@ def test_issue_1428():
         (0, True))
     assert integrate(sin(k*x)*sin(m*x), (x,)) == Piecewise(
         (0, And(Eq(k, 0), Eq(m, 0))),
-        (-x*sin(m*x)**2/2 - x*cos(m*x)**2/2 + sin(m*x)*cos(m*x)/(2*m), Eq(k, -m)),
+        (-(x*sin(m*x)**2/2 + x*cos(m*x)**2/2 - sin(m*x)*cos(m*x)/(2*m)), Eq(k, -m)),
         (x*sin(m*x)**2/2 + x*cos(m*x)**2/2 - sin(m*x)*cos(m*x)/(2*m), Eq(k, m)),
         (m*sin(k*x)*cos(m*x)/(k**2 - m**2) -
          k*sin(m*x)*cos(k*x)/(k**2 - m**2), True))
@@ -803,7 +802,7 @@ def test_issue_841():
 def test_issue_2314():
     # Note that this is not the same as testing ratint() becuase integrate()
     # pulls out the coefficient.
-    assert integrate(-a/(a**2 + x**2), x) == I*log(-I*a + x)/2 - I*log(I*a + x)/2
+    assert integrate(-a/(a**2 + x**2), x) == -(-I*log(-I*a + x)/2 + I*log(I*a + x)/2)
 
 
 def test_issue_1793a():
@@ -863,8 +862,8 @@ def test_atom_bug():
 def test_limit_bug():
     z = Symbol('z', nonzero=True)
     assert integrate(sin(x*y*z), (x, 0, pi), (y, 0, pi)) == \
-        (log(z**2) + 2*EulerGamma + 2*log(pi))/(2*z) - \
-        (-log(pi*z) + log(pi**2*z**2)/2 + Ci(pi**2*z))/z + log(pi)/z
+        (log(z**2)/2 + EulerGamma + log(pi))/z + \
+        (log(pi*z) - log(pi**2*z**2)/2 - Ci(pi**2*z))/z + log(pi)/z
 
 
 def test_issue_1604():
@@ -948,7 +947,7 @@ def test_issue_3154():
 
 
 def test_issue1054():
-    assert integrate(1/(1 + x + y + z), (x, 0, 1), (y, 0, 1), (z, 0, 1)) in [
+    assert integrate(1/(1 + x + y + z), (x, 0, 1), (y, 0, 1), (z, 0, 1)).expand() in [
         -12*log(3) - 3*log(6)/2 + 3*log(8)/2 + 5*log(2) + 7*log(4),
         6*log(2) + 8*log(4) - 27*log(3)/2, 22*log(2) - 27*log(3)/2,
         -12*log(3) - 3*log(6)/2 + 47*log(2)/2]
@@ -969,7 +968,7 @@ def test_risch_option():
     # risch=True only allowed on indefinite integrals
     raises(ValueError, lambda: integrate(1/log(x), (x, 0, oo), risch=True))
     assert integrate(exp(-x**2), x, risch=True) == NonElementaryIntegral(exp(-x**2), x)
-    assert integrate(log(1/x)*y, x, y, risch=True) == y**2*(x*log(1/x) + x)/2
+    assert integrate(log(1/x)*y, x, y, risch=True) == y**2*(x*log(1/x)/2 + x/2)
     assert integrate(erf(x), x, risch=True) == Integral(erf(x), x)
     # TODO: How to test risch=False?
 
@@ -993,4 +992,4 @@ def test_integrate_Piecewise_rational_over_reals():
 def test_issue_1704():
     x_max = Symbol("x_max")
     assert integrate(y/pi*exp(-(x_max - x)/cos(a)), x) == \
-        y*exp((x - x_max)/cos(a))*cos(a)/pi
+        y*exp(-(-x + x_max)/cos(a))*cos(a)/pi

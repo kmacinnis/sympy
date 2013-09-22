@@ -879,10 +879,10 @@ def test_M22():
 def test_M23():
     x = symbols('x', complex=True)
 
-    assert solve(x - 1/sqrt(1 + x**2)) == [
+    assert set(solve(x - 1/sqrt(1 + x**2))) == set([
         simplify(-I*sqrt((sqrt(5) + 1)/2)),
         simplify(   sqrt((sqrt(5) - 1)/2)),
-    ]
+    ])
 
 
 def test_M24():
@@ -956,7 +956,7 @@ def test_M36():
 
 
 def test_M37():
-    assert solve([x + y + z - 6, 2*x + y + 2*z - 10, x + 3*y + z - 10 ]) == {x: -z + 4, y: 2}
+    assert solve([x + y + z - 6, 2*x + y + 2*z - 10, x + 3*y + z - 10 ]) == {x: -(z - 4), y: 2}
 
 
 @slow

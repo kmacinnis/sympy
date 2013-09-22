@@ -1345,7 +1345,7 @@ class ReduceOrder(Operator):
         """ For convenience if reduction is not possible, return None. """
         ai = sympify(ai)
         bj = sympify(bj)
-        n = ai - bj
+        n = (ai - bj)._dist_const()
         if not n.is_Integer or n < 0:
             return None
         if bj.is_integer and bj <= 0 and bj + n - 1 >= 0:
@@ -1369,7 +1369,7 @@ class ReduceOrder(Operator):
             This is for meijer G functions. """
         b = sympify(b)
         a = sympify(a)
-        n = b - a
+        n = (b - a)._dist_const()
         if (n < 0) is True or not n.is_Integer:
             return None
 
@@ -2111,7 +2111,8 @@ def devise_plan_meijer(fro, to, z):
         """
         for idx, (a, b) in enumerate(zip(f, t)):
             if (
-                (a - b).is_integer and (b - a)/diff > 0 and
+                (a - b)._dist_const().is_integer and
+                    ((b - a)/diff)._dist_const() > 0 and
                     all(a != x for x in counter)):
                 sh = shifter(idx)
                 f[idx] += diff
@@ -2260,7 +2261,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
         res = S(0)
         for m in pbm:
             if len(pbm[m]) == 1:
-                bh = pbm[m][0]
+                bh = pbm[m][0]._dist_const()
                 fac = 1
                 bo = [b._dist_const() for b in bm]
                 bo.remove(bh)
@@ -2284,11 +2285,11 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
                                    t, premult, bh, rewrite=None)
                 res += fac * hyp
             else:
-                b_ = pbm[m][0]
+                b_ = pbm[m][0]._dist_const()
                 ki = [(bi - b_)._dist_const() for bi in pbm[m][1:]]
                 u = len(ki)
                 li = [(ai - b_)._dist_const() for ai in pap[m][:u + 1]]
-                bo = list(bm)
+                bo = [b._dist_const() for b in bm]
                 for b in pbm[m]:
                     bo.remove(b)
                 ao = list(ap)

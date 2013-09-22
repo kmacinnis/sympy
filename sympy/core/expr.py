@@ -2520,7 +2520,8 @@ class Expr(Basic, EvalfMixin):
         else:  # lseries handling
             def yield_lseries(s):
                 """Return terms of lseries one at a time."""
-                for si in s:
+                for si_1 in s:
+                    si = si_1._dist_const()
                     if not si.is_Add:
                         yield si
                         continue

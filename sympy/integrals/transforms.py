@@ -244,9 +244,9 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
             a_ = oo
             b_ = -oo
             aux_ = []
-            for d in disjuncts(c):
-                d_ = d.replace(
-                    re, lambda x: x.as_real_imag()[0]).subs(re(s), t)
+            for d in [item._dist_const() for item in disjuncts(c)]:
+                d_ = d.replace(re, lambda x:
+                    x.as_real_imag()[0]).subs(re(s), t)._dist_const()
                 if not d.is_Relational or \
                     d.rel_op not in ('>', '>=', '<', '<=') \
                         or d_.has(s) or not d_.has(t):

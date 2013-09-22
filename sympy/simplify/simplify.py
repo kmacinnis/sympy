@@ -3702,7 +3702,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     if expr.has(C.TrigonometricFunction) and not fu or expr.has(
             C.HyperbolicFunction):
-        expr = trigsimp(expr, deep=True)
+        expr = shorter(trigsimp(expr, deep=True),trigsimp(expr._dist_const(), deep=True))
 
     if expr.has(C.log):
         expr = shorter(expand_log(expr, deep=True), logcombine(expr))
@@ -3716,11 +3716,11 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     if expr.has(Product):
         expr = product_simplify(expr)
 
-    short = shorter(powsimp(expr, combine='exp', deep=True), powsimp(expr), expr)
+    short = shorter(expr, expr._dist_const())
+    short = shorter(powsimp(short, combine='exp', deep=True), powsimp(short), short)
     short = shorter(short, factor_terms(short), expand_power_exp(expand_mul(short)))
     if short.has(C.TrigonometricFunction, C.HyperbolicFunction, C.ExpBase):
         short = exptrigsimp(short, simplify=False)
-    short = shorter(short, short._dist_const())
 
     # get rid of hollow 2-arg Mul factorization
     # Do we still need this?  -KATE

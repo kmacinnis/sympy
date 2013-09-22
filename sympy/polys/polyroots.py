@@ -876,7 +876,7 @@ def roots(f, *gens, **flags):
                         if res[0] is None:
                             translate_x, f = res[2:]
                         else:
-                            rescale_x, f = radsimp(res[1]), res[-1]
+                            rescale_x, f = res[1], res[-1]
                         result = roots(f)
                         if not result:
                             for root in _try_decompose(f):

@@ -887,7 +887,7 @@ class WignerD(Expr):
             # above equations
             r = r * I**(2*j - m - mp) * (-1)**(2*m)
             # Finally, simplify the whole expression
-            r = simplify(r)
+            r = simplify(r._dist_const())
         r *= exp(-I*m*alpha)*exp(-I*mp*gamma)
         return r
 

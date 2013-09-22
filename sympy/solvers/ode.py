@@ -1786,7 +1786,7 @@ def constantsimp(expr, independentsymbol, endnumber, startnumber=1,
                 if asfac and infac:
                     new_expr = expr
                     break
-        expr = new_expr
+        expr = new_expr._dist_const()
         # don't allow a number to be factored out of an expression
         # that has no denominator
         if expr.is_Mul:

@@ -1916,7 +1916,8 @@ class NegativeOne(with_metaclass(Singleton, IntegerConstant)):
     def __neg__():
         return S.One
 
-    def _eval_power(self, expt):
+    def _eval_power(self, expnt):
+        expt = expnt._dist_const()
         if expt.is_odd:
             return S.NegativeOne
         if expt.is_even:

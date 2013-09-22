@@ -542,7 +542,7 @@ class GreaterThan(_Greater):
 
     @classmethod
     def _eval_relation(cls, lhs, rhs):
-        return lhs >= rhs
+        return lhs._dist_const() >= rhs._dist_const()
 
 
 class LessThan(_Less):
@@ -553,7 +553,7 @@ class LessThan(_Less):
 
     @classmethod
     def _eval_relation(cls, lhs, rhs):
-        return lhs <= rhs
+        return lhs._dist_const() <= rhs._dist_const()
 
 
 class StrictGreaterThan(_Greater):
@@ -564,7 +564,7 @@ class StrictGreaterThan(_Greater):
 
     @classmethod
     def _eval_relation(cls, lhs, rhs):
-        return lhs > rhs
+        return lhs._dist_const() > rhs._dist_const()
 
 
 class StrictLessThan(_Less):
@@ -575,7 +575,7 @@ class StrictLessThan(_Less):
 
     @classmethod
     def _eval_relation(cls, lhs, rhs):
-        return lhs < rhs
+        return lhs._dist_const() < rhs._dist_const()
 
 
 # A class-specific (not object-specific) data item used for a minor speedup.  It

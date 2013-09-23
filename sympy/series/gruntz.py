@@ -458,7 +458,7 @@ def calculate_series(e, x, skip_abs=False, logx=None):
             return series
 
         series = series.removeO()
-        series = factor_terms(series, fraction=True)
+        series = factor_terms(series, fraction=True)._dist_const()
         if series and ((not skip_abs) or series.has(x)):
             return series
         n *= 2

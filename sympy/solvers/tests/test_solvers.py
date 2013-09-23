@@ -1172,9 +1172,9 @@ def test_exclude():
         Rf: Ri*(Vout - Vplus)/Vplus,
     }, {
         Vminus: Vplus,
-        V1: Vout/2 + Vplus/2 - sqrt((Vout - 5*Vplus)*(Vout - Vplus))/2, 
+        V1: Vout/2 + Vplus/2 - sqrt((Vout - 5*Vplus)*(Vout - Vplus))/2,
         R: (Vout/2 - 3*Vplus/2 + sqrt(Vout**2 - 6*Vout*Vplus + 5*Vplus**2)/2)/(C*Vplus*s),
-        Rf: Ri*(Vout - Vplus)/Vplus, 
+        Rf: Ri*(Vout - Vplus)/Vplus,
     }]]
 
 

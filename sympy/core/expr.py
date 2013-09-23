@@ -2429,17 +2429,6 @@ class Expr(Basic, EvalfMixin):
             else:
                 return self
 
-        ## it seems like the following should be doable, but several failures
-        ## then occur. Is this related to issue 1747 et al See also XPOS below.
-        #if x.is_positive is x.is_negative is None:
-        #    # replace x with an x that has a positive assumption
-        #    xpos = C.Dummy('x', positive=True)
-        #    rv = self.subs(x, xpos).series(xpos, x0, n, dir)
-        #    if n is None:
-        #        return (s.subs(xpos, x) for s in rv)
-        #    else:
-        #        return rv.subs(xpos, x)
-
         if len(dir) != 1 or dir not in '+-':
             raise ValueError("Dir must be '+' or '-'")
 
@@ -2472,6 +2461,15 @@ class Expr(Basic, EvalfMixin):
             return s.subs(x, rep2 + rep2b)._dist_const() + o
 
         # from here on it's x0=0 and dir='+' handling
+
+        if x.is_positive is x.is_negative is None:
+            # replace x with an x that has a positive assumption
+            xpos = C.Dummy('x', positive=True, bounded=True)
+            rv = self.subs(x, xpos).series(xpos, x0, n, dir)
+            if n is None:
+                return (s.subs(xpos, x) for s in rv)
+            else:
+                return rv.subs(xpos, x)
 
         if n is not None:  # nseries handling
             s1 = self._eval_nseries(x, n=n, logx=None)
@@ -2796,7 +2794,6 @@ class Expr(Basic, EvalfMixin):
         ``False`` otherwise.
         """
         hit = False
-        cls = expr.__class__
         # XXX: Hack to support non-Basic args
         #              |
         #              V
@@ -2808,7 +2805,7 @@ class Expr(Basic, EvalfMixin):
                 sargs.append(arg)
 
             if hit:
-                expr = cls(*sargs)
+                expr = expr.func(*sargs)
 
         if hasattr(expr, hint):
             newexpr = getattr(expr, hint)(**hints)

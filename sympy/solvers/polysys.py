@@ -7,7 +7,7 @@ from sympy.polys import Poly, groebner, roots
 from sympy.polys.polytools import parallel_poly_from_expr
 from sympy.polys.polyerrors import (ComputationFailed,
     PolificationFailed, CoercionFailed)
-from sympy.simplify import rcollect, dc
+from sympy.simplify import rcollect, dist_const
 from sympy.utilities import default_sort_key, postfixes
 
 

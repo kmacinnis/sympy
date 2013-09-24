@@ -35,7 +35,7 @@ from sympy.functions import (log, exp, LambertW, cos, sin, tan, cot, cosh,
                              sqrt, atan2)
 from sympy.functions.elementary.miscellaneous import real_root
 from sympy.simplify import (simplify, collect, powsimp, posify, powdenest,
-                            nsimplify, denom, logcombine, dc)
+                            nsimplify, denom, logcombine, dist_const)
 from sympy.simplify.sqrtdenest import sqrt_depth, _mexpand
 from sympy.simplify.fu import TR1, hyper_as_trig
 from sympy.matrices import Matrix, zeros

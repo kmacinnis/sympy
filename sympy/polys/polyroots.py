@@ -19,7 +19,7 @@ from sympy.polys.polyerrors import PolynomialError, GeneratorsNeeded, DomainErro
 from sympy.polys.polyquinticconst import PolyQuintic
 from sympy.polys.rationaltools import together
 
-from sympy.simplify import simplify, powsimp, dc
+from sympy.simplify import simplify, powsimp, dist_const
 from sympy.utilities import default_sort_key, public
 
 from sympy.core.compatibility import reduce, xrange

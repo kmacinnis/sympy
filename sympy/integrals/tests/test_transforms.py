@@ -123,7 +123,7 @@ def test_mellin_transform():
 
     expr = (sqrt(x + b**2) + b)**a
     assert MT(expr.subs(b, bpos), x, s) == \
-        (-a*(2*bpos)**(a + 2*s)*gamma(s)*gamma(-a - 2*s)/gamma(-a - s + 1),
+        (-a*(2*bpos)**(a + 2*s)*gamma(s)*gamma(-(a + 2*s))/gamma(-(a + s - 1)),
          (0, -re(a)/2), True)
     expr = (sqrt(x + b**2) + b)**a/sqrt(x + b**2)
     assert MT(expr.subs(b, bpos), x, s) == \
@@ -457,8 +457,8 @@ def test_laplace_transform():
     # basic tests from wikipedia
 
     assert LT((t - a)**b*exp(-c*(t - a))*Heaviside(t - a), t, s) == \
-        ((s + c)**(-b - 1)*exp(-a*s)*gamma(b + 1), -c, True)
-    assert LT(t**a, t, s) == (s**(-a - 1)*gamma(a + 1), 0, True)
+        ((s + c)**(-b)*exp(-a*s)*gamma(b + 1)/(s + c), -c, True)
+    assert LT(t**a, t, s) == (s**(-a)*gamma(a + 1)/s, 0, True)
     assert LT(Heaviside(t), t, s) == (1/s, 0, True)
     assert LT(Heaviside(t - a), t, s) == (exp(-a*s)/s, 0, True)
     assert LT(1 - exp(-a*t), t, s) == (a/(s*(a + s)), 0, True)

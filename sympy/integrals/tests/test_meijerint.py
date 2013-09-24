@@ -103,7 +103,7 @@ def test_recursive():
     assert simplify(integrate(exp(-(x - a - b - c)**2), (x, 0, oo))) == \
         sqrt(pi)/2*(1 + erf(a + b + c))
     assert simplify(integrate(exp(-(x + a + b + c)**2), (x, 0, oo))) == \
-        sqrt(pi)/2*(1 - erf(a + b + c))
+        -sqrt(pi)/2*(erf(a + b + c) - 1)
 
 
 def test_meijerint():

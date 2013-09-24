@@ -405,7 +405,7 @@ def test_issue_2073():
     expr = expr.subs(c, c + 1)
     raises(NotImplementedError, lambda: limit(expr, n, oo))
     assert limit(expr.subs(c, m), n, oo) == 1
-    assert limit(expr.subs(c, p), n, oo).simplify() == \
+    assert powsimp(limit(expr.subs(c, p), n, oo).simplify()) == \
         (2**(p + 1) + r - 1)/(r + 1)**(p + 1)
 
 

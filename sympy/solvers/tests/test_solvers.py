@@ -951,7 +951,7 @@ def test_issue_2750():
     assert solve(e, I1, I4, Q2, Q4, dI1, dI4, dQ2, dQ4, manual=True) == ans
     # the matrix solver (tested below) doesn't like this because it produces
     # a zero row in the matrix. Is this related to issue 1452?
-    assert dc([ei.subs(
+    assert dist_const([ei.subs(
         ans[0]) for ei in e]) == [0, 0, I3 - I6, -I3 + I6, 0, 0, 0, 0, 0]
 
 

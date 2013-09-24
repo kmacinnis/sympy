@@ -3717,7 +3717,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
         expr = product_simplify(expr)
 
     short = shorter(expr, expr._dist_const())
-    short = shorter(powsimp(short, combine='exp', deep=True), powsimp(short), short)
+    short = shorter(powsimp(short), powsimp(short, combine='exp', deep=True), short)
     short = shorter(short, factor_terms(short), expand_power_exp(expand_mul(short)))
     if short.has(C.TrigonometricFunction, C.HyperbolicFunction, C.ExpBase):
         short = exptrigsimp(short, simplify=False)
@@ -4961,16 +4961,16 @@ def __trigsimp(expr, deep=False):
     return expr
 #------------------- end of old trigsimp routines --------------------
 
-def dc(arg):
+def dist_const(arg):
     """Distributes constants for every element of a list or tuple.
     Useful, but maybe should be located somewhere else. -KATE"""
     from sympy.core.compatibility import iterable
     from sympy.core.containers import Dict
 
     if isinstance(arg,dict) or isinstance(arg,Dict):
-        type(arg)(dict([(dc(k),dc(arg[k])) for k in arg]))
+        type(arg)(dict([(dist_const(k),dist_const(arg[k])) for k in arg]))
     elif iterable(arg):
-        return type(arg)([dc(i) for i in arg])
+        return type(arg)([dist_const(i) for i in arg])
     elif isinstance(arg,Basic):
         return arg._dist_const()
     else:

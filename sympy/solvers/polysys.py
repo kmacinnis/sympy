@@ -221,7 +221,7 @@ def solve_generic(polys, opt):
                     new_system.append(eq)
 
             for solution in _solve_reduced_system(new_system, new_gens):
-                solutions.append(dc(solution) + (zero._dist_const(),))
+                solutions.append(dist_const(solution) + (zero._dist_const(),))
 
         return solutions
 
@@ -315,6 +315,6 @@ def solve_triangulated(polys, *gens, **args):
     solutions = list(solutions)
 
     for i, (solution, _) in enumerate(solutions):
-        solutions[i] = dc(solution)
+        solutions[i] = dist_const(solution)
 
     return sorted(solutions, key=default_sort_key)

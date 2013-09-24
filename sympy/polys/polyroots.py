@@ -94,7 +94,7 @@ def roots_cubic(f):
 
     if c is S.Zero:
         x1, x2 = roots([1, a, b], multiple=True)
-        return dc([x1, S.Zero, x2])
+        return dist_const([x1, S.Zero, x2])
 
     p = b - a**2/3
     q = c - a*b/3 + 2*a**3/27
@@ -104,7 +104,7 @@ def roots_cubic(f):
 
     if p is S.Zero:
         if q is S.Zero:
-            return dc([-aon3]*3)
+            return dist_const([-aon3]*3)
         else:
             if q.is_real:
                 if (q > 0) is True:
@@ -115,7 +115,7 @@ def roots_cubic(f):
                 u1 = (-q)**Rational(1, 3)
     elif q is S.Zero:
         y1, y2 = roots([1, 0, p], multiple=True)
-        return dc([tmp - aon3 for tmp in [y1, S.Zero, y2]])
+        return dist_const([tmp - aon3 for tmp in [y1, S.Zero, y2]])
     elif q.is_real and q < 0:
         u1 = -(-q/2 + sqrt(q**2/4 + pon3**3))**Rational(1, 3)
     else:
@@ -127,7 +127,7 @@ def roots_cubic(f):
     u3 = u1*(-S.Half - coeff)
 
     if p is S.Zero:
-        return dc([u1 - aon3, u2 - aon3, u3 - aon3])
+        return dist_const([u1 - aon3, u2 - aon3, u3 - aon3])
 
     soln = [
         -u1 + pon3/u1 - aon3,
@@ -135,7 +135,7 @@ def roots_cubic(f):
         -u3 + pon3/u3 - aon3
     ]
 
-    return dc(soln)
+    return dist_const(soln)
 
 def _roots_quartic_euler(p, q, r, a):
     """
@@ -191,7 +191,7 @@ def _roots_quartic_euler(p, q, r, a):
     A = -R - p/2
     c2 = sqrt(A + B)
     c3 = sqrt(A - B)
-    return dc([c1 - c2 - a, -c1 - c3 - a, -c1 + c3 - a, c1 + c2 - a])
+    return dist_const([c1 - c2 - a, -c1 - c3 - a, -c1 + c3 - a, c1 + c2 - a])
 
 
 def roots_quartic(f):

@@ -4968,7 +4968,7 @@ def dist_const(arg):
     from sympy.core.containers import Dict
 
     if isinstance(arg,dict) or isinstance(arg,Dict):
-        type(arg)(dict([(dist_const(k),dist_const(arg[k])) for k in arg]))
+        return type(arg)(dict([(dist_const(k),dist_const(arg[k])) for k in arg]))
     elif iterable(arg):
         return type(arg)([dist_const(i) for i in arg])
     elif isinstance(arg,Basic):

@@ -36,7 +36,7 @@ from __future__ import print_function, division
 
 from copy import deepcopy
 
-from sympy.simplify import simplify
+from sympy.simplify import simplify, dist_const
 from sympy.core import Add, C, S, Mul, Pow, oo
 from sympy.core.compatibility import (reduce, combinations_with_replacement,
     is_sequence)
@@ -192,8 +192,8 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
         return pdedict
 
     else:
-        return _helper_simplify(eq, hints['hint'],
-            hints['func'], hints['order'], hints[hints['hint']], solvefun)
+        return _helper_simplify(eq, hints['hint'], hints['func'],
+            hints['order'], hints[hints['hint']], solvefun)
 
 def _helper_simplify(eq, hint, func, order, match, solvefun):
     """Helper function of pdsolve that calls the respective
@@ -650,7 +650,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     e = -match[match['e']]
     expterm = exp(-S(d)/(b**2 + c**2)*xi)
     functerm = solvefun(eta)
-    solvedict = solve((b*x + c*y - xi, c*x - b*y - eta), x, y)
+    solvedict = dist_const(solve((b*x + c*y - xi, c*x - b*y - eta), x, y))
     # Integral should remain as it is in terms of xi,
     # doit() should be done in _handle_Integral.
     genterm = (1/S(b**2 + c**2))*C.Integral(

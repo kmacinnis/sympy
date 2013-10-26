@@ -385,7 +385,7 @@ class Ellipse(GeometryEntity):
         -2*sqrt(2) + 3
 
         """
-        return self.major * (1 - self.eccentricity)
+        return (self.major * (1 - self.eccentricity))._dist_const()
 
     @property
     def apoapsis(self):
@@ -413,7 +413,7 @@ class Ellipse(GeometryEntity):
         2*sqrt(2) + 3
 
         """
-        return self.major * (1 + self.eccentricity)
+        return (self.major * (1 + self.eccentricity))._dist_const()
 
     @property
     def focus_distance(self):

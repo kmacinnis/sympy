@@ -691,7 +691,7 @@ def test_change_index():
         Sum((x+1)**2, (x, a - 1, b - 1))
     assert Sum(x**2, (x, a, b)).change_index( x, -x, y) == \
         Sum((-y)**2, (y, -b, -a))
-    assert change_index(Sum(x, (x, a, b)), x, -x - 1) == \
+    assert Sum(x, (x, a, b)).change_index( x, -x - 1) == \
         Sum(-(x + 1), (x, -b - 1, -a - 1))
     assert Sum(x*y, (x, a, b), (y, c, d)).change_index( x, x - 1, z) == \
         Sum((z + 1)*y, (z, a - 1, b - 1), (y, c, d))

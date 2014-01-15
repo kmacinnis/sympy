@@ -90,7 +90,6 @@ class erf(Function):
     .. [4] http://functions.wolfram.com/GammaBetaErf/Erf
     """
 
-    nargs = 1
     unbranched = True
 
     def fdiff(self, argindex=1):
@@ -275,7 +274,6 @@ class erfc(Function):
     .. [4] http://functions.wolfram.com/GammaBetaErf/Erfc
     """
 
-    nargs = 1
     unbranched = True
 
     def fdiff(self, argindex=1):
@@ -453,7 +451,6 @@ class erfi(Function):
     .. [3] http://functions.wolfram.com/GammaBetaErf/Erfi
     """
 
-    nargs = 1
     unbranched = True
 
     def fdiff(self, argindex=1):
@@ -617,7 +614,6 @@ class erf2(Function):
     .. [1] http://functions.wolfram.com/GammaBetaErf/Erf2/
     """
 
-    nargs = 2
 
     def fdiff(self, argindex):
         x, y = self.args
@@ -734,7 +730,6 @@ class erfinv(Function):
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErf/
     """
 
-    nargs = 1
 
     def fdiff(self, argindex =1):
         if argindex == 1:
@@ -807,7 +802,6 @@ class erfcinv (Function):
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErfc/
     """
 
-    nargs = 1
 
     def fdiff(self, argindex =1):
         if argindex == 1:
@@ -879,7 +873,6 @@ class erf2inv(Function):
     .. [1] http://functions.wolfram.com/GammaBetaErf/InverseErf2/
     """
 
-    nargs = 2
 
     def fdiff(self, argindex):
         x, y = self.args
@@ -1018,7 +1011,6 @@ class Ei(Function):
 
     """
 
-    nargs = 1
 
     @classmethod
     def eval(cls, z):
@@ -1177,7 +1169,6 @@ class expint(Function):
 
     """
 
-    nargs = 2
 
     @classmethod
     def eval(cls, nu, z):
@@ -1362,7 +1353,6 @@ class li(Function):
     .. [4] http://mathworld.wolfram.com/SoldnersConstant.html
     """
 
-    nargs = 1
 
     @classmethod
     def eval(cls, z):
@@ -1480,7 +1470,6 @@ class Li(Function):
     .. [3] http://dlmf.nist.gov/6
     """
 
-    nargs = 1
 
     @classmethod
     def eval(cls, z):
@@ -1512,7 +1501,6 @@ class Li(Function):
 class TrigonometricIntegral(Function):
     """ Base class for trigonometric integrals. """
 
-    nargs = 1
 
     @classmethod
     def eval(cls, z):
@@ -1911,7 +1899,8 @@ class Chi(TrigonometricIntegral):
         return -I*pi/2 - (E1(z) + E1(exp_polar(I*pi)*z))/2
 
     def _latex(self, printer, exp=None):
-        assert len(self.args) == 1
+        if len(self.args) != 1:
+            raise ValueError("Arg length should be 1")
         if exp:
             return r'\operatorname{Chi}^{%s}{\left (%s \right )}' \
                 % (printer._print(exp), printer._print(self.args[0]))
@@ -1930,7 +1919,6 @@ class Chi(TrigonometricIntegral):
 class FresnelIntegral(Function):
     """ Base class for the Fresnel integrals."""
 
-    nargs = 1
     unbranched = True
 
     @classmethod
@@ -2230,7 +2218,6 @@ class _erfs(Function):
     tractable for the Gruntz algorithm.
     """
 
-    nargs = 1
 
     def _eval_aseries(self, n, args0, x, logx):
         point = args0[0]
@@ -2275,7 +2262,6 @@ class _eis(Function):
     tractable for the Gruntz algorithm.
     """
 
-    nargs = 1
 
     def _eval_aseries(self, n, args0, x, logx):
         if args0[0] != S.Infinity:

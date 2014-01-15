@@ -675,6 +675,13 @@ def test_issue_3176():
         assert (b*0).is_zero is None
 
 
+def test_sanitize_assumptions():
+    # issue 3567
+    x = Symbol('x', real=1, positive=0)
+    assert x.is_real is True
+    assert x.is_positive is False
+
+
 def test_special_assumptions():
     x = Symbol('x')
     z2 = z = Symbol('z', zero=True)
@@ -705,3 +712,7 @@ def test_issue_3532():
     assert ((-1)**(I/2)).is_real is True
     assert ((-1)**(I*S.Pi)).is_real is True
     assert (I**(I + 2)).is_real is True
+
+
+def test_gh2730():
+    assert (1/(1 + I)).is_real is False

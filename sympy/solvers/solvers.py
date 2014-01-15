@@ -153,6 +153,7 @@ def checksol(f, symbol, sol=None, **flags):
            make positive all symbols without assumptions regarding sign.
 
     """
+    minimal = flags.get('minimal', False)
 
     if sol is not None:
         sol = {symbol: sol}
@@ -205,13 +206,13 @@ def checksol(f, symbol, sol=None, **flags):
                 return False
         elif attempt == 1:
             if val.free_symbols:
-                if not val.is_constant(*list(sol.keys())):
+                if not val.is_constant(*list(sol.keys()), simplify=not minimal):
                     return False
                 # there are free symbols -- simple expansion might work
                 _, val = val.as_content_primitive()
                 val = expand_mul(expand_multinomial(val))
         elif attempt == 2:
-            if flags.get('minimal', False):
+            if minimal:
                 return
             if flags.get('simplify', True):
                 for k in sol:
@@ -405,11 +406,11 @@ def solve(f, *symbols, **flags):
             other functions that contain that pattern; this is only
             needed if the pattern is inside of some invertible function
             like cos, exp, ....
-        'minimal=True (default is False)'
+        'particular=True (default is False)'
             instructs solve to try to find a particular solution to a linear
             system with as many zeros as possible; this is very expensive
         'quick=True (default is False)'
-            when using minimal=True, use a fast heuristic instead to find a
+            when using particular=True, use a fast heuristic instead to find a
             solution with many zeros (instead of using the very slow method
             guaranteed to find the largest number of zeros possible)
 
@@ -707,7 +708,8 @@ def solve(f, *symbols, **flags):
         freei = f[i].free_symbols
         if freei and all(s.is_real or s.is_imaginary for s in freei):
             fr, fi = f[i].as_real_imag()
-            if fr and fi and not any(i.has(re, im, arg) for i in (fr, fi)):
+            if fr and fi and not any(i.has(re, im, arg) for i in (fr, fi)) \
+                    and fr != fi:
                 if bare_f:
                     bare_f = False
                 f[i: i + 1] = [fr, fi]
@@ -1024,7 +1026,8 @@ def solve(f, *symbols, **flags):
                     got_None.append(solution)
 
         elif isinstance(solution, (Relational, And, Or)):
-            assert len(symbols) == 1
+            if len(symbols) != 1:
+                raise ValueError("Length should be 1")
             if warning and symbols[0].assumptions0:
                 warnings.warn(filldedent("""
                     \tWarning: assumptions about variable '%s' are
@@ -1066,7 +1069,8 @@ def solve(f, *symbols, **flags):
         elif isinstance(solution[0], dict):
             pass
         else:
-            assert len(symbols) == 1
+            if len(symbols) != 1:
+                raise ValueError("Length should be 1")
             solution = [{symbols[0]: s} for s in solution]
     if as_dict:
         return solution
@@ -1460,7 +1464,7 @@ def _solve_system(exprs, symbols, **flags):
                         matrix[i, m] = (-coeff)._dist_const()
 
             # returns a dictionary ({symbols: values}) or None
-            if flags.pop('minimal', False):
+            if flags.pop('particular', False):
                 result = minsolve_linear_system(matrix, *symbols, **flags)
             else:
                 result = solve_linear_system(matrix, *symbols, **flags)
@@ -2094,7 +2098,8 @@ def solve_linear_system_LU(matrix, syms):
     sympy.matrices.LUsolve
 
     """
-    assert matrix.rows == matrix.cols - 1
+    if matrix.rows != matrix.cols - 1:
+        raise ValueError("Rows should be equal to columns - 1")
     A = matrix[:matrix.rows, :matrix.rows]
     b = matrix[:, matrix.cols - 1:]
     soln = A.LUsolve(b)
@@ -2162,7 +2167,7 @@ def _tsolve(eq, sym, **flags):
             if f.is_Mul:
                 return _solve(f, sym, **flags)
             if rhs:
-                f = logcombine(lhs, force=flags.get('force', False))
+                f = logcombine(lhs, force=flags.get('force', True))
                 if f.count(log) != lhs.count(log):
                     if f.func is log:
                         return _solve((f.args[0] - exp(rhs))._dist_const(), sym, **flags)
@@ -2192,7 +2197,7 @@ def _tsolve(eq, sym, **flags):
             if llhs.is_Add:
                 return _solve(llhs - log(rhs), sym, **flags)
 
-        elif lhs.is_Function and lhs.nargs == 1 and lhs.func in multi_inverses:
+        elif lhs.is_Function and len(lhs.args) == 1 and lhs.func in multi_inverses:
             # sin(x) = 1/3 -> x - asin(1/3) & x - (pi - asin(1/3))
             soln = []
             for i in multi_inverses[lhs.func](rhs):
@@ -2241,8 +2246,8 @@ def _tsolve(eq, sym, **flags):
                         inversion = _tsolve((g - u)._dist_const(), sym, **flags)
                         if inversion:
                             sol = _solve(p, u, **flags)
-                            return list(ordered([i.subs(u, s)
-                                for i in inversion for s in sol]))
+                            return list(ordered(set([i.subs(u, s)
+                                for i in inversion for s in sol])))
                     except NotImplementedError:
                         pass
 
@@ -2477,7 +2482,7 @@ def _invert(eq, *symbols, **kwargs):
             if ai*bi is S.NegativeOne:
                 if all(
                         isinstance(i, Function) for i in (ad, bd)) and \
-                        ad.func == bd.func and ad.nargs == bd.nargs:
+                        ad.func == bd.func and len(ad.args) == len(bd.args):
                     if len(ad.args) == 1:
                         lhs = ad.args[0] - bd.args[0]
                     else:

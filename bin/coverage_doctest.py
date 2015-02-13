@@ -21,11 +21,14 @@ from __future__ import print_function
 
 import os
 import sys
-import re
-import string
 import inspect
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
-from HTMLParser import HTMLParser
+
+try:
+    from HTMLParser import HTMLParser
+except ImportError:
+    # It's html.parser in Python 3
+    from html.parser import HTMLParser
 
 # Load color templates, used from sympy/utilities/runtests.py
 color_templates = (
@@ -213,7 +216,6 @@ def _get_arg_list(name, fobj):
 
     # Now add the defaults
     if argspec.defaults:
-        rev_defaults = list(argspec.defaults).reverse()
         for i in range(len(argspec.defaults)):
             arg_list[i] = str(arg_list[i]) + '=' + str(argspec.defaults[-i])
 
@@ -562,8 +564,6 @@ if __name__ == "__main__":
     sympy_dir = os.path.join(sympy_top, 'sympy')  # ../sympy/
     if os.path.isdir(sympy_dir):
         sys.path.insert(0, sympy_top)
-
-    skip_paths = ['mpmath']
 
     usage = "usage: ./bin/doctest_coverage.py PATHS"
 

@@ -3,7 +3,7 @@
 from __future__ import print_function, division
 
 from sympy.core.add import Add
-from sympy.core.compatibility import iterable, is_sequence, SYMPY_INTS
+from sympy.core.compatibility import iterable, is_sequence, SYMPY_INTS, range
 from sympy.core.mul import Mul, _keep_coeff
 from sympy.core.power import Pow
 from sympy.core.basic import Basic, preorder_traversal
@@ -532,11 +532,12 @@ class Factors(object):
         factors = {}
 
         for factor, exp in self.factors.items():
+            factor, exp = sympify(factor), sympify(exp)
             if factor in other.factors:
-                lt = (exp < other.factors[factor])
-                if lt is True:
+                lt = (exp - other.factors[factor]).is_negative
+                if lt == True:
                     factors[factor] = exp
-                elif lt is False:
+                elif lt == False:
                     factors[factor] = other.factors[factor]
 
         return Factors(factors)
@@ -937,8 +938,6 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
     gcd_terms, sympy.polys.polytools.terms_gcd
 
     """
-    from sympy.simplify.simplify import bottom_up
-
     def do(expr):
         is_iterable = iterable(expr)
 
@@ -1003,6 +1002,7 @@ def _mask_nc(eq, name=None):
 
     Examples
     ========
+
     >>> from sympy.physics.secondquant import Commutator, NO, F, Fd
     >>> from sympy import symbols, Mul
     >>> from sympy.core.exprtools import _mask_nc

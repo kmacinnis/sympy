@@ -4,8 +4,9 @@ from sympy.core.core import C
 from sympy.core.sympify import _sympify, sympify
 from sympy.core.basic import Basic, _aresame
 from sympy.core.cache import cacheit
-from sympy.core.compatibility import ordered, xrange
+from sympy.core.compatibility import ordered, range
 from sympy.core.logic import fuzzy_and
+from sympy.core.evaluate import global_evaluate
 
 
 class AssocOp(Basic):
@@ -29,7 +30,7 @@ class AssocOp(Basic):
         args = list(map(_sympify, args))
         args = [a for a in args if a is not cls.identity]
 
-        if not options.pop('evaluate', True):
+        if not options.pop('evaluate', global_evaluate[0]):
             return cls._from_args(args)
 
         if len(args) == 0:
@@ -161,6 +162,11 @@ class AssocOp(Basic):
         equivalent.
 
         """
+        # make sure expr is Expr if pattern is Expr
+        from .expr import Expr
+        if isinstance(self, Expr) and not isinstance(expr, Expr):
+            return None
+
         # handle simple patterns
         if self == expr:
             return repl_dict
@@ -279,30 +285,11 @@ class AssocOp(Basic):
                     if not nc:
                         return True
                     elif len(nc) <= len(_nc):
-                        for i in xrange(len(_nc) - len(nc)):
+                        for i in range(len(_nc) - len(nc)):
                             if _nc[i:i + len(nc)] == nc:
                                 return True
             return False
         return is_in
-
-    def _eval_template_is_attr(self, is_attr, when_multiple=False):
-        # return True if all elements have the property;
-        # False if one doesn't have the property; and
-        # if more than one doesn't have property, return
-        #    False if when_multiple = False
-        #    None if when_multiple is not False
-        quick = when_multiple is None
-        multi = False
-        for t in self.args:
-            a = getattr(t, is_attr)
-            if a is True:
-                continue
-            if a is None:
-                return
-            if quick and multi:
-                return None
-            multi = True
-        return not multi
 
     def _eval_evalf(self, prec):
         """
@@ -316,7 +303,7 @@ class AssocOp(Basic):
         walks the args of the non-number part recursively (doing the same
         thing).
         """
-        x, tail = self.as_independent(C.Symbol)
+        x, tail = self.as_independent(C.Symbol, C.AppliedUndef)
 
         if tail is not self.identity:
             # here, we have a number so we just call to _evalf with prec;
@@ -431,14 +418,14 @@ class LatticeOp(AssocOp):
     @classmethod
     def _new_args_filter(cls, arg_sequence, call_cls=None):
         """Generator filtering args"""
-        cls = call_cls or cls
+        ncls = call_cls or cls
         for arg in arg_sequence:
-            if arg == cls.zero:
+            if arg == ncls.zero:
                 raise ShortCircuit(arg)
-            elif arg == cls.identity:
+            elif arg == ncls.identity:
                 continue
-            elif arg.func == cls:
-                for x in arg.iter_basic_args():
+            elif arg.func == ncls:
+                for x in arg.args:
                     yield x
             else:
                 yield arg

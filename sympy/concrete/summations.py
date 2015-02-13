@@ -3,22 +3,19 @@ from __future__ import print_function, division
 from sympy.concrete.expr_with_limits import AddWithLimits
 from sympy.concrete.expr_with_intlimits import ExprWithIntLimits
 from sympy.core.basic import C
-from sympy.core.containers import Tuple
-from sympy.core.expr import Expr
 from sympy.core.function import Derivative
 from sympy.core.relational import Eq
 from sympy.core.singleton import S
 from sympy.core.symbol import (Dummy, Wild)
-from sympy.core.sympify import sympify
 from sympy.concrete.gosper import gosper_sum
-from sympy.functions.elementary.piecewise import piecewise_fold, Piecewise
+from sympy.functions.elementary.piecewise import Piecewise
 from sympy.polys import apart, PolynomialError
 from sympy.solvers import solve
-from sympy.core.compatibility import xrange
+from sympy.core.compatibility import range
 
 
 class Sum(AddWithLimits,ExprWithIntLimits):
-    """Represents unevaluated summation.
+    r"""Represents unevaluated summation.
 
     ``Sum`` represents a finite or infinite series, with the first argument
     being the general form of terms in the series, and the second argument
@@ -73,7 +70,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
     ========
 
     >>> from sympy.abc import i, k, m, n, x
-    >>> from sympy import Sum, factorial, oo
+    >>> from sympy import Sum, factorial, oo, IndexedBase, Function
     >>> Sum(k,(k,1,m))
     Sum(k, (k, 1, m))
     >>> Sum(k,(k,1,m)).doit()
@@ -88,6 +85,18 @@ class Sum(AddWithLimits,ExprWithIntLimits):
     Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**k, (k, 0, oo)), True))
     >>> Sum(x**k/factorial(k),(k,0,oo)).doit()
     exp(x)
+
+    Here are examples to do summation with symbolic indices.  You
+    can use either Function of IndexedBase classes:
+
+    >>> f = Function('f')
+    >>> Sum(f(n), (n, 0, 3)).doit()
+    f(0) + f(1) + f(2) + f(3)
+    >>> Sum(f(n), (n, 0, oo)).doit()
+    Sum(f(n), (n, 0, oo))
+    >>> f = IndexedBase('f')
+    >>> Sum(f[n]**2, (n, 0, 3)).doit()
+    f[0]**2 + f[1]**2 + f[2]**2 + f[3]**2
 
     An example showing that the symbolic result of a summation is still
     valid for seemingly nonsensical values of the limits. Then the Karr
@@ -145,45 +154,13 @@ class Sum(AddWithLimits,ExprWithIntLimits):
 
         return obj
 
-    @property
-    def is_zero(self):
-        """A Sum is only zero if its function is zero or if all terms
-        cancel out. This only answers whether the summand zero."""
-
-        return self.function.is_zero
-
-    @property
-    def is_number(self):
-        """
-        Return True if the Sum will result in a number, else False.
-
-        Sums are a special case since they contain symbols that can
-        be replaced with numbers. Whether the sum can be done or not in
-        closed form is another issue. But answering whether the final
-        result is a number is not difficult.
-
-        Examples
-        ========
-
-        >>> from sympy import Sum
-        >>> from sympy.abc import x, y
-        >>> Sum(x, (y, 1, x)).is_number
-        False
-        >>> Sum(1, (y, 1, x)).is_number
-        False
-        >>> Sum(0, (y, 1, x)).is_number
-        True
-        >>> Sum(x, (y, 1, 2)).is_number
-        False
-        >>> Sum(x, (y, 1, 1)).is_number
-        False
-        >>> Sum(x, (x, 1, 2)).is_number
-        True
-        >>> Sum(x*y, (x, 1, 2), (y, 1, 3)).is_number
-        True
-        """
-
-        return self.function.is_zero or not self.free_symbols
+    def _eval_is_zero(self):
+        # a Sum is only zero if its function is zero or if all terms
+        # cancel out. This only answers whether the summand is zero; if
+        # not then None is returned since we don't analyze whether all
+        # terms cancel out.
+        if self.function.is_zero:
+            return True
 
     def doit(self, **hints):
         if hints.get('deep', True):
@@ -194,7 +171,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         for n, limit in enumerate(self.limits):
             i, a, b = limit
             dif = (b - a)._dist_const()
-            if dif.is_Integer and (dif < 0) is True:
+            if dif.is_integer and (dif < 0) == True:
                 a, b = b + 1, a - 1
                 f = (-f)._dist_const()
 
@@ -289,7 +266,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
             >>> s
             -log(a) + log(b) + 1/(2*b) + 1/(2*a)
             >>> e
-            Abs(-1/(12*b**2) + 1/(12*a**2))
+            Abs(1/(12*b**2) - 1/(12*a**2))
 
         If the function is a polynomial of degree at most 2n+1, the
         Euler-Maclaurin formula becomes exact (and e = 0 is returned):
@@ -308,7 +285,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         if len(self.limits) != 1:
             raise ValueError("More than 1 limit")
         i, a, b = self.limits[0]
-        if (a > b) is True:
+        if (a > b) == True:
             if (a - b)._dist_const() == 1:
                 return S.Zero,S.Zero
             a, b = b + 1, a - 1
@@ -317,23 +294,22 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         if m:
             if b.is_Integer and a.is_Integer:
                 m = min(m, b - a + 1)
-            if not eps:
+            if not eps or f.is_polynomial(i):
                 for k in range(m):
                     s += f.subs(i, a + k)
             else:
                 term = f.subs(i, a)
                 if term:
                     test = abs(term.evalf(3)) < eps
-                    if isinstance(test, bool):
-                        if test is True:
-                            return s, abs(term)
-                    else:
+                    if test == True:
+                        return s, abs(term)
+                    elif not (test == False):
                         # a symbolic Relational class, can't go further
                         return term, S.Zero
                 s += term
                 for k in range(1, m):
                     term = f.subs(i, a + k)
-                    if abs(term.evalf(3)) < eps:
+                    if abs(term.evalf(3)) < eps and term != 0:
                         return s, abs(term)
                     s += term
             if b - a + 1 == m:
@@ -352,7 +328,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         fa, fb = fpoint(f)
         iterm = (fa + fb)/2
         g = f.diff(i)
-        for k in xrange(1, n + 2):
+        for k in range(1, n + 2):
             ga, gb = fpoint(g)
             term = C.bernoulli(2*k)/C.factorial(2*k)*(gb - ga)
             if (eps and term and abs(term.evalf(3)) < eps) or (k > n):
@@ -504,7 +480,7 @@ def telescopic_direct(L, R, n, limits):
     """
     (i, a, b) = limits
     s = 0
-    for m in xrange(n):
+    for m in range(n):
         s += L.subs(i, a + m) + R.subs(i, b - m)
     return s
 
@@ -605,6 +581,7 @@ def eval_sum_direct(expr, limits):
 
 
 def eval_sum_symbolic(f, limits):
+    f_orig = f
     (i, a, b) = limits
     if not f.has(i):
         return f*(b - a + 1)._dist_const()
@@ -639,7 +616,9 @@ def eval_sum_symbolic(f, limits):
         rsum = eval_sum_symbolic(R, (i, a, b))
 
         if None not in (lsum, rsum):
-            return lsum + rsum
+            r = lsum + rsum
+            if not r is S.NaN:
+                return r
 
     # Polynomial terms with Faulhaber's formula
     n = Wild('n')
@@ -683,7 +662,7 @@ def eval_sum_symbolic(f, limits):
         if not r in (None, S.NaN):
             return r
 
-    return eval_sum_hyper(f, (i, a, b))
+    return eval_sum_hyper(f_orig, (i, a, b))
 
 
 def _eval_sum_hyper(f, i, a):
@@ -758,7 +737,7 @@ def eval_sum_hyper(f, i_a_b):
                 return None
             (res1, cond1), (res2, cond2) = res1, res2
             cond = And(cond1, cond2)
-            if cond is False:
+            if cond == False:
                 return None
         return Piecewise((res1 - res2, cond), (old_sum, True))
 
@@ -770,7 +749,7 @@ def eval_sum_hyper(f, i_a_b):
         res1, cond1 = res1
         res2, cond2 = res2
         cond = And(cond1, cond2)
-        if cond is False:
+        if cond == False:
             return None
         return Piecewise((res1 + res2, cond), (old_sum, True))
 

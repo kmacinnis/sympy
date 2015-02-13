@@ -6,25 +6,27 @@ from __future__ import print_function, division
 
 import math
 
-import sympy.mpmath.libmp as libmp
-from sympy.mpmath import make_mpc, make_mpf, mp, mpc, mpf, nsum, quadts, quadosc
-from sympy.mpmath import inf as mpmath_inf
-from sympy.mpmath.libmp import (from_int, from_man_exp, from_rational, fhalf,
+import mpmath.libmp as libmp
+from mpmath import (
+    make_mpc, make_mpf, mp, mpc, mpf, nsum, quadts, quadosc, workprec)
+from mpmath import inf as mpmath_inf
+from mpmath.libmp import (from_int, from_man_exp, from_rational, fhalf,
         fnan, fnone, fone, fzero, mpf_abs, mpf_add,
         mpf_atan, mpf_atan2, mpf_cmp, mpf_cos, mpf_e, mpf_exp, mpf_log, mpf_lt,
         mpf_mul, mpf_neg, mpf_pi, mpf_pow, mpf_pow_int, mpf_shift, mpf_sin,
         mpf_sqrt, normalize, round_nearest, to_int, to_str)
-from sympy.mpmath.libmp import bitcount as mpmath_bitcount
-from sympy.mpmath.libmp.backend import MPZ
-from sympy.mpmath.libmp.libmpc import _infs_nan
-from sympy.mpmath.libmp.libmpf import dps_to_prec
-from sympy.mpmath.libmp.gammazeta import mpf_bernoulli
+from mpmath.libmp import bitcount as mpmath_bitcount
+from mpmath.libmp.backend import MPZ
+from mpmath.libmp.libmpc import _infs_nan
+from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
+from mpmath.libmp.gammazeta import mpf_bernoulli
 
-from .compatibility import SYMPY_INTS
+from .compatibility import SYMPY_INTS, range
 from .sympify import sympify
 from .core import C
 from .singleton import S
-from .containers import Tuple
+
+from sympy.utilities.iterables import is_sequence
 
 LG10 = math.log(10, 2)
 rnd = round_nearest
@@ -317,15 +319,17 @@ def get_integer_part(expr, no, options, return_ints=False):
     # positive or negative (which may fail if very close).
     def calc_part(expr, nexpr):
         nint = int(to_int(nexpr, rnd))
-        expr = C.Add(expr, -nint, evaluate=False)
-        x, _, x_acc, _ = evalf(expr, 10, options)
-        try:
-            check_target(expr, (x, None, x_acc, None), 3)
-        except PrecisionExhausted:
-            if not expr.equals(0):
-                raise PrecisionExhausted
-            x = fzero
-        nint += int(no*(mpf_cmp(x or fzero, fzero) == no))
+        n, c, p, b = nexpr
+        if (c != 1 and p != 0) or p < 0:
+            expr = C.Add(expr, -nint, evaluate=False)
+            x, _, x_acc, _ = evalf(expr, 10, options)
+            try:
+                check_target(expr, (x, None, x_acc, None), 3)
+            except PrecisionExhausted:
+                if not expr.equals(0):
+                    raise PrecisionExhausted
+                x = fzero
+            nint += int(no*(mpf_cmp(x or fzero, fzero) == no))
         nint = from_int(nint)
         return nint, fastlog(nint) + 10
 
@@ -389,7 +393,7 @@ def add_terms(terms, prec, target_prec):
     special = []
     for t in terms:
         arg = C.Float._new(t[0], 1)
-        if arg is S.NaN or arg.is_unbounded:
+        if arg is S.NaN or arg.is_infinite:
             special.append(arg)
     if special:
         from sympy.core.add import Add
@@ -435,7 +439,6 @@ def add_terms(terms, prec, target_prec):
     sum_accuracy = sum_exp + sum_bc - absolute_error
     r = normalize(sum_sign, sum_man, sum_exp, sum_bc, target_prec,
         rnd), sum_accuracy
-    #print "returning", to_str(r[0],50), r[1]
     return r
 
 
@@ -499,7 +502,7 @@ def evalf_mul(v, prec, options):
         if arg[0] is None:
             continue
         arg = C.Float._new(arg[0], 1)
-        if arg is S.NaN or arg.is_unbounded:
+        if arg is S.NaN or arg.is_infinite:
             special.append(arg)
     if special:
         from sympy.core.mul import Mul
@@ -783,7 +786,8 @@ def evalf_log(expr, prec, options):
         arg = C.Add(S.NegativeOne, arg, evaluate=False)
         xre, xim, _, _ = evalf_add(arg, prec, options)
         prec2 = workprec - fastlog(xre)
-        re = mpf_log(mpf_add(xre, fone, prec2), prec, rnd)
+        # xre is now x - 1 so we add 1 back here to calculate x
+        re = mpf_log(mpf_abs(mpf_add(xre, fone, prec2)), prec, rnd)
 
     re_acc = prec
 
@@ -849,7 +853,7 @@ def evalf_bernoulli(expr, prec, options):
 
 def as_mpmath(x, prec, options):
     x = sympify(x)
-    if isinstance(x, C.Zero):
+    if isinstance(x, C.Zero) or x == 0:
         return mpf(0)
     if isinstance(x, C.Infinity):
         return mpf('inf')
@@ -865,13 +869,22 @@ def as_mpmath(x, prec, options):
 def do_integral(expr, prec, options):
     func = expr.args[0]
     x, xlow, xhigh = expr.args[1]
-    orig = mp.prec
+    if xlow == xhigh:
+        xlow = xhigh = 0
+    elif x not in func.free_symbols:
+        # only the difference in limits matters in this case
+        # so if there is a symbol in common that will cancel
+        # out when taking the difference, then use that
+        # difference
+        if xhigh.free_symbols & xlow.free_symbols:
+            diff = xhigh - xlow
+            if not diff.free_symbols:
+                xlow, xhigh = 0, diff
 
     oldmaxprec = options.get('maxprec', DEFAULT_MAXPREC)
     options['maxprec'] = min(oldmaxprec, 2*prec)
 
-    try:
-        mp.prec = prec + 5
+    with workprec(prec + 5):
         xlow = as_mpmath(xlow, prec + 15, options)
         xhigh = as_mpmath(xhigh, prec + 15, options)
 
@@ -916,9 +929,7 @@ def do_integral(expr, prec, options):
             result, quadrature_error = quadts(f, [xlow, xhigh], error=1)
             quadrature_error = fastlog(quadrature_error._mpf_)
 
-    finally:
-        options['maxprec'] = oldmaxprec
-        mp.prec = orig
+    options['maxprec'] = oldmaxprec
 
     if have_part[0]:
         re = result.real._mpf_
@@ -957,13 +968,21 @@ def evalf_integral(expr, prec, options):
     maxprec = options.get('maxprec', INF)
     while 1:
         result = do_integral(expr, workprec, options)
-        # if a scaled_zero comes back accuracy will compute to -1
-        # which will cause workprec to increment by 1
         accuracy = complex_accuracy(result)
-        if accuracy >= prec or workprec >= maxprec:
-            return result
-        workprec += prec - max(-2**i, accuracy)
+        if accuracy >= prec:  # achieved desired precision
+            break
+        if workprec >= maxprec:  # can't increase accuracy any more
+            break
+        if accuracy == -1:
+            # maybe the answer really is zero and maybe we just haven't increased
+            # the precision enough. So increase by doubling to not take too long
+            # to get to maxprec.
+            workprec *= 2
+        else:
+            workprec += max(prec, 2**i)
+        workprec = min(workprec, maxprec)
         i += 1
+    return result
 
 
 def check_convergence(numer, denom, n):
@@ -1012,6 +1031,9 @@ def hypsum(expr, n, start, prec):
     """
     from sympy import hypersimp, lambdify
 
+    if prec == float('inf'):
+        raise NotImplementedError('does not support inf prec')
+
     if start:
         expr = expr.subs(n, n + start)
     hs = hypersimp(expr, n)
@@ -1027,9 +1049,12 @@ def hypsum(expr, n, start, prec):
     if h < 0:
         raise ValueError("Sum diverges like (n!)^%i" % (-h))
 
+    term = expr.subs(n, 0)
+    if not term.is_Rational:
+        raise NotImplementedError("Non rational term functionality is not implemented.")
+
     # Direct summation if geometric or faster
     if h > 0 or (h == 0 and abs(g) > 1):
-        term = expr.subs(n, 0)
         term = (MPZ(term.p) << prec) // term.q
         s = term
         k = 1
@@ -1046,26 +1071,39 @@ def hypsum(expr, n, start, prec):
         if p < 1 or (p == 1 and not alt):
             raise ValueError("Sum diverges like n^%i" % (-p))
         # We have polynomial convergence: use Richardson extrapolation
-        # Need to use at least quad precision because a lot of cancellation
-        # might occur in the extrapolation process
-        prec2 = 4*prec
-        term = expr.subs(n, 0)
-        term = (MPZ(term.p) << prec2) // term.q
+        vold = None
+        ndig = prec_to_dps(prec)
+        while True:
+            # Need to use at least quad precision because a lot of cancellation
+            # might occur in the extrapolation process; we check the answer to
+            # make sure that the desired precision has been reached, too.
+            prec2 = 4*prec
+            term0 = (MPZ(term.p) << prec2) // term.q
 
-        def summand(k, _term=[term]):
-            if k:
-                k = int(k)
-                _term[0] *= MPZ(func1(k - 1))
-                _term[0] //= MPZ(func2(k - 1))
-            return make_mpf(from_man_exp(_term[0], -prec2))
+            def summand(k, _term=[term0]):
+                if k:
+                    k = int(k)
+                    _term[0] *= MPZ(func1(k - 1))
+                    _term[0] //= MPZ(func2(k - 1))
+                return make_mpf(from_man_exp(_term[0], -prec2))
 
-        orig = mp.prec
-        try:
-            mp.prec = prec
-            v = nsum(summand, [0, mpmath_inf], method='richardson')
-        finally:
-            mp.prec = orig
+            with workprec(prec):
+                v = nsum(summand, [0, mpmath_inf], method='richardson')
+            vf = C.Float(v, ndig)
+            if vold is not None and vold == vf:
+                break
+            prec += prec  # double precision each time
+            vold = vf
+
         return v._mpf_
+
+
+def evalf_prod(expr, prec, options):
+    if all((l[1] - l[2]).is_Integer for l in expr.limits):
+        re, im, re_acc, im_acc = evalf(expr.doit(), prec=prec, options=options)
+    else:
+        re, im, re_acc, im_acc = evalf(expr.rewrite(C.Sum), prec=prec, options=options)
+    return re, im, re_acc, im_acc
 
 
 def evalf_sum(expr, prec, options):
@@ -1171,6 +1209,7 @@ def _create_evalf_table():
 
         C.Integral: evalf_integral,
         C.Sum: evalf_sum,
+        C.Product: evalf_prod,
         C.Piecewise: evalf_piecewise,
 
         C.bernoulli: evalf_bernoulli,
@@ -1239,7 +1278,8 @@ class EvalfMixin(object):
 
             subs=<dict>
                 Substitute numerical values for symbols, e.g.
-                subs={x:3, y:1+pi}.
+                subs={x:3, y:1+pi}. The substitutions must be given as a
+                dictionary.
 
             maxn=<integer>
                 Allow a maximum temporary working precision of maxn digits
@@ -1263,6 +1303,11 @@ class EvalfMixin(object):
                 Print debug information (default=False)
 
         """
+        n = n if n is not None else 15
+
+        if subs and is_sequence(subs):
+            raise TypeError('subs must be given as a dictionary')
+
         # for sake of sage that doesn't like evalf(1)
         if n == 1 and isinstance(self, C.Number):
             from sympy.core.expr import _mag
@@ -1296,13 +1341,11 @@ class EvalfMixin(object):
         re, im, re_acc, im_acc = result
         if re:
             p = max(min(prec, re_acc), 1)
-            #re = mpf_pos(re, p, rnd)
             re = C.Float._new(re, p)
         else:
             re = S.Zero
         if im:
             p = max(min(prec, im_acc), 1)
-            #im = mpf_pos(im, p, rnd)
             im = C.Float._new(im, p)
             return re + im*S.ImaginaryUnit
         else:

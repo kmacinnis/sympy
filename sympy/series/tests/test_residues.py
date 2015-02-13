@@ -1,6 +1,6 @@
-from sympy import residue, Symbol, Function, sin, S, I, pi, exp, log, pi, factorial
+from sympy import residue, Symbol, Function, sin, S, I, exp, log, pi, factorial
 from sympy.utilities.pytest import XFAIL, raises
-from sympy.abc import x, y, z, a, s
+from sympy.abc import x, z, a, s
 
 
 def test_basic1():
@@ -66,9 +66,9 @@ def test_bug():
         1 + s*log(2) - s**2*log(2) - 2*s
 
 
-def test_issue_2555():
+def test_issue_5654():
     assert residue(1/(x**2 + a**2)**2, x, a*I) == -I/(4*a**3)
 
 
-def test_issue_3400():
+def test_issue_6499():
     assert residue(1/(exp(z) - 1), z, 0) == 1

@@ -34,17 +34,13 @@ more information on each (run help(pde)):
 """
 from __future__ import print_function, division
 
-from copy import deepcopy
-
 from sympy.simplify import simplify, dist_const
-from sympy.core import Add, C, S, Mul, Pow, oo
+from sympy.core import Add, C, S
 from sympy.core.compatibility import (reduce, combinations_with_replacement,
-    is_sequence)
-from sympy.core.function import (Function, Derivative,
-    expand, diff, AppliedUndef, Subs)
-from sympy.core.numbers import Rational
+    is_sequence, range)
+from sympy.core.function import Function, expand, AppliedUndef, Subs
 from sympy.core.relational import Equality, Eq
-from sympy.core.symbol import Symbol, Wild, Dummy, symbols
+from sympy.core.symbol import Symbol, Wild, symbols
 from sympy.functions import exp
 from sympy.utilities.iterables import has_dups
 
@@ -157,7 +153,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     >>> uy = u.diff(y)
     >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)))
     >>> pdsolve(eq)
-    f(x, y) == F(3*x - 2*y)*exp(-2*x/13 - 3*y/13)
+    Eq(f(x, y), F(3*x - 2*y)*exp(-2*x/13 - 3*y/13))
 
     """
 
@@ -232,8 +228,8 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
 
     The tuple is ordered so that first item is the classification that
     pdsolve() uses to solve the PDE by default.  In general,
-    classifications at the near the beginning of the list will produce
-    better solutions faster than those near the end, thought there are
+    classifications near the beginning of the list will produce
+    better solutions faster than those near the end, though there are
     always exceptions.  To make pdsolve use a different classification,
     use pdsolve(PDE, func, hint=<classification>).  See also the pdsolve()
     docstring for different meta-hints you can use.
@@ -252,6 +248,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
 
     Examples
     ========
+
     >>> from sympy.solvers.pde import classify_pde
     >>> from sympy import Function, diff, Eq
     >>> from sympy.abc import x, y
@@ -316,7 +313,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     reduced_eq = None
     if eq.is_Add:
         var = set(combinations_with_replacement((x,y), order))
-        dummyvar = deepcopy(var)
+        dummyvar = var.copy()
         power = None
         for i in var:
             coeff = eq.coeff(f(x,y).diff(*i))
@@ -413,6 +410,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
 
     Examples
     ========
+
     >>> from sympy import Function, symbols, diff
     >>> from sympy.solvers.pde import checkpdesol, pdsolve
     >>> x, y = symbols('x y')
@@ -436,7 +434,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
         except ValueError:
             funcs = [s.atoms(AppliedUndef) for s in (
                 sol if is_sequence(sol, set) else [sol])]
-            funcs = reduce(set.union, funcs, set())
+            funcs = set().union(funcs)
             if len(funcs) != 1:
                 raise ValueError(
                     'must pass func arg to checkpdesol for this case.')
@@ -528,7 +526,7 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
     >>> from sympy.abc import x,y
     >>> f = Function('f')
     >>> pdsolve(f(x,y) + f(x,y).diff(x) + f(x,y).diff(y))
-    f(x, y) == F(x - y)*exp(-x/2 - y/2)
+    Eq(f(x, y), F(x - y)*exp(-x/2 - y/2))
     >>> pprint(pdsolve(f(x,y) + f(x,y).diff(x) + f(x,y).diff(y)))
                           x   y
                         - - - -
@@ -626,7 +624,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     >>> f = Function('f')
     >>> eq = -2*f(x,y).diff(x) + 4*f(x,y).diff(y) + 5*f(x,y) - exp(x + 3*y)
     >>> pdsolve(eq)
-    f(x, y) == (F(4*x + 2*y) + exp(x/2 + 4*y)/15)*exp(x/2 - y)
+    Eq(f(x, y), (F(4*x + 2*y) + exp(x/2 + 4*y)/15)*exp(x/2 - y))
 
     References
     ==========
@@ -704,7 +702,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     >>> f = Function('f')
     >>> eq =  x*(u.diff(x)) - y*(u.diff(y)) + y**2*u - y**2
     >>> pdsolve(eq)
-    f(x, y) == F(x*y)*exp(y**2/2) + 1
+    Eq(f(x, y), F(x*y)*exp(y**2/2) + 1)
 
     References
     ==========
@@ -964,7 +962,7 @@ def _separate(eq, dep, others):
         div.add(ext)
     # FIXME: Find lcm() of all the divisors and divide with it, instead of
     # current hack :(
-    # http://code.google.com/p/sympy/issues/detail?id=1498
+    # https://github.com/sympy/sympy/issues/4597
     if len(div) > 0:
         final = 0
         for term in eq.args:

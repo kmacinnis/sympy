@@ -5,7 +5,7 @@ from __future__ import print_function, division
 from sympy.core import S, I, pi, oo, ilcm, Mod, C
 from sympy.core.function import Function, Derivative, ArgumentIndexError
 from sympy.core.containers import Tuple
-from sympy.core.compatibility import reduce
+from sympy.core.compatibility import reduce, range
 from sympy.core.mul import Mul
 
 from sympy.functions import (sqrt, exp, log, sin, cos, asin, atan,
@@ -253,9 +253,9 @@ class hyper(TupleParametersBase):
         >>> hyper((1, 2), (3, 4), z).radius_of_convergence
         oo
         """
-        if any(a.is_integer and (a <= 0) is True for a in self.ap + self.bq):
-            aints = [a for a in self.ap if a.is_Integer and (a <= 0) is True]
-            bints = [a for a in self.bq if a.is_Integer and (a <= 0) is True]
+        if any(a.is_integer and (a <= 0) == True for a in self.ap + self.bq):
+            aints = [a for a in self.ap if a.is_Integer and (a <= 0) == True]
+            bints = [a for a in self.bq if a.is_Integer and (a <= 0) == True]
             if len(aints) < len(bints):
                 return S(0)
             popped = False
@@ -300,6 +300,12 @@ class hyper(TupleParametersBase):
     def _eval_simplify(self, ratio, measure):
         from sympy.simplify.hyperexpand import hyperexpand
         return hyperexpand(self)
+
+    def _sage_(self):
+        import sage.all as sage
+        ap = [arg._sage_() for arg in self.args[0]]
+        bq = [arg._sage_() for arg in self.args[1]]
+        return sage.hypergeometric(ap, bq, self.argument._sage_())
 
 
 class meijerg(TupleParametersBase):
@@ -600,7 +606,8 @@ class meijerg(TupleParametersBase):
         # (carefully so as not to loose the branch information), and evaluate
         # G(z'**(1/r)) = G(z'**n) = G(z).
         from sympy.functions import exp_polar, ceiling
-        from sympy import mpmath, Expr
+        from sympy import Expr
+        import mpmath
         z = self.argument
         znum = self.argument._eval_evalf(prec)
         if znum.has(exp_polar):
@@ -612,7 +619,6 @@ class meijerg(TupleParametersBase):
             branch = S(0)
         n = ceiling(abs(branch/S.Pi)) + 1
         znum = znum**(S(1)/n)*exp(I*branch / n)
-        #print znum, branch, n
 
         # Convert all args to mpf or mpc
         try:
@@ -621,15 +627,8 @@ class meijerg(TupleParametersBase):
         except ValueError:
             return
 
-        # Set mpmath precision and apply. Make sure precision is restored
-        # afterwards
-        orig = mpmath.mp.prec
-        try:
-            mpmath.mp.prec = prec
+        with mpmath.workprec(prec):
             v = mpmath.meijerg(ap, bq, z, r)
-            #print ap, bq, z, r, v
-        finally:
-            mpmath.mp.prec = orig
 
         return Expr._from_mpmath(v, prec)
 

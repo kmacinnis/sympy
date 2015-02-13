@@ -3,7 +3,7 @@ import collections
 from sympy import (
     Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow, PurePoly, Rational,
     S, Symbol, cos, exp, oo, pi, signsimp, simplify, sin, sqrt, symbols,
-    sympify, trigsimp)
+    sympify, trigsimp, sstr)
 from sympy.matrices.matrices import (ShapeError, MatrixError,
     NonSquareMatrixError, DeferredVector)
 from sympy.matrices import (
@@ -11,9 +11,9 @@ from sympy.matrices import (
     SparseMatrix, casoratian, diag, eye, hessian,
     matrix_multiply_elementwise, ones, randMatrix, rot_axis1, rot_axis2,
     rot_axis3, wronskian, zeros)
-from sympy.core.compatibility import long
+from sympy.core.compatibility import long, iterable, u, range
 from sympy.utilities.iterables import flatten, capture
-from sympy.utilities.pytest import raises, XFAIL, slow
+from sympy.utilities.pytest import raises, XFAIL, slow, skip
 
 from sympy.abc import x, y, z
 
@@ -183,7 +183,7 @@ def test_creation():
     with raises(IndexError):
         Matrix((1, 2))[3] = 5
 
-    assert Matrix([]) == Matrix([[]]) == Matrix(0, 0, [])
+    assert Matrix() == Matrix([]) == Matrix([[]]) == Matrix(0, 0, [])
 
     a = Matrix([[x, 0], [0, 0]])
     m = a
@@ -741,7 +741,7 @@ def test_nullspace():
     assert basis[2] == Matrix([-2, 0, 0, -2, 1, 0, 0])
     assert basis[3] == Matrix([0, 0, 0, 0, 0, R(-1)/3, 1])
 
-    # issue 1698; just see that we can do it when rows > cols
+    # issue 4797; just see that we can do it when rows > cols
     M = Matrix([[1, 2], [2, 4], [3, 6]])
     assert M.nullspace()
 
@@ -764,7 +764,6 @@ def test_wronskian():
 
 
 def test_eigen():
-
     R = Rational
 
     assert eye(3).charpoly(x) == Poly((x - 1)**3, x)
@@ -793,6 +792,12 @@ def test_eigen():
             ( 0, 1, [Matrix([0, -1, 1])]),
             ( 2, 1, [Matrix([R(2, 3), R(1, 3), 1])])
         ])
+
+    a = Symbol('a')
+    M = Matrix([[a, 0],
+                [0, 1]])
+
+    assert M.eigenvals() == {a: 1, S.One: 1}
 
     M = Matrix([[1, -1],
                 [1,  3]])
@@ -884,11 +889,12 @@ def test_simplify():
     M.simplify()
     assert M == Matrix([[ (x + y)/(x * y),                        1 + y ],
                         [           1 + y, 2*((1 - 1*cos(pi*n))/(pi*n)) ]])
-    M = Matrix([[(1 + x)**2]])
+    eq = (1 + x)**2
+    M = Matrix([[eq]])
     M.simplify()
-    assert M == Matrix([[(1 + x)**2]])
-    M.simplify(ratio=oo)
-    assert M == Matrix([[1 + 2*x + x**2]])
+    assert M == Matrix([[eq]])
+    M.simplify(ratio=oo) == M
+    assert M == Matrix([[eq.simplify(ratio=oo)]])
 
 
 def test_transpose():
@@ -997,7 +1003,7 @@ def test_zip_row_op():
                          [4,  0, 0],
                          [0,  0, 2]])
 
-def test_issue851():
+def test_issue_3950():
     m = Matrix([1, 2, 3])
     a = Matrix([1, 2, 3])
     b = Matrix([2, 2, 3])
@@ -1008,7 +1014,7 @@ def test_issue851():
     assert m != b
 
 
-def test_issue882():
+def test_issue_3981():
     class Index1(object):
         def __index__(self):
             return 1
@@ -1113,7 +1119,7 @@ def test_empty_zeros():
     assert a.cols == 0
 
 
-def test_issue650():
+def test_issue_3749():
     a = Matrix([[x**2, x*y], [x*sin(y), x*cos(y)]])
     assert a.diff(x) == Matrix([[2*x, y], [sin(y), cos(y)]])
     assert Matrix([
@@ -1162,7 +1168,7 @@ def test_jacobian2():
     assert X.jacobian(Y) == J
 
 
-def test_issue1465():
+def test_issue_4564():
     X = Matrix([exp(x + y + z), exp(x + y + z), exp(x + y + z)])
     Y = Matrix([x, y, z])
     for i in range(1, 3):
@@ -1310,7 +1316,7 @@ def test_inv_block():
 def test_creation_args():
     """
     Check that matrix dimensions can be specified using any reasonable type
-    (see issue 1515).
+    (see issue 4614).
     """
     raises(ValueError, lambda: zeros(3, -1))
     raises(TypeError, lambda: zeros(1, 2, 3, 4))
@@ -1431,7 +1437,7 @@ def test_eigen_vects():
     m = Matrix(2, 2, [1, 0, 0, I])
     raises(NotImplementedError, lambda: m.is_diagonalizable(True))
     # !!! bug because of eigenvects() or roots(x**2 + (-1 - I)*x + I, x)
-    # see issue 2193
+    # see issue 5292
     assert not m.is_diagonalizable(True)
     raises(MatrixError, lambda: m.diagonalize(True))
     (P, D) = m.diagonalize(True)
@@ -1829,7 +1835,8 @@ def test_matrix_norm():
         # Check Triangle Inequality for all Pairs of Matrices
         for X in L:
             for Y in L:
-                assert X.norm(order) + Y.norm(order) >= (X + Y).norm(order)
+                assert simplify(X.norm(order) + Y.norm(order) >=
+                                (X + Y).norm(order))
         # Scalar multiplication linearity
         for M in [A, B, C, D]:
             if order in [2, -2]:
@@ -1862,7 +1869,8 @@ def test_matrix_norm():
         if order >= 1:  # Triangle InEq holds only for these norms
             for v in L:
                 for w in L:
-                    assert v.norm(order) + w.norm(order) >= (v + w).norm(order)
+                    assert simplify(v.norm(order) + w.norm(order) >=
+                                    (v + w).norm(order))
         # Linear to scalar multiplication
         if order in [1, 2, -1, -2, S.Infinity, S.NegativeInfinity]:
             for vec in L:
@@ -2019,6 +2027,9 @@ def test_DeferredVector():
     assert str(DeferredVector("vector")[4]) == "vector[4]"
     assert sympify(DeferredVector("d")) == DeferredVector("d")
 
+def test_DeferredVector_not_iterable():
+    assert not iterable(DeferredVector('X'))
+
 def test_DeferredVector_Matrix():
     raises(TypeError, lambda: Matrix(DeferredVector("V")))
 
@@ -2111,14 +2122,20 @@ def test_invertible_check():
 
 
 @XFAIL
-def test_issue_860():
+def test_issue_3959():
     x, y = symbols('x, y')
     e = x*y
     assert e.subs(x, Matrix([3, 5, 3])) == Matrix([3, 5, 3])*y
 
 
-def test_issue_2865():
+def test_issue_5964():
     assert str(Matrix([[1, 2], [3, 4]])) == 'Matrix([[1, 2], [3, 4]])'
+
+
+def test_issue_7604():
+    x, y = symbols(u("x y"))
+    assert sstr(Matrix([[x, 2*y], [y**2, x + 3]])) == \
+        'Matrix([\n[   x,   2*y],\n[y**2, x + 3]])'
 
 
 def test_is_Identity():
@@ -2126,8 +2143,13 @@ def test_is_Identity():
     assert eye(3).as_immutable().is_Identity
     assert not zeros(3).is_Identity
     assert not ones(3).is_Identity
-    # issue 3143
+    # issue 6242
     assert not Matrix([[1, 0, 0]]).is_Identity
+    # issue 8854
+    assert SparseMatrix(3,3, {(0,0):1, (1,1):1, (2,2):1}).is_Identity
+    assert not SparseMatrix(2,3, range(6)).is_Identity
+    assert not SparseMatrix(3,3, {(0,0):1, (1,1):1}).is_Identity
+    assert not SparseMatrix(3,3, {(0,0):1, (1,1):1, (2,2):1, (0,1):2, (0,2):3}).is_Identity
 
 
 def test_dot():
@@ -2183,11 +2205,11 @@ def test_normalize_sort_diogonalization():
     assert P*Q*P.inv() == A
 
 
-def test_issue2222():
+def test_issue_5321():
     raises(ValueError, lambda: Matrix([[1, 2, 3], Matrix(0, 1, [])]))
 
 
-def test_issue2221():
+def test_issue_5320():
     assert Matrix.hstack(eye(2), 2*eye(2)) == Matrix([
         [1, 0, 2, 0],
         [0, 1, 0, 2]
@@ -2229,15 +2251,15 @@ def test_hash():
     for cls in classes[-2:]:
         s = set([cls.eye(1), cls.eye(1)])
         assert len(s) == 1 and s.pop() == cls.eye(1)
-    # issue 880
+    # issue 3979
     for cls in classes[:2]:
         assert not isinstance(cls.eye(1), collections.Hashable)
 
 
 @XFAIL
-def test_issue880():
+def test_issue_3979():
     # when this passes, delete this and change the [1:2]
-    # to [:2] in the test_hash above for issue 880
+    # to [:2] in the test_hash above for issue 3979
     cls = classes[0]
     raises(AttributeError, lambda: hash(cls.eye(1)))
 
@@ -2248,7 +2270,7 @@ def test_adjoint():
     for cls in classes:
         assert ans == cls(dat).adjoint()
 
-def test_simplify():
+def test_simplify_immutable():
     from sympy import simplify, sin, cos
     assert simplify(ImmutableMatrix([[sin(x)**2 + cos(x)**2]])) == \
                     ImmutableMatrix([[1]])
@@ -2287,7 +2309,7 @@ def test_atoms():
 
 @slow
 def test_pinv():
-    from sympy.abc import a, b, c, d, e, f
+    from sympy.abc import a, b, c, d
     # Pseudoinverse of an invertible matrix is the inverse.
     A1 = Matrix([[a, b], [c, d]])
     assert simplify(A1.pinv()) == simplify(A1.inv())
@@ -2367,6 +2389,35 @@ def test_pinv_rank_deficient():
     assert solution == Matrix([3, w1])
     assert A * A.pinv() * B != B
 
-def test_issue4102():
+def test_issue_7201():
     assert ones(0, 1) + ones(0, 1) == Matrix(0, 1, [])
     assert ones(1, 0) + ones(1, 0) == Matrix(1, 0, [])
+
+def test_free_symbols():
+    for M in ImmutableMatrix, ImmutableSparseMatrix, Matrix, SparseMatrix:
+        assert M([[x], [0]]).free_symbols == set([x])
+
+def test_from_ndarray():
+    """See issue 7465."""
+    try:
+        from numpy import array
+    except ImportError:
+        skip('NumPy must be available to test creating matrices from ndarrays')
+
+    assert Matrix(array([1, 2, 3])) == Matrix([1, 2, 3])
+    assert Matrix(array([[1, 2, 3]])) == Matrix([[1, 2, 3]])
+    assert Matrix(array([[1, 2, 3], [4, 5, 6]])) == \
+        Matrix([[1, 2, 3], [4, 5, 6]])
+    assert Matrix(array([x, y, z])) == Matrix([x, y, z])
+    raises(NotImplementedError, lambda: Matrix(array([[
+        [1, 2], [3, 4]], [[5, 6], [7, 8]]])))
+
+def test_hermitian():
+    a = Matrix([[1, I], [-I, 1]])
+    assert a.is_hermitian
+    a[0, 0] = 2*I
+    assert a.is_hermitian is False
+    a[0, 0] = x
+    assert a.is_hermitian is None
+    a[0, 1] = a[1, 0]*I
+    assert a.is_hermitian is False

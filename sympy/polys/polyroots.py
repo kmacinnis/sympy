@@ -28,9 +28,6 @@ from sympy.simplify import simplify, powsimp, dist_const
 from sympy.utilities import public
 from sympy.core.compatibility import reduce, range
 
-from sympy.core.compatibility import reduce, xrange
-
-
 
 def roots_linear(f):
     """Returns a list of roots of a linear polynomial."""

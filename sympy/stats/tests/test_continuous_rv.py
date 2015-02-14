@@ -279,8 +279,7 @@ def test_fisher_z():
 
     X = FisherZ("x", d1, d2)
     assert density(X)(x) == (2*d1**(d1/2)*d2**(d2/2)*(d1*exp(2*x) + d2)
-                             **(-d1/2 - d2/2)*exp(d1*x)/beta(d1/2, d2/2))
-            exp(d1*x)*gamma(d1/2 + d2/2)/(gamma(d1/2)*gamma(d2/2)))
+        **(-d1/2 - d2/2)*exp(d1*x)/beta(d1/2, d2/2))
 
 def test_frechet():
     a = Symbol("a", positive=True)

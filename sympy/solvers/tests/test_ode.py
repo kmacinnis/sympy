@@ -1116,6 +1116,7 @@ def test_1st_homogeneous_coeff_ode_k():
     sol4 = Eq(log(f(x)), C1 - 2*exp(x/f(x)))
     sol5 = Eq(f(x), exp(2*C1 + LambertW(-2*x**4*exp(-4*C1))/2)/x)
     sol6 = Eq(log(x),
+        C1 + exp(-f(x)/x)*sin(f(x)/x)/2 + exp(-f(x)/x)*cos(f(x)/x)/2)
     sol7 = Eq(log(f(x)), C1 - 2*sqrt(-x/f(x) + 1))
     sol8 = Eq(log(x), C1 - log(sqrt(1 + f(x)**2/x**2)) + atan(f(x)/x))
     assert dsolve(eq1, hint='1st_homogeneous_coeff_subs_dep_div_indep') == \

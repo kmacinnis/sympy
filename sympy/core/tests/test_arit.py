@@ -1657,7 +1657,7 @@ def test_add_flatten():
     a = oo + I*oo
     b = oo - I*oo
     assert a + b == nan
-    assert a - b == nan
+    assert (a - b)._dist_const() == nan
     assert (1/a).simplify() == (1/b).simplify() == 0
 
 

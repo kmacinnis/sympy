@@ -248,7 +248,7 @@ class Pow(Expr):
                     # floor arg. is 1/2 + arg(b)/2/pi
                     if _half(other):
                         if b.is_negative is True:
-                            return S.NegativeOne**other*Pow(-b, e*other)
+                            return S.NegativeOne**other*Pow((-b)._dist_const(), e*other)
                         if b.is_real is False:
                             return Pow(b.conjugate()/C.Abs(b)**2, other)
                 elif e.is_even:

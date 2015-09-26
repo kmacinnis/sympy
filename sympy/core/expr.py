@@ -2930,10 +2930,17 @@ class Expr(Basic, EvalfMixin):
     def _dist_const(self):
         if self.is_Atom:
             return self
-        else:
-            cls = self.__class__
-            newargs = [arg._dist_const() for arg in self.args]
-            return cls(*newargs)
+        cls = self.__class__
+        newargs = [arg._dist_const() for arg in self.args]
+        return cls(*newargs)
+
+    # def _dist_neg(self):
+    #     if self.is_Atom:
+    #         return self
+    #     cls = self.__class__
+    #     newargs = [arg._dist_neg() for arg in self.args]
+    #     return cls(*newargs)
+        
 
     ###########################################################################
     ################### GLOBAL ACTION VERB WRAPPER METHODS ####################

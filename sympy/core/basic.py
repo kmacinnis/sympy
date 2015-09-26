@@ -669,6 +669,9 @@ class Basic(with_metaclass(ManagedProperties)):
     def _dist_const(self):
         return self
 
+    def _dist_neg(self):
+        return self
+
     def as_poly(self, *gens, **args):
         """Converts ``self`` to a polynomial or returns ``None``.
 

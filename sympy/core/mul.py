@@ -792,6 +792,16 @@ class Mul(Expr, AssocOp):
         else:
             return c * Mul(*[f._dist_const() for f in factors])
 
+    def _dist_neg(self):
+        """Distributes a negative over an Add.
+        Designed to replicate previous default behavior."""
+
+        c, m = self.as_coeff_Mul()
+        if (c == -1) and m.is_Add:
+            return Add(*[ -t for t in m.args ])
+            
+
+
     def _matches_simple(self, expr, repl_dict):
         # handle (w*3).matches('x*5') -> {w: x*5/3}
         coeff, terms = self.as_coeff_Mul()

@@ -69,3 +69,7 @@ sample.tex
 # IPython Notebook Checkpoints
 .ipynb_checkpoints/
 
+# PyCharm
+tester.py
+.idea/
+

@@ -91,7 +91,7 @@ except ImportError:
             def wrapper(*args, **kwargs):
                 try:
                     retval = cfunc(*args, **kwargs)
-                except TypeError:
+                except (TypeError, KeyError):
                     retval = func(*args, **kwargs)
                 return retval
 

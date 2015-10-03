@@ -92,6 +92,9 @@ except ImportError:
                 try:
                     retval = cfunc(*args, **kwargs)
                 except (TypeError, KeyError):
+                # KeyError is included here because of
+                # http://bugs.python.org/issue25295.
+                # remove when that gets fixed
                     retval = func(*args, **kwargs)
                 return retval
 
